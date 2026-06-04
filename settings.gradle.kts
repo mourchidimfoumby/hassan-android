@@ -21,3 +21,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "Hassan"
 include(":app")
+include(":quran")
+include(":common")
+include(":quran:domain")
+include(":quran:data")
+include(":common:domain")
+include(":common:data")

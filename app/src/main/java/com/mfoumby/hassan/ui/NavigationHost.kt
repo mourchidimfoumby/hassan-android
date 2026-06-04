@@ -1,0 +1,67 @@
+package com.mfoumby.hassan.ui
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.mfoumby.hassan.common.Route
+import com.mfoumby.hassan.quran.ui.QuranBaseRoute
+import com.mfoumby.hassan.quran.ui.navigateToQuran
+import com.mfoumby.hassan.quran.ui.quranSection
+import com.mfoumby.hassan.ui.components.MainBottomBar
+import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
+
+@Serializable
+data object SplashRoute: Route
+
+@Composable
+fun NavigationHost(
+    viewModel: NavigationHostViewModel = koinViewModel()
+) {
+    val navController = rememberNavController()
+    val uiState by viewModel.uiState.collectAsState()
+    val currentEntry = navController.currentBackStackEntryAsState()
+    val navOptions = NavOptions.Builder()
+        .setLaunchSingleTop(true)
+        .setRestoreState(true)
+        .setPopUpTo(
+            route = QuranBaseRoute,
+            inclusive = false,
+            saveState = true
+        )
+        .build()
+
+    fun NavController.navigateToTopLevelDestination(destination: TopLevelDestinationRoute) {
+        when (destination) {
+            TopLevelDestinationRoute.QURAN -> {
+                popBackStack()
+                navigateToQuran(navOptions = navOptions)
+            }
+        }
+    }
+
+    val bottomBar: @Composable () -> Unit = {
+        MainBottomBar(
+            onTopLevelDestinationClick = navController::navigateToTopLevelDestination,
+            currentRoute = currentEntry.value?.destination,
+            topLevelDestinations = uiState.topLevelDestinations
+        )
+    }
+
+    NavHost(
+        navController = navController,
+        startDestination = uiState.startDestination
+    ) {
+        composable<SplashRoute> {}
+
+        quranSection(bottomBar = bottomBar) {
+
+        }
+    }
+}

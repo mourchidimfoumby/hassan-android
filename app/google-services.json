@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "808131574445",
+    "project_id": "hassan-app-8c64c",
+    "storage_bucket": "hassan-app-8c64c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:808131574445:android:cea0b2b0b71d5d62c36424",
+        "android_client_info": {
+          "package_name": "com.mfoumby.hassan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGgi57OFBQ5p5xGRFa65yK0QyCN4fsltE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

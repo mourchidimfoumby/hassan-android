@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quran">Quran</string>
+    <string name="quran_destination_icon_description">Navigate to quran page</string>
+</resources>
