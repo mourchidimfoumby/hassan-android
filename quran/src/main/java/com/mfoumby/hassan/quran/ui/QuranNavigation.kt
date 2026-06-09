@@ -20,12 +20,14 @@ fun NavController.navigateToQuran(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.quranSection(
     bottomBar: @Composable () -> Unit,
+    onSurahClick: (Int) -> Unit,
     quranDestinations: NavGraphBuilder.() -> Unit
 ) {
     navigation<QuranBaseRoute>(startDestination = QuranRoute) {
         composable<QuranRoute> {
             QuranDestination(
-                bottomBar = bottomBar
+                bottomBar = bottomBar,
+                onSurahClick = onSurahClick
             )
         }
         quranDestinations()

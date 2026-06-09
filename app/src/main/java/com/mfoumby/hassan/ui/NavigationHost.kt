@@ -13,6 +13,8 @@ import com.mfoumby.hassan.common.Route
 import com.mfoumby.hassan.quran.ui.QuranBaseRoute
 import com.mfoumby.hassan.quran.ui.navigateToQuran
 import com.mfoumby.hassan.quran.ui.quranSection
+import com.mfoumby.hassan.quran.ui.surahverse.navigateToSurahVerse
+import com.mfoumby.hassan.quran.ui.surahverse.surahVerseScreen
 import com.mfoumby.hassan.ui.components.MainBottomBar
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
@@ -60,8 +62,11 @@ fun NavigationHost(
     ) {
         composable<SplashRoute> {}
 
-        quranSection(bottomBar = bottomBar) {
-
+        quranSection(
+            bottomBar = bottomBar,
+            onSurahClick = navController::navigateToSurahVerse
+        ) {
+            surahVerseScreen(onBackClick = navController::popBackStack)
         }
     }
 }

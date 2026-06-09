@@ -15,6 +15,8 @@ val appModule = module {
             ).fallbackToDestructiveMigration(true).build()
     }
     single { get<LocalDatabase>().surahDao() }
+    single { get<LocalDatabase>().surahVerseDao() }
+    single { get<LocalDatabase>().surahVerseTranslationDao() }
 
     viewModelOf(::NavigationHostViewModel)
 }

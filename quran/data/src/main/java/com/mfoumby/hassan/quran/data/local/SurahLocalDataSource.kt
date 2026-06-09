@@ -1,17 +1,29 @@
 package com.mfoumby.hassan.quran.data.local
 
-import com.mfoumby.hassan.quran.data.toLocal
-import com.mfoumby.hassan.quran.data.toSurah
-import com.mfoumby.hassan.quran.domain.Surah
+import com.mfoumby.hassan.quran.data.mapper.toLocal
+import com.mfoumby.hassan.quran.data.mapper.toSurah
+import com.mfoumby.hassan.quran.domain.entity.Surah
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 class SurahLocalDataSource(private val surahDao: SurahDao) {
-    fun getSurahsFlow(): Flow<List<Surah>> = surahDao.getSurahsFlow()
+    private val dispatcher = Dispatchers.IO
+    fun getSurahsFlow(): Flow<List<Surah>> = surahDao.getSurahs()
         .map { surahs -> surahs.map { it.toSurah() } }
 
-    suspend fun getSurahs(): List<Surah> = surahDao.getSurahs().map { it.toSurah() }
+    suspend fun getSurah(surahNumber: Int): Surah = withContext(dispatcher) {
+        surahDao.getSurah(surahNumber).toSurah()
+    }
 
-    suspend fun upsertSurahs(surahs: List<Surah>) =
-        surahDao.upsertSurahs(surahs.map { it.toLocal() })
+    suspend fun getSurahCount(): Int = withContext(dispatcher) {
+        surahDao.getSurahCount()
+    }
+
+    suspend fun upsertSurahs(surahs: List<Surah>) {
+        withContext(dispatcher) {
+            surahDao.upsertSurahs(surahs.map { it.toLocal() })
+        }
+    }
 }

@@ -1,8 +1,10 @@
 package com.mfoumby.hassan.quran.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
@@ -10,14 +12,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.components.TitleTopBar
+import com.mfoumby.hassan.common.ui.components.VerticalScrollBarIndicator
 import com.mfoumby.hassan.common.ui.theme.HassanTheme
 import com.mfoumby.hassan.quran.R
-import com.mfoumby.hassan.quran.domain.Surah
+import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.surahFixture
 import com.mfoumby.hassan.quran.domain.surahFixtures
 import org.koin.androidx.compose.koinViewModel
@@ -25,6 +29,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun QuranDestination(
     bottomBar: @Composable () -> Unit,
+    onSurahClick: (Int) -> Unit,
     viewModel: QuranViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -32,8 +37,8 @@ fun QuranDestination(
     if (uiState.surahs != null) {
         QuranScreen(
             surahs = uiState.surahs!!,
-            onSurahClick = {},
-            bottomBar = bottomBar
+            bottomBar = bottomBar,
+            onSurahClick = onSurahClick
         )
     }
 }
@@ -42,22 +47,33 @@ fun QuranDestination(
 private fun QuranScreen(
     surahs: List<Surah>,
     bottomBar: @Composable () -> Unit,
-    onSurahClick: (Surah) -> Unit
+    onSurahClick: (Int) -> Unit
 ) {
     Scaffold(
         topBar = { TitleTopBar(title = stringResource(R.string.quran)) },
         bottomBar = bottomBar
     ) { innerPadding ->
-        LazyColumn(modifier = Modifier.padding(innerPadding)) {
-            items(surahs.size) { index ->
-                val surah = surahs[index]
-                HorizontalDivider()
-
-                SurahCell(
-                    surah = surah,
-                    onClick = { onSurahClick(surah) }
-                )
+        val listState = rememberLazyListState()
+        Box(modifier = Modifier.padding(innerPadding)) {
+            LazyColumn(state = listState) {
+                items(surahs.size) { index ->
+                    val surah = surahs[index]
+                    if (index == 0) {
+                        HorizontalDivider()
+                    }
+                    SurahCell(
+                        surah = surah,
+                        onClick = { onSurahClick(surah.number) }
+                    )
+                    HorizontalDivider()
+                }
             }
+
+            VerticalScrollBarIndicator(
+                modifier = Modifier.align(Alignment.CenterEnd),
+                state = listState,
+                itemsCount = surahs.size
+            )
         }
     }
 }
@@ -71,12 +87,6 @@ private fun SurahCell(surah: Surah, onClick: () -> Unit) {
         supportingContent = { Text(text = surah.translation) },
     )
 }
-
-/*
- =====================================================================
-                                Preview
- =====================================================================
- */
 
 @PhonePreviews
 @Composable
