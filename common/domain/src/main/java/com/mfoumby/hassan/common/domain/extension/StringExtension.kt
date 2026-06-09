@@ -1,4 +1,4 @@
-package com.mfoumby.hassan.common.domain
+package com.mfoumby.hassan.common.domain.extension
 
 fun String.capitalizeWords(): String =
     replace(Regex("(?<!\\p{L})\\p{L}")) {

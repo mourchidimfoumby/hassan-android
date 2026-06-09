@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.MemoryCacheSettings
 import com.mfoumby.hassan.common.data.commonDataModule
+import com.mfoumby.hassan.common.domain.commonDomainModule
 import com.mfoumby.hassan.quran.data.quranDataModule
 import com.mfoumby.hassan.quran.data.worker.StartupQuranWorker
 import com.mfoumby.hassan.quran.domain.quranDomainModule
@@ -25,6 +26,7 @@ class HassanApplication: Application() {
             modules(
                 listOf(
                     appModule,
+                    commonDomainModule,
                     commonDataModule,
                     quranModule,
                     quranDomainModule,

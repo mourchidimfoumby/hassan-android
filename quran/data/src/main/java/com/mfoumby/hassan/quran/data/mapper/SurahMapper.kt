@@ -1,8 +1,8 @@
-package com.mfoumby.hassan.quran.data
+package com.mfoumby.hassan.quran.data.mapper
 
-import com.mfoumby.hassan.quran.data.local.LocalSurah
+import com.mfoumby.hassan.quran.data.model.LocalSurah
 import com.mfoumby.hassan.quran.data.model.RemoteSurah
-import com.mfoumby.hassan.quran.domain.Surah
+import com.mfoumby.hassan.quran.domain.entity.Surah
 
 fun RemoteSurah.toSurah(translation: String) = Surah(
     number = number,

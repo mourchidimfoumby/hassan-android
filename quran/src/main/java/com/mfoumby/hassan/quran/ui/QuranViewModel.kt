@@ -2,8 +2,8 @@ package com.mfoumby.hassan.quran.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mfoumby.hassan.quran.domain.Surah
-import com.mfoumby.hassan.quran.domain.SurahRepository
+import com.mfoumby.hassan.quran.domain.entity.Surah
+import com.mfoumby.hassan.quran.domain.repository.SurahRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +19,7 @@ class QuranViewModel(
         initialValue = QuranState()
     )
 
-    private fun initUiState(): Flow<QuranState> = combine(surahRepository.getLocalSurahsFlow()) { (surahs) ->
+    private fun initUiState(): Flow<QuranState> = combine(surahRepository.getSurahs()) { (surahs) ->
             QuranState(surahs = surahs)
         }
 

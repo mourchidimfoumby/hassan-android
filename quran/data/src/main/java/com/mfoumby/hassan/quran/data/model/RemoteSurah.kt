@@ -1,7 +1,7 @@
 package com.mfoumby.hassan.quran.data.model
 
 import com.google.firebase.firestore.PropertyName
-import com.mfoumby.hassan.quran.data.SurahField
+import com.mfoumby.hassan.quran.data.field.SurahField
 
 data class RemoteSurah(
     @get:PropertyName(SurahField.Remote.SURAH_NUMBER)

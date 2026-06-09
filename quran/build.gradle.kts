@@ -57,5 +57,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     implementation(project(":common"))
+    implementation(project(":common:domain"))
     implementation(project(":quran:domain"))
 }

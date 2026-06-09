@@ -1,6 +1,6 @@
-package com.mfoumby.hassan.quran.data
+package com.mfoumby.hassan.quran.data.field
 
-internal object SurahField {
+object SurahField {
     object Local {
         const val SURAH_TABLE_NAME = "surahs"
         const val SURAH_NUMBER = "surah_number"

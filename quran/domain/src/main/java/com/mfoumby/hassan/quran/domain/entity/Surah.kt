@@ -1,4 +1,4 @@
-package com.mfoumby.hassan.quran.domain
+package com.mfoumby.hassan.quran.domain.entity
 
 data class Surah(
     val number: Int,
