@@ -9,10 +9,6 @@ class SurahVerseRepositoryImpl(
     private val surahVerseRemoteDataSource: SurahVerseRemoteDataSource,
     private val surahVerseLocalDataSource: SurahVerseLocalDataSource
 ): SurahVerseRepository {
-    companion object {
-        const val MAX_SURAH_VERSES = 6236
-    }
-
     override suspend fun getSurahVerses(surahNumber: Int): List<SurahVerse> = surahVerseLocalDataSource.getSurahVerses(surahNumber)
 
     override suspend fun getSurahVersesCount(): Int = surahVerseLocalDataSource.getSurahVersesCount()

@@ -3,7 +3,6 @@ package com.mfoumby.hassan.quran.data.remote
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.firestore
-import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
 import com.mfoumby.hassan.quran.data.model.RemoteSurahVerseTranslation
 import com.mfoumby.hassan.quran.data.model.RemoteSurahVerseTranslations
@@ -34,6 +33,7 @@ class SurahVerseTranslationApiImpl: SurahVerseTranslationApi {
 
             val snapshot = query.get().await()
             if (snapshot.isEmpty) {
+                close()
                 break
             }
 
@@ -44,13 +44,4 @@ class SurahVerseTranslationApiImpl: SurahVerseTranslationApi {
 
         awaitClose {}
     }
-
-    override suspend fun getSurahVerseTranslations(surahNumber: Int, language: String): List<RemoteSurahVerseTranslation> =
-        surahVerseTranslationCollection
-            .document(language)
-            .collection(SURAH_VERSE_TRANSLATION_DOCUMENT)
-            .document(surahNumber.toString())
-            .get()
-            .await()
-            .toObject<RemoteSurahVerseTranslations>()?.values ?: emptyList()
 }

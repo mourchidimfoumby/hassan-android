@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="arrow_back_icon_description">Go back</string>
+    <string name="translation">Translation</string>
+    <string name="language">Language</string>
+    <string name="english">English</string>
+    <string name="french">French</string>
+    <string name="arabic">Arabic</string>
+    <string name="display_translation">Display translation</string>
+    <string name="select_translation">Select translation</string>
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancel</string>
+    <string name="download_language_dialog_text">Do you want to download this language?</string>
+    <string name="download">Download</string>
+    <string name="delete">Delete</string>
+    <string name="delete_language_dialog_text">Do you want to delete this language?</string>
 </resources>

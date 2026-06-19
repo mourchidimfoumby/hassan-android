@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="arrow_back_icon_description">Retour en arrière</string>
+    <string name="translation">Traduction</string>
+    <string name="language">Langue</string>
+    <string name="english">Anglais</string>
+    <string name="french">Français</string>
+    <string name="arabic">Arabe</string>
+    <string name="display_translation">Afficher traduction</string>
+    <string name="select_translation">Selectionner traduction</string>
+    <string name="accept">Accepter</string>
+    <string name="cancel">Annuler</string>
+    <string name="download_language_dialog_text">Voulez-vous télécharger cette langue ?</string>
+    <string name="download">Télécharger</string>
+    <string name="delete">Supprimer</string>
+    <string name="delete_language_dialog_text">Voulez-vous supprimer cette langue?</string>
 </resources>

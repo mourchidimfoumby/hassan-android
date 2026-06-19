@@ -14,7 +14,8 @@ class StartupQuranWorker(context: Context) {
     fun run() {
         workerManager.enqueue(buildWorkRequest<InitSurahsWorker>())
         workerManager.enqueue(buildWorkRequest<InitSurahVersesWorker>())
-        workerManager.enqueue(buildWorkRequest<InitSurahVerseTranslationsWorker>())
+        workerManager.enqueue(buildWorkRequest<InitSurahVerseTranslationLanguagesWorker>())
+        workerManager.enqueue(buildWorkRequest<InitSurahVersePreferencesWorker>())
     }
 
     private inline fun <reified T : ListenableWorker>buildWorkRequest(): OneTimeWorkRequest {

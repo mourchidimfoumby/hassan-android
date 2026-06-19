@@ -9,7 +9,7 @@ fun LocalSurahVerseTranslation.toSurahVerseTranslation() = SurahVerseTranslation
     number = number,
     surahNumber = surahNumber,
     translation = translation,
-    language = Language.fromLanguageCode(language)
+    language = Language.valueOf(language)
 )
 
 fun RemoteSurahVerseTranslation.toSurahVerseTranslation(language: Language) = SurahVerseTranslation(
@@ -23,5 +23,5 @@ fun SurahVerseTranslation.toLocal() = LocalSurahVerseTranslation(
     number = number,
     surahNumber = surahNumber,
     translation = translation,
-    language = language.getLanguageCode()
+    language = language.name
 )

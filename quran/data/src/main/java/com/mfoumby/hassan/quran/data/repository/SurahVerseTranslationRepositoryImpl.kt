@@ -5,20 +5,26 @@ import com.mfoumby.hassan.quran.data.local.SurahVerseTranslationLocalDataSource
 import com.mfoumby.hassan.quran.data.remote.SurahVerseTranslationRemoteDataSource
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseTranslation
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseTranslationRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
 
 class SurahVerseTranslationRepositoryImpl(
-    private val surahVerseTranslationLocalDataSource: SurahVerseTranslationLocalDataSource,
-    private val surahVerseTranslationRemoteDataSource: SurahVerseTranslationRemoteDataSource
+    private val localDataSource: SurahVerseTranslationLocalDataSource,
+    private val remoteDataSource: SurahVerseTranslationRemoteDataSource
 ): SurahVerseTranslationRepository {
     override suspend fun getSurahVerseTranslations(surahNumber: Int, language: Language): List<SurahVerseTranslation> =
-        surahVerseTranslationLocalDataSource.getSurahVerseTranslations(surahNumber, language)
+        localDataSource.getSurahVerseTranslations(surahNumber, language)
 
     override suspend fun getSurahVerseTranslationCount(language: Language): Int =
-        surahVerseTranslationLocalDataSource.getSurahVerseTranslationCount(language)
+        localDataSource.getSurahVerseTranslationCount(language)
 
-    override suspend fun downloadSurahVerseTranslations(language: Language) {
-        surahVerseTranslationRemoteDataSource.getSurahVerseTranslations(language).collect {
-            surahVerseTranslationLocalDataSource.upsertSurahVerseTranslations(it)
+    override fun downloadSurahVerseTranslations(language: Language): Flow<List<SurahVerseTranslation>> {
+        return remoteDataSource.getSurahVerseTranslations(language).onEach {
+            localDataSource.upsertSurahVerseTranslations(it)
         }
+    }
+
+    override suspend fun deleteSurahVerseTranslation(language: Language) {
+        localDataSource.deleteSurahVerseTranslation(language)
     }
 }

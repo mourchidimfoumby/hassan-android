@@ -5,6 +5,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.mfoumby.hassan.common.R
 
@@ -35,6 +36,14 @@ val Typography = Typography(
     */
 )
 
-val UthmanicHafsFamily = FontFamily(
+val Typography.bodyUthmanic: TextStyle
+    get() = TextStyle(
+        fontFamily = UthmanicHafsFamily,
+        textAlign = TextAlign.Right,
+        fontSize = 34.sp,
+        lineHeight = 54.sp
+    )
+
+private val UthmanicHafsFamily = FontFamily(
     Font(resId = R.font.uthmanic_hafs)
 )

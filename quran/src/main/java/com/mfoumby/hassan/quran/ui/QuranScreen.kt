@@ -17,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.mfoumby.hassan.common.ui.PhonePreviews
+import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.components.TitleTopBar
 import com.mfoumby.hassan.common.ui.components.VerticalScrollBarIndicator
-import com.mfoumby.hassan.common.ui.theme.HassanTheme
 import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.surahFixture
@@ -91,7 +91,7 @@ private fun SurahCell(surah: Surah, onClick: () -> Unit) {
 @PhonePreviews
 @Composable
 private fun QuranScreenPreview() {
-    HassanTheme {
+    Previews.Preview {
         QuranScreen(
             surahs = surahFixtures,
             bottomBar = {},
@@ -103,7 +103,7 @@ private fun QuranScreenPreview() {
 @Preview
 @Composable
 private fun SurahCellPreview() {
-    HassanTheme {
+    Previews.Preview {
         SurahCell(
             surah = surahFixture,
             onClick = {}

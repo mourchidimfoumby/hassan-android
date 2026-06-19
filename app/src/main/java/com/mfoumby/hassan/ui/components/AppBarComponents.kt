@@ -17,9 +17,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mfoumby.hassan.common.Route
 import com.mfoumby.hassan.common.ui.PhonePreviews
+import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.ui.TopLevelDestination
 import com.mfoumby.hassan.ui.TopLevelDestinationRoute
-import com.mfoumby.hassan.common.ui.theme.HassanTheme
 
 @Composable
 fun MainBottomBar(
@@ -92,7 +92,7 @@ private fun MainBottomBarPreview() {
         TopLevelDestination.Quran
     )
 
-    HassanTheme {
+    Previews.Preview {
         Surface {
             MainBottomBar(
                 onTopLevelDestinationClick = { },

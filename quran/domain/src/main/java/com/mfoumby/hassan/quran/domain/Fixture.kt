@@ -1,7 +1,10 @@
 package com.mfoumby.hassan.quran.domain
 
+import com.mfoumby.hassan.common.domain.entity.Language
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
+import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
+import com.mfoumby.hassan.quran.domain.entity.SurahVerseTranslation
 
 val surahFixture = Surah(
     number = 1,
@@ -101,5 +104,62 @@ val surahVerseFixtures = listOf(
         surahNumber = 1,
         text = "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ",
         translation = "the Path of those You have blessed—not those You are displeased with, or those who are astray."
+    )
+)
+
+val surahVersePreferencesFixture = SurahVersePreferences(
+    displayTranslation = true,
+    translationLanguage = Language.ENGLISH
+)
+
+val surahVerseTranslationFixture = SurahVerseTranslation(
+    number = 1,
+    surahNumber = 1,
+    translation = "In the Name of Allah—the Most Compassionate, Most Merciful.",
+    language = Language.ENGLISH
+)
+
+val surahVerseTranslationFixtures = listOf(
+    SurahVerseTranslation(
+        number = 1,
+        surahNumber = 1,
+        translation = "In the Name of Allah—the Most Compassionate, Most Merciful.",
+        language = Language.ENGLISH
+    ),
+    SurahVerseTranslation(
+        number = 2,
+        surahNumber = 1,
+        translation = "All praise is for Allah—Lord of all worlds,",
+        language = Language.ENGLISH
+    ),
+    SurahVerseTranslation(
+        number = 3,
+        surahNumber = 1,
+        translation = "the Most Compassionate, Most Merciful,",
+        language = Language.ENGLISH
+    ),
+    SurahVerseTranslation(
+        number = 4,
+        surahNumber = 1,
+        translation = "Master of the Day of Judgment.",
+        language = Language.ENGLISH
+    ),
+    SurahVerseTranslation(
+        number = 5,
+        surahNumber = 1,
+        translation = "You ˹alone˺ we worship and You ˹alone˺ we ask for help.",
+        language = Language.ENGLISH
+    ),
+    SurahVerseTranslation(
+        number = 6,
+        surahNumber = 1,
+        translation = "Guide us along the Straight Path,",
+        language = Language.ENGLISH
+    ),
+    SurahVerseTranslation(
+        number = 7,
+        surahNumber = 1,
+        translation = "the Path of those You have blessed—not those You are displeased with, or those who are astray.",
+        language = Language.ENGLISH
     )
 )
