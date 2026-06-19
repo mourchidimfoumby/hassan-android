@@ -14,9 +14,10 @@ enum class Language {
         }
     }
 
-    fun getLanguageCode(): String = when (this) {
-        ENGLISH -> "en"
-        FRENCH -> "fr"
-        ARABIC -> "ar"
-    }
+    val code: String
+        get() = when (this) {
+            ENGLISH -> "en"
+            FRENCH -> "fr"
+            ARABIC -> "ar"
+        }
 }

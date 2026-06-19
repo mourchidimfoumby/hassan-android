@@ -16,4 +16,9 @@ kotlin {
 
 dependencies {
     implementation(libs.koin.core)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.gson)
+
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.junit)
 }

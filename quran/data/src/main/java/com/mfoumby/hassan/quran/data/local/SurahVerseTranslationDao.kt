@@ -25,6 +25,10 @@ interface SurahVerseTranslationDao {
     )
     suspend fun getSurahVerseTranslationCount(language: String): Int
 
+
     @Upsert
     suspend fun upsertSurahVerseTranslations(surahVerseTranslations: List<LocalSurahVerseTranslation>)
+
+    @Query("DELETE FROM $TABLE_NAME WHERE $LANGUAGE = :language")
+    suspend fun deleteSurahVerseTranslation(language: String)
 }

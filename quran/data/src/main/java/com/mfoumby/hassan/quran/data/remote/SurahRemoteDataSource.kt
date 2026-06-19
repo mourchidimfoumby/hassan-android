@@ -12,7 +12,7 @@ class SurahRemoteDataSource(private val surahApi: SurahApi) {
 
     suspend fun getSurahs(language: Language): List<Surah> = withContext(dispatcher) {
         val surahs = surahApi.getSurahs()
-        val surahTranslations = surahApi.getSurahTranslations(language.getLanguageCode()).sortedBy { it.number }
+        val surahTranslations = surahApi.getSurahTranslations(language.code).sortedBy { it.number }
         return@withContext surahs.map {
             it.toSurah(surahTranslations[it.number - 1].translation)
         }

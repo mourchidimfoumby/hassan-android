@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.mfoumby.hassan.common.ui.theme.HassanTheme
+import com.mfoumby.hassan.common.ui.Previews
 
 @Composable
 fun PrimaryButton(
@@ -79,7 +79,7 @@ fun BackButton(
 @Preview
 @Composable
 private fun PrimaryButtonPreview() {
-    HassanTheme {
+    Previews.Preview {
         PrimaryButton(
             text = "Primary Button",
             onClick = {}
@@ -90,7 +90,7 @@ private fun PrimaryButtonPreview() {
 @Preview
 @Composable
 private fun OptionButtonPreview() {
-    HassanTheme {
+    Previews.Preview {
         OptionButton(
             onClick = {}
         )

@@ -5,6 +5,4 @@ import kotlinx.coroutines.flow.Flow
 
 interface SurahVerseTranslationApi {
     fun getAllSurahVerseTranslations(language: String): Flow<List<RemoteSurahVerseTranslation>>
-
-    suspend fun getSurahVerseTranslations(surahNumber: Int, language: String): List<RemoteSurahVerseTranslation>
 }

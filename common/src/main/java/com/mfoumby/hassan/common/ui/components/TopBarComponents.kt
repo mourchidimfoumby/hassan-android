@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import com.mfoumby.hassan.common.ui.PhonePreviews
-import com.mfoumby.hassan.common.ui.theme.HassanTheme
+import com.mfoumby.hassan.common.ui.Previews
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +37,7 @@ fun BackTopBar(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     title: String,
-    leadingIcon: @Composable (RowScope.() -> Unit) = {},
+    actions: @Composable (RowScope.() -> Unit) = {},
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     TopAppBar(
@@ -53,7 +53,7 @@ fun BackTopBar(
         navigationIcon = {
             BackButton(onClick = onBackClick)
         },
-        actions = leadingIcon,
+        actions = actions,
         scrollBehavior = scrollBehavior
     )
 }
@@ -67,7 +67,7 @@ fun BackTopBar(
 @PhonePreviews
 @Composable
 private fun TitleTopBarPreview() {
-    HassanTheme {
+    Previews.Preview {
         Surface {
             TitleTopBar(title = "Title")
         }
@@ -78,7 +78,7 @@ private fun TitleTopBarPreview() {
 @PhonePreviews
 @Composable
 private fun BackTopBarPreview() {
-    HassanTheme {
+    Previews.Preview {
         Surface {
             BackTopBar(
                 onBackClick = {},

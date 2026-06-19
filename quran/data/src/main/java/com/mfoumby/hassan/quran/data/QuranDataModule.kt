@@ -2,6 +2,10 @@ package com.mfoumby.hassan.quran.data
 
 import com.mfoumby.hassan.quran.data.local.SurahLocalDataSource
 import com.mfoumby.hassan.quran.data.local.SurahVerseLocalDataSource
+import com.mfoumby.hassan.quran.data.local.SurahVersePreferencesDataStore
+import com.mfoumby.hassan.quran.data.local.SurahVersePreferencesLocalDataSource
+import com.mfoumby.hassan.quran.data.local.SurahVerseTranslationLanguageDataStore
+import com.mfoumby.hassan.quran.data.local.SurahVerseTranslationLanguageLocalDataSource
 import com.mfoumby.hassan.quran.data.local.SurahVerseTranslationLocalDataSource
 import com.mfoumby.hassan.quran.data.remote.SurahApi
 import com.mfoumby.hassan.quran.data.remote.SurahApiImpl
@@ -11,13 +15,20 @@ import com.mfoumby.hassan.quran.data.remote.SurahVerseApiImpl
 import com.mfoumby.hassan.quran.data.remote.SurahVerseRemoteDataSource
 import com.mfoumby.hassan.quran.data.remote.SurahVerseTranslationApi
 import com.mfoumby.hassan.quran.data.remote.SurahVerseTranslationApiImpl
+import com.mfoumby.hassan.quran.data.remote.SurahVerseTranslationLanguageApi
+import com.mfoumby.hassan.quran.data.remote.SurahVerseTranslationLanguageApiImpl
+import com.mfoumby.hassan.quran.data.remote.SurahVerseTranslationLanguageRemoteDataSource
 import com.mfoumby.hassan.quran.data.remote.SurahVerseTranslationRemoteDataSource
 import com.mfoumby.hassan.quran.data.repository.SurahRepositoryImpl
+import com.mfoumby.hassan.quran.data.repository.SurahVersePreferencesRepositoryImpl
 import com.mfoumby.hassan.quran.data.repository.SurahVerseRepositoryImpl
+import com.mfoumby.hassan.quran.data.repository.SurahVerseTranslationLanguageRepositoryImpl
 import com.mfoumby.hassan.quran.data.repository.SurahVerseTranslationRepositoryImpl
 import com.mfoumby.hassan.quran.data.worker.StartupQuranWorker
 import com.mfoumby.hassan.quran.domain.repository.SurahRepository
+import com.mfoumby.hassan.quran.domain.repository.SurahVersePreferencesRepository
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseRepository
+import com.mfoumby.hassan.quran.domain.repository.SurahVerseTranslationLanguageRepository
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseTranslationRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.bind
@@ -30,6 +41,10 @@ val quranDataModule = module {
     singleOf(::SurahLocalDataSource)
     singleOf(::SurahRepositoryImpl) { bind<SurahRepository>() }
 
+    singleOf(::SurahVersePreferencesDataStore)
+    singleOf(::SurahVersePreferencesLocalDataSource)
+    singleOf(::SurahVersePreferencesRepositoryImpl) { bind<SurahVersePreferencesRepository>() }
+
     singleOf(::SurahVerseApiImpl) { bind<SurahVerseApi>() }
     singleOf(::SurahVerseRemoteDataSource)
     singleOf(::SurahVerseLocalDataSource)
@@ -39,6 +54,12 @@ val quranDataModule = module {
     singleOf(::SurahVerseTranslationRemoteDataSource)
     singleOf(::SurahVerseTranslationLocalDataSource)
     singleOf(::SurahVerseTranslationRepositoryImpl) { bind<SurahVerseTranslationRepository>() }
+
+    singleOf(::SurahVerseTranslationLanguageApiImpl) { bind<SurahVerseTranslationLanguageApi>() }
+    singleOf(::SurahVerseTranslationLanguageRemoteDataSource)
+    singleOf(::SurahVerseTranslationLanguageLocalDataSource)
+    singleOf(::SurahVerseTranslationLanguageDataStore)
+    singleOf(::SurahVerseTranslationLanguageRepositoryImpl) { bind<SurahVerseTranslationLanguageRepository>() }
 
     factory { StartupQuranWorker(context = androidContext()) }
 }
