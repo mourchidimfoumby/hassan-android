@@ -32,7 +32,7 @@ import com.mfoumby.hassan.common.getRoundedFlagResId
 import com.mfoumby.hassan.common.getStringResId
 import com.mfoumby.hassan.common.ui.extension.mediumSpacing
 import com.mfoumby.hassan.common.ui.extension.smallSpacing
-import com.upsaclay.common.presentation.theme.padding
+import com.mfoumby.hassan.common.ui.theme.padding
 
 @Composable
 fun TranslationLanguageListComponent(
@@ -104,8 +104,8 @@ private fun TranslationLanguageItem(
                         } else {
                             Icon(
                                 painter = painterResource(R.drawable.ic_outline_circle),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.outline
+                                tint = MaterialTheme.colorScheme.outlineVariant,
+                                contentDescription = null
                             )
                         }
 

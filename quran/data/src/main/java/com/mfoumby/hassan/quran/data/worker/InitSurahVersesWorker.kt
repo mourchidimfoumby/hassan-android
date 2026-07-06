@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.mfoumby.hassan.common.data.e
-import com.mfoumby.hassan.quran.domain.entity.Constant.TOTAL_QURAN_VERSES
+import com.mfoumby.hassan.quran.domain.entity.Constants.TOTAL_QURAN_VERSES
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseRepository
 import org.koin.java.KoinJavaComponent.inject
 

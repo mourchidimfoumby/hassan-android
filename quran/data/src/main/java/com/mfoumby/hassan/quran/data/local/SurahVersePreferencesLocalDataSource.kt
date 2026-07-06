@@ -6,6 +6,7 @@ import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
 
 class SurahVersePreferencesLocalDataSource(private val surahVersePreferencesDataStore: SurahVersePreferencesDataStore) {

@@ -7,11 +7,17 @@
     <string name="french">Français</string>
     <string name="arabic">Arabe</string>
     <string name="display_translation">Afficher traduction</string>
-    <string name="select_translation">Selectionner traduction</string>
+    <string name="select_translation">Sélectionner traduction</string>
     <string name="accept">Accepter</string>
     <string name="cancel">Annuler</string>
     <string name="download_language_dialog_text">Voulez-vous télécharger cette langue ?</string>
     <string name="download">Télécharger</string>
     <string name="delete">Supprimer</string>
     <string name="delete_language_dialog_text">Voulez-vous supprimer cette langue?</string>
+
+    <string name="unknown_error">Une erreur inconnue est survenue.</string>
+    <string name="any_network_error">Une erreur réseau est survenue.</string>
+    <string name="not_internet_connection_error">Aucune connexion Internet.</string>
+    <string name="downloading">Téléchargement</string>
+    <string name="none_reciter_selected_error">Veuillez séléctionner un récitateur avant d\'écouter l\'audio.</string>
 </resources>

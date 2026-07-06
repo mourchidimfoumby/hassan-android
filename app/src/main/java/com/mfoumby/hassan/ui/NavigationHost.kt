@@ -13,6 +13,8 @@ import com.mfoumby.hassan.common.Route
 import com.mfoumby.hassan.quran.ui.QuranBaseRoute
 import com.mfoumby.hassan.quran.ui.navigateToQuran
 import com.mfoumby.hassan.quran.ui.quranSection
+import com.mfoumby.hassan.quran.ui.reciters.navigateToReciters
+import com.mfoumby.hassan.quran.ui.reciters.recitersScreen
 import com.mfoumby.hassan.quran.ui.surahverse.navigateToSurahVerse
 import com.mfoumby.hassan.quran.ui.surahverse.surahVerseScreen
 import com.mfoumby.hassan.quran.ui.surahverse.surahversetranslationlanguage.navigateToSurahVerseTranslationLanguage
@@ -70,9 +72,11 @@ fun NavigationHost(
         ) {
             surahVerseScreen(
                 onBackClick = navController::popBackStack,
-                onTranslationLanguageClick = navController::navigateToSurahVerseTranslationLanguage
+                onTranslationLanguageClick = navController::navigateToSurahVerseTranslationLanguage,
+                onReciterClick = navController::navigateToReciters
             )
             surahVerseTranslationLanguageScreen(onBackClick = navController::popBackStack)
+            recitersScreen(onBackClick = navController::popBackStack)
         }
     }
 }
