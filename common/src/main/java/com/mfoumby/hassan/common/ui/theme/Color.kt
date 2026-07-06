@@ -52,6 +52,6 @@ internal val outlineVariantDark = Color(0xFF3C3C3C)
 internal val lightGrey = Color(0xFFE0E0E0)
 internal val darkGrey = Color(0xFF323232)
 
-val ColorScheme.bottomSheetCellBackground: Color
+val ColorScheme.loadingImageBackground: Color
     @Composable
-    get() = if (isSystemInDarkTheme()) darkGrey else lightGrey
+    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFEEEEEE)

@@ -6,19 +6,18 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObjects
 import com.mfoumby.hassan.quran.data.model.RemoteSurahVerseTranslation
 import com.mfoumby.hassan.quran.data.model.RemoteSurahVerseTranslations
-import kotlinx.coroutines.channels.awaitClose
+import com.mfoumby.hassan.quran.data.remote.FirestoreCollectionReferences.SURAH_VERSE_TRANSLATION_COLLECTION
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
 class SurahVerseTranslationApiImpl: SurahVerseTranslationApi {
     private val surahVerseTranslationCollection = Firebase.firestore.collection(SURAH_VERSE_TRANSLATION_COLLECTION)
     companion object {
-        private const val SURAH_VERSE_TRANSLATION_COLLECTION = "surah-verse-translations"
         private const val SURAH_VERSE_TRANSLATION_DOCUMENT = "surahs"
     }
 
-    override fun getAllSurahVerseTranslations(language: String): Flow<List<RemoteSurahVerseTranslation>> = callbackFlow {
+    override fun getAllSurahVerseTranslations(language: String): Flow<List<RemoteSurahVerseTranslation>> = flow {
         val batchSize = 20
         var lastDocument: DocumentSnapshot? = null
         var query = surahVerseTranslationCollection
@@ -33,15 +32,12 @@ class SurahVerseTranslationApiImpl: SurahVerseTranslationApi {
 
             val snapshot = query.get().await()
             if (snapshot.isEmpty) {
-                close()
                 break
             }
 
             val remoteSurahVerseTranslationList = snapshot.toObjects<RemoteSurahVerseTranslations>().map { it.values }.flatten()
-            trySend(remoteSurahVerseTranslationList)
+            emit(remoteSurahVerseTranslationList)
             lastDocument = snapshot.documents.last()
         }
-
-        awaitClose {}
     }
 }

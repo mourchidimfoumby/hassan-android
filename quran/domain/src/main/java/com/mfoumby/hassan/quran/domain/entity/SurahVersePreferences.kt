@@ -4,5 +4,6 @@ import com.mfoumby.hassan.common.domain.entity.Language
 
 data class SurahVersePreferences(
     val displayTranslation: Boolean,
-    val translationLanguage: Language?
+    val translationLanguage: Language?,
+    val reciter: Reciter?
 )

@@ -2,4 +2,12 @@
 <resources>
     <string name="quran">Coran</string>
     <string name="quran_destination_icon_description">Naviguer vers la page de coran</string>
+    <string name="reciters">Récitateurs</string>
+    <string name="reciter">Récitateur</string>
+    <string name="select_reciter">Sélectionner récitateur</string>
+    <string name="listen">Ecouter</string>
+    <string name="verse">Verset</string>
+    <string name="surah">Sourate</string>
+
+    <string name="download_audio_dialog_text">L\'audio doit être téléchargé. Voulez-vous le télécharger ?</string>
 </resources>

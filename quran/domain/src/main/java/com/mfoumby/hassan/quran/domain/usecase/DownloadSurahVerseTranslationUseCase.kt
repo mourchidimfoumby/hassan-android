@@ -3,7 +3,7 @@ package com.mfoumby.hassan.quran.domain.usecase
 import com.mfoumby.hassan.common.domain.entity.Progress
 import com.mfoumby.hassan.common.domain.entity.TranslationLanguage
 import com.mfoumby.hassan.common.domain.entity.TranslationLanguage.TranslationLanguageState
-import com.mfoumby.hassan.quran.domain.entity.Constant.TOTAL_QURAN_VERSES
+import com.mfoumby.hassan.quran.domain.entity.Constants.TOTAL_QURAN_VERSES
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseTranslationLanguageRepository
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseTranslationRepository
 import kotlinx.coroutines.flow.Flow

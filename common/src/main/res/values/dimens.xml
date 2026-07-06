@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="flag_size">26dp</dimen>
+    <dimen name="slider_height">30dp</dimen>
+    <dimen name="slider_track_height">4dp</dimen>
+    <dimen name="slider_thumb_size">14dp</dimen>
 </resources>

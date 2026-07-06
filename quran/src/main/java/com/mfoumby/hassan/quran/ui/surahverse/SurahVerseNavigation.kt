@@ -16,14 +16,16 @@ fun NavController.navigateToSurahVerse(surahNumber: Int) {
 
 fun NavGraphBuilder.surahVerseScreen(
     onBackClick: () -> Unit,
-    onTranslationLanguageClick: () -> Unit
+    onTranslationLanguageClick: () -> Unit,
+    onReciterClick: () -> Unit
 ) {
     composable<SurahVerseRoute> {
         val surahNumber = it.toRoute<SurahVerseRoute>().surahNumber
         SurahVerseDestination(
             surahNumber = surahNumber,
             onBackClick = onBackClick,
-            onTranslationLanguageClick = onTranslationLanguageClick
+            onTranslationLanguageClick = onTranslationLanguageClick,
+            onReciterClick = onReciterClick
         )
     }
 }

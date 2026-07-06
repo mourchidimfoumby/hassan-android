@@ -14,4 +14,10 @@
     <string name="download">Download</string>
     <string name="delete">Delete</string>
     <string name="delete_language_dialog_text">Do you want to delete this language?</string>
+
+    <string name="unknown_error">An unknown error occurred.</string>
+    <string name="any_network_error">An network error occurred.</string>
+    <string name="not_internet_connection_error">No internet connection.</string>
+    <string name="downloading">Downloading</string>
+    <string name="none_reciter_selected_error">Please select a reciter before listening to the audio.</string>
 </resources>

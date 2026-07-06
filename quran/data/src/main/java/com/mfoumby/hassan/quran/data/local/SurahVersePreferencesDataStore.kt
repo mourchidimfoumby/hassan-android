@@ -5,33 +5,24 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.google.gson.Gson
+import com.mfoumby.hassan.quran.data.extension.getJson
+import com.mfoumby.hassan.quran.data.extension.getJsonFlow
+import com.mfoumby.hassan.quran.data.extension.setJson
 import com.mfoumby.hassan.quran.data.model.LocalSurahVersePreferences
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.filterNotNull
 
 class SurahVersePreferencesDataStore(context: Context) {
-    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "surah_preference")
+    val Context.dataStore: DataStore<Preferences> by preferencesDataStore("surah_preference")
     private val store = context.dataStore
-    private val surahPreferencesKey = stringPreferencesKey("surahPreferencesKey")
-    private val gson = Gson()
+    private val surahVersePreferencesKey = stringPreferencesKey("surahVersePreferencesKey")
 
-    fun getSurahVersePreferencesFlow(): Flow<LocalSurahVersePreferences> = store.data.map { preferences ->
-        preferences[surahPreferencesKey].let {
-            gson.fromJson(it, LocalSurahVersePreferences::class.java)
-        }
-    }
+    fun getSurahVersePreferencesFlow(): Flow<LocalSurahVersePreferences> =
+        store.getJsonFlow<LocalSurahVersePreferences>(surahVersePreferencesKey).filterNotNull()
 
-    suspend fun getSurahVersePreferences(): LocalSurahVersePreferences? = store.data.firstOrNull()?.get(surahPreferencesKey)?.let {
-        gson.fromJson(it, LocalSurahVersePreferences::class.java)
-    }
+    suspend fun getSurahVersePreferences(): LocalSurahVersePreferences? = store.getJson(surahVersePreferencesKey)
 
     suspend fun setSurahVersePreferences(surahPreferences: LocalSurahVersePreferences) {
-        store.updateData {
-            it.toMutablePreferences().apply {
-                set(surahPreferencesKey, gson.toJson(surahPreferences))
-            }
-        }
+        store.setJson(surahVersePreferencesKey, surahPreferences)
     }
 }

@@ -1,4 +1,4 @@
-package com.upsaclay.common.presentation.theme
+package com.mfoumby.hassan.common.ui.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable

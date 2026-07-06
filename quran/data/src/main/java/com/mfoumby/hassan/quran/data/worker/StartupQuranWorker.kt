@@ -15,16 +15,23 @@ class StartupQuranWorker(context: Context) {
         workerManager.enqueue(buildWorkRequest<InitSurahsWorker>())
         workerManager.enqueue(buildWorkRequest<InitSurahVersesWorker>())
         workerManager.enqueue(buildWorkRequest<InitSurahVerseTranslationLanguagesWorker>())
-        workerManager.enqueue(buildWorkRequest<InitSurahVersePreferencesWorker>())
+        workerManager.enqueue(buildWorkRequest<InitSurahVersePreferencesWorker>(
+            Parameters(networkType = NetworkType.NOT_REQUIRED)
+        ))
+        workerManager.enqueue(buildWorkRequest<InitRecitersWorker>())
     }
 
-    private inline fun <reified T : ListenableWorker>buildWorkRequest(): OneTimeWorkRequest {
+    private inline fun <reified T : ListenableWorker>buildWorkRequest(parameters: Parameters = Parameters()): OneTimeWorkRequest {
         val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiredNetworkType(parameters.networkType)
             .build()
 
         return OneTimeWorkRequestBuilder<T>()
             .setConstraints(constraints)
             .build()
     }
+
+    private data class Parameters(
+        val networkType: NetworkType = NetworkType.CONNECTED
+    )
 }

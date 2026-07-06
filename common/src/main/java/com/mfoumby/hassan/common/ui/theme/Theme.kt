@@ -11,8 +11,6 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.upsaclay.common.presentation.theme.LocalPadding
-import com.upsaclay.common.presentation.theme.Padding
 
 private val lightColorScheme = lightColorScheme(
     primary = primaryLight,

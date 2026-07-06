@@ -40,7 +40,7 @@ fun DefaultDialog(
             TextButton(onClick = onCancel) {
                 Text(text = cancelText)
             }
-        },
+        }
     )
 }
 

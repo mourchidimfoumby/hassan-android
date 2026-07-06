@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.mfoumby.hassan.common.data.e
-import com.mfoumby.hassan.quran.domain.entity.Constant.DEFAULT_PREFERENCES
+import com.mfoumby.hassan.quran.domain.entity.Constants.DEFAULT_PREFERENCES
 import com.mfoumby.hassan.quran.domain.repository.SurahVersePreferencesRepository
 import org.koin.java.KoinJavaComponent.inject
 

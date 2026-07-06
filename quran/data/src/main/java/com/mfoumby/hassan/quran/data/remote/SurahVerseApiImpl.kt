@@ -7,6 +7,7 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
 import com.mfoumby.hassan.quran.data.model.RemoteSurahVerse
 import com.mfoumby.hassan.quran.data.model.RemoteSurahVerses
+import com.mfoumby.hassan.quran.data.remote.FirestoreCollectionReferences.SURAH_VERSE_COLLECTION
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -14,9 +15,6 @@ import kotlinx.coroutines.tasks.await
 
 class SurahVerseApiImpl: SurahVerseApi {
     private val surahVerseCollection = Firebase.firestore.collection(SURAH_VERSE_COLLECTION)
-    companion object {
-        private const val SURAH_VERSE_COLLECTION = "surah-verses"
-    }
 
     override fun getAllSurahVerses(): Flow<List<RemoteSurahVerse>> = callbackFlow {
         val batchSize = 20
