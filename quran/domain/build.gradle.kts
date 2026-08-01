@@ -17,6 +17,7 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.kotlinx.coroutines.core)
 
+    testImplementation(kotlin("test"))
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlin.test)

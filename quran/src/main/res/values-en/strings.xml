@@ -10,4 +10,5 @@
     <string name="surah">Surah</string>
 
     <string name="download_audio_dialog_text">The audio needs to be downloaded. Would you like to download it?</string>
+    <string name="display_mode">Display mode</string>
 </resources>

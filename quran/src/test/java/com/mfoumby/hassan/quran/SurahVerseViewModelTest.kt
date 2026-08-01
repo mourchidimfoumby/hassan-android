@@ -5,11 +5,13 @@ import com.mfoumby.hassan.quran.domain.entity.SurahVersePlayerData
 import com.mfoumby.hassan.quran.domain.repository.ReciterRepository
 import com.mfoumby.hassan.quran.domain.repository.SurahRepository
 import com.mfoumby.hassan.quran.domain.repository.SurahVersePreferencesRepository
+import com.mfoumby.hassan.quran.domain.repository.SurahVerseRepository
+import com.mfoumby.hassan.quran.domain.repository.SurahVerseTranslationRepository
 import com.mfoumby.hassan.quran.domain.surahFixture
 import com.mfoumby.hassan.quran.domain.surahVerseAudioFixture
 import com.mfoumby.hassan.quran.domain.surahVerseFixture
+import com.mfoumby.hassan.quran.domain.surahVerseFixture2
 import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
-import com.mfoumby.hassan.quran.domain.usecase.GetSurahVerseFlowUseCase
 import com.mfoumby.hassan.quran.ui.surahverse.SurahVerseViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -29,9 +31,10 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class SurahVerseViewModelTest {
     private val surahRepository: SurahRepository = mockk()
+    private val surahVerseRepository: SurahVerseRepository = mockk()
+    private val surahVerseTranslationRepository: SurahVerseTranslationRepository = mockk()
     private val surahVersePreferencesRepository: SurahVersePreferencesRepository = mockk()
     private val reciterRepository: ReciterRepository = mockk()
-    private val getSurahVerseFlowUseCase: GetSurahVerseFlowUseCase = mockk()
 
     lateinit var viewModel: SurahVerseViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -40,21 +43,25 @@ class SurahVerseViewModelTest {
     @Before
     fun setUp() {
         coEvery { surahRepository.getSurah(any()) } returns surahFixture
+        coEvery { surahVerseRepository.getSurahVerseFromPage(any()) } returns listOf(surahVerseFixture)
+        coEvery { surahVerseRepository.getSurahVerseFromSurahNumber(any()) } returns listOf(surahVerseFixture)
+        coEvery { surahVerseTranslationRepository.getSurahVerseTranslations(any(), any()) } returns listOf()
         every { surahVersePreferencesRepository.getSurahVersePreferencesFlow() } returns flowOf(surahVersePreferencesFixture)
+        coEvery { surahVersePreferencesRepository.getSurahVersePreferences() } returns surahVersePreferencesFixture
         coEvery { surahVersePreferencesRepository.setSurahVersePreferences(any()) } returns Unit
         every { reciterRepository.downloadSurahVerseAudio(any(), any()) } returns flowOf(1)
         coEvery { reciterRepository.getSurahVerseAudios(any(), any()) } returns listOf(surahVerseAudioFixture)
         coEvery { reciterRepository.deleteSurahVerseAudios(any(), any()) } returns Unit
-        every { getSurahVerseFlowUseCase.execute(any()) } returns flowOf(listOf(surahVerseFixture))
 
         Dispatchers.setMain(testDispatcher)
 
         viewModel = SurahVerseViewModel(
             surahNumber = 1,
             surahRepository = surahRepository,
+            surahVerseRepository = surahVerseRepository,
             surahVersePreferencesRepository = surahVersePreferencesRepository,
-            reciterRepository = reciterRepository,
-            getSurahVerseFlowUseCase = getSurahVerseFlowUseCase
+            surahVerseTranslationRepository = surahVerseTranslationRepository,
+            reciterRepository = reciterRepository
         )
     }
 
@@ -69,17 +76,102 @@ class SurahVerseViewModelTest {
             surahVerseAudios = listOf(surahVerseAudioFixture),
             state = SurahVersePlayerData.State.Idle
         )
+        val informativeDisplayMode = SurahVerseViewModel.InformativeDisplayMode.ListMode(surahVerseFixture)
 
         // Then
         assert(viewModel.uiState.value.surah == surah)
         assert(viewModel.uiState.value.surahVerses == surahVerses)
         assert(viewModel.uiState.value.surahVersePreferences == surahVersePreferences)
         assert(viewModel.uiState.value.surahVersePlayerData == surahVersePlayerData)
+        assert(viewModel.uiState.value.informativeDisplayMode == informativeDisplayMode)
         assert(!viewModel.uiState.value.initializing)
     }
 
     @Test
+    fun onSurahChange_should_update_ui_surah_data() = runTest {
+        // Given
+        val surahVerse = surahVerseFixture2
+        coEvery { surahVerseRepository.getSurahVerseFromSurahNumber(any()) } returns listOf(surahVerse)
+
+        // When
+        viewModel.onSurahChange(surahVerse.surah.number)
+        val results = mutableListOf<SurahVerseViewModel.SurahVerseUiState>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.uiState.toList(results)
+        }
+        val uiState = results.last()
+
+        // Then
+        assert(uiState.surah == surahVerse.surah)
+        assert(uiState.surahVerses == listOf(surahVerse))
+        assert(uiState.page == surahVerse.verse.page)
+    }
+
+    @Test
+    fun onPageChange_should_update_ui_surah_data() = runTest {
+        // Given
+        val surahVerse = surahVerseFixture2
+        coEvery { surahVerseRepository.getSurahVerseFromPage(any()) } returns listOf(surahVerse)
+
+        // When
+        viewModel.onPageChange(surahVerse.verse.page)
+        val results = mutableListOf<SurahVerseViewModel.SurahVerseUiState>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.uiState.toList(results)
+        }
+        val uiState = results.last()
+
+        // Then
+        assert(uiState.surah == surahVerse.surah)
+        assert(uiState.surahVerses == listOf(surahVerse))
+        assert(uiState.page == surahVerse.verse.page)
+    }
+
+    @Test
+    fun onDisplayModeChange_should_update_ui_surah_data() = runTest {
+        // Given
+        val informativeDisplayMode = SurahVerseViewModel.InformativeDisplayMode.PageMode(surahVerseFixture2)
+        coEvery { surahVerseRepository.getSurahVerseFromSurahNumber(any()) } returns listOf(informativeDisplayMode.surahVerse)
+        coEvery { surahVerseRepository.getSurahVerseFromPage(any()) } returns listOf(informativeDisplayMode.surahVerse)
+
+        // When
+        viewModel.onDisplayModeChange(informativeDisplayMode)
+        val results = mutableListOf<SurahVerseViewModel.SurahVerseUiState>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.uiState.toList(results)
+        }
+        val uiState = results.last()
+
+        // Then
+        assert(uiState.surah == informativeDisplayMode.surahVerse.surah)
+        assert(uiState.surahVerses == listOf(informativeDisplayMode.surahVerse))
+        assert(uiState.page == informativeDisplayMode.surahVerse.verse.page)
+        assert(uiState.informativeDisplayMode == informativeDisplayMode)
+        coVerify {
+            surahVersePreferencesRepository.setSurahVersePreferences(
+                surahVersePreferencesFixture.copy(displayMode = informativeDisplayMode.toDisplayMode())
+            )
+        }
+    }
+
+    @Test
     fun onDisplayTranslationChange_should_update_surah_verse_preferences() {
+        // Given
+        val displayTranslation = true
+
+        // When
+        viewModel.onDisplayTranslationChange(displayTranslation)
+
+        // Then
+        coVerify {
+            surahVersePreferencesRepository.setSurahVersePreferences(
+                surahVersePreferencesFixture.copy(displayTranslation = displayTranslation)
+            )
+        }
+    }
+
+    @Test
+    fun onDisplayTranslationChange_should_update_informative_display_mode() {
         // Given
         val displayTranslation = true
 
@@ -128,35 +220,16 @@ class SurahVerseViewModelTest {
     }
 
     @Test
-    fun refreshSurahVerseAudios_should_refresh_surah_verse_audios() {
-        // Given
-        val surahVerseAudios = listOf(surahVerseAudioFixture)
-        coEvery { reciterRepository.getSurahVerseAudios(any(), any()) } returns surahVerseAudios
-
-        // When
-        viewModel.refreshSurahVerseAudios()
-
-        // Then
-        coVerify {
-            reciterRepository.getSurahVerseAudios(
-                surahFixture.number,
-                surahVersePreferencesFixture.reciter!!.id
-            )
-        }
-
-        assert(viewModel.uiState.value.surahVersePlayerData?.surahVerseAudios == surahVerseAudios)
-    }
-
-    @Test
     fun onPlayAudio_should_emit_download_request_when_surah_verse_audios_are_not_downloaded() = runTest {
         // Given
         coEvery { reciterRepository.getSurahVerseAudios(any(), any()) } returns emptyList()
         viewModel = SurahVerseViewModel(
             surahNumber = 1,
             surahRepository = surahRepository,
+            surahVerseRepository = surahVerseRepository,
+            surahVerseTranslationRepository = surahVerseTranslationRepository,
             surahVersePreferencesRepository = surahVersePreferencesRepository,
-            reciterRepository = reciterRepository,
-            getSurahVerseFlowUseCase = getSurahVerseFlowUseCase
+            reciterRepository = reciterRepository
         )
 
         // When
@@ -179,9 +252,10 @@ class SurahVerseViewModelTest {
         viewModel = SurahVerseViewModel(
             surahNumber = 1,
             surahRepository = surahRepository,
+            surahVerseRepository = surahVerseRepository,
+            surahVerseTranslationRepository = surahVerseTranslationRepository,
             surahVersePreferencesRepository = surahVersePreferencesRepository,
-            reciterRepository = reciterRepository,
-            getSurahVerseFlowUseCase = getSurahVerseFlowUseCase
+            reciterRepository = reciterRepository
         )
 
         // When

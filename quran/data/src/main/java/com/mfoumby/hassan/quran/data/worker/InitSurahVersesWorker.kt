@@ -13,8 +13,8 @@ class InitSurahVersesWorker(context: Context, params: WorkerParameters): Corouti
 
     override suspend fun doWork(): Result {
         return try {
-            if (surahVerseRepository.getSurahVersesCount() < TOTAL_QURAN_VERSES) {
-                surahVerseRepository.downloadSurahVerses()
+            if (surahVerseRepository.getVerseCount() < TOTAL_QURAN_VERSES) {
+                surahVerseRepository.downloadVerses()
             }
             Result.success()
         } catch (e: Exception) {

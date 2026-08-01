@@ -1,8 +1,5 @@
 package com.mfoumby.hassan.common.ui.components
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -12,8 +9,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.mfoumby.hassan.common.R
 import com.mfoumby.hassan.common.ui.Previews
 
 @Composable
@@ -47,7 +46,7 @@ fun OptionButton(
         modifier = modifier
     ) {
         Icon(
-            imageVector = Icons.Default.MoreVert,
+            painter = painterResource(R.drawable.ic_outline_more_vert),
             contentDescription = contentDescription
         )
     }
@@ -63,7 +62,7 @@ fun BackButton(
         colors = color
     ) {
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            painter = painterResource(R.drawable.ic_outline_arrow_back),
             contentDescription = stringResource(id = com.mfoumby.hassan.common.R.string.arrow_back_icon_description)
         )
     }

@@ -1,4 +1,4 @@
-package com.mfoumby.hassan.quran.ui.surahverse.components
+package com.mfoumby.hassan.quran.ui.surahverse.components.bottomsheets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
