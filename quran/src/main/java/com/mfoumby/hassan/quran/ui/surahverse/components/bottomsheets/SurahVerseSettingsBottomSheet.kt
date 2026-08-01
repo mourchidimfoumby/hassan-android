@@ -1,8 +1,10 @@
-package com.mfoumby.hassan.quran.ui.surahverse.components
+package com.mfoumby.hassan.quran.ui.surahverse.components.bottomsheets
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,14 +13,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.mfoumby.hassan.common.domain.entity.Language
 import com.mfoumby.hassan.common.getRoundedFlagResId
 import com.mfoumby.hassan.common.getStringResId
@@ -39,6 +41,7 @@ import com.mfoumby.hassan.common.ui.extension.smallSpacing
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.entity.Reciter
+import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
 import com.mfoumby.hassan.quran.domain.reciterFixture
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,11 +51,18 @@ fun SurahVerseSettingsBottomSheet(
     displayTranslation: Boolean,
     translationLanguage: Language?,
     reciter: Reciter?,
+    displayMode: SurahVersePreferences.DisplayMode,
     onTranslationLanguageClick: () -> Unit,
     onDisplayTranslationChange: (Boolean) -> Unit,
-    onReciterClick: () -> Unit
+    onReciterClick: () -> Unit,
+    onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit
 ) {
-    ModalBottomSheet(onDismissRequest = onDismissRequest) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState
+    ) {
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.mediumSpacing()
@@ -66,6 +76,10 @@ fun SurahVerseSettingsBottomSheet(
             ReciterSection(
                 reciter = reciter,
                 onReciterClick = onReciterClick
+            )
+            DisplaySection(
+                onDisplayModeClick = onDisplayModeClick,
+                displayMode = displayMode
             )
         }
     }
@@ -146,7 +160,7 @@ private fun TranslationSection(
                 }
 
                 Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                    painter = painterResource(com.mfoumby.hassan.common.R.drawable.ic_outline_keyboard_arrow_right),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -207,11 +221,94 @@ fun ReciterSection(
                 }
 
                 Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                    painter = painterResource(com.mfoumby.hassan.common.R.drawable.ic_outline_keyboard_arrow_right),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun DisplaySection(
+    displayMode: SurahVersePreferences.DisplayMode,
+    onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.smallSpacing()
+    ) {
+        SectionTitle(
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+            text = stringResource(R.string.display_mode)
+        )
+
+        Row(
+            modifier = Modifier.padding(MaterialTheme.padding.medium),
+            horizontalArrangement = Arrangement.mediumSpacing(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            DisplayModeCell(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(onClick = { onDisplayModeClick(SurahVersePreferences.DisplayMode.LIST) }),
+                selected = displayMode == SurahVersePreferences.DisplayMode.LIST,
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_outline_list_bulleted),
+                        contentDescription = null
+                    )
+                },
+                text = {
+                    Text(text = stringResource(com.mfoumby.hassan.common.R.string.list))
+                }
+            )
+
+            DisplayModeCell(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(onClick = { onDisplayModeClick(SurahVersePreferences.DisplayMode.PAGE) }),
+                selected = displayMode == SurahVersePreferences.DisplayMode.PAGE,
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_outline_two_pager),
+                        contentDescription = null
+                    )
+                },
+                text = {
+                    Text(text = stringResource(com.mfoumby.hassan.common.R.string.page))
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun DisplayModeCell(
+    modifier: Modifier = Modifier,
+    selected: Boolean,
+    icon: @Composable () -> Unit,
+    text: @Composable () -> Unit
+) {
+    val borderWidth = if (selected) 2.dp else 1.dp
+    val borderColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+
+    Box(
+        modifier = modifier
+            .border(
+                width = borderWidth,
+                color = borderColor,
+                shape = MaterialTheme.shapes.medium
+            )
+            .padding(MaterialTheme.padding.medium),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            verticalArrangement = Arrangement.smallSpacing(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            icon()
+            text()
         }
     }
 }
@@ -225,9 +322,11 @@ private fun SurahVerseSettingsBottomSheetPreview() {
             displayTranslation = true,
             translationLanguage = Language.ENGLISH,
             reciter = reciterFixture,
+            displayMode = SurahVersePreferences.DisplayMode.LIST,
             onTranslationLanguageClick = {},
             onDisplayTranslationChange = {},
-            onReciterClick = {}
+            onReciterClick = {},
+            onDisplayModeClick = {}
         )
     }
 }

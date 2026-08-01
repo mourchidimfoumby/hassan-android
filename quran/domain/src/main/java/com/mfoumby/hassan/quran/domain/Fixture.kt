@@ -8,6 +8,7 @@ import com.mfoumby.hassan.quran.domain.entity.SurahVerseAudio
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePlayerData
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseTranslation
+import com.mfoumby.hassan.quran.domain.entity.Verse
 
 val surahFixture = Surah(
     number = 1,
@@ -16,6 +17,15 @@ val surahFixture = Surah(
     type = "Meccan",
     totalVerses = 7,
     translation = "The Opener"
+)
+
+val surahFixture2 = Surah(
+    number = 2,
+    name = "البقرة",
+    transliteration = "Al-Baqarah",
+    type = "medinan",
+    totalVerses = 286,
+    translation = "The Cow"
 )
 
 val surahFixtures = listOf(
@@ -54,110 +64,139 @@ val surahFixtures = listOf(
     )
 )
 
-val surahVerseFixture = SurahVerse(
+val verseFixture = Verse(
+    surahNumber = 1,
+    verseNumber = 1,
+    text = "بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ",
+    page = 1,
+    juz = 1
+)
+
+val verseFixture2 = Verse(
     surahNumber = 2,
     verseNumber = 255,
     text = "ٱللَّهُ لَآ إِلَـٰهَ إِلَّا هُوَ ٱلْحَىُّ ٱلْقَيُّومُ ۚ لَا تَأْخُذُهُۥ سِنَةٌۭ وَلَا نَوْمٌۭ ۚ لَّهُۥ مَا فِى ٱلسَّمَـٰوَٰتِ وَمَا فِى ٱلْأَرْضِ ۗ مَن ذَا ٱلَّذِى يَشْفَعُ عِندَهُۥٓ إِلَّا بِإِذْنِهِۦ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَىْءٍۢ مِّنْ عِلْمِهِۦٓ إِلَّا بِمَا شَآءَ ۚ وَسِعَ كُرْسِيُّهُ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ ۖ وَلَا يَـُٔودُهُۥ حِفْظُهُمَا ۚ وَهُوَ ٱلْعَلِىُّ ٱلْعَظِيمُ",
-    translation = "Allah! There is no god ˹worthy of worship˺ except Him, the Ever-Living, All-Sustaining. " +
-            "Neither drowsiness nor sleep overtakes Him. To Him belongs whatever is in the heavens and whatever is on the earth. " +
-            "Who could possibly intercede with Him without His permission? He ˹fully˺ knows what is ahead of them and what is behind them, " +
-            "but no one can grasp any of His knowledge—except what He wills ˹to reveal˺. " +
-            "His Seat1 encompasses the heavens and the earth, and the preservation of both does not tire Him. For He is the Most High, the Greatest."
+    page = 42,
+    juz = 3
 )
 
-val surahVerseFixtures = listOf(
-    SurahVerse(
+val verseFixtures = listOf(
+    Verse(
         verseNumber = 1,
         surahNumber = 1,
         text = "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
-        translation = "In the Name of Allah—the Most Compassionate, Most Merciful."
+        page = 1,
+        juz = 1
     ),
-    SurahVerse(
+    Verse(
         verseNumber = 2,
         surahNumber = 1,
         text = "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ",
-        translation = "All praise is for Allah—Lord of all worlds,"
+        page = 1,
+        juz = 1
     ),
-    SurahVerse(
+    Verse(
         verseNumber = 3,
         surahNumber = 1,
         text = "ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
-        translation = "the Most Compassionate, Most Merciful,"
+        page = 1,
+        juz = 1
     ),
-    SurahVerse(
+    Verse(
         verseNumber = 4,
         surahNumber = 1,
         text = "مَـٰلِكِ يَوْمِ ٱلدِّينِ",
-        translation = "Master of the Day of Judgment."
+        page = 1,
+        juz = 1
     ),
-    SurahVerse(
+    Verse(
         verseNumber = 5,
         surahNumber = 1,
         text = "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
-        translation = "You ˹alone˺ we worship and You ˹alone˺ we ask for help."
+        page = 1,
+        juz = 1
     ),
-    SurahVerse(
+    Verse(
         verseNumber = 6,
         surahNumber = 1,
         text = "ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ",
-        translation = "Guide us along the Straight Path,"
+        page = 1,
+        juz = 1
     ),
-    SurahVerse(
+    Verse(
         verseNumber = 7,
         surahNumber = 1,
         text = "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ",
-        translation = "the Path of those You have blessed—not those You are displeased with, or those who are astray."
+        page = 1,
+        juz = 1
     )
 )
 
+val surahVerseFixture = SurahVerse(
+    surah = surahFixture,
+    verse = verseFixture
+)
+
+val surahVerseFixture2 = SurahVerse(
+    surah = surahFixture2,
+    verse = verseFixture2
+)
+
+val surahVerseFixtures = verseFixtures.map {
+    SurahVerse(
+        surah = surahFixture,
+        verse = it
+    )
+}
+
 val surahVerseTranslationFixture = SurahVerseTranslation(
-    number = 1,
+    verseNumber = 1,
     surahNumber = 1,
-    translation = "In the Name of Allah—the Most Compassionate, Most Merciful.",
+    text = "In the Name of Allah—the Most Compassionate, Most Merciful.",
     language = Language.ENGLISH
 )
 
 val surahVerseTranslationFixtures = listOf(
     SurahVerseTranslation(
-        number = 1,
+        verseNumber = 1,
         surahNumber = 1,
-        translation = "In the Name of Allah—the Most Compassionate, Most Merciful.",
+        text = "In the Name of Allah—the Most Compassionate, Most Merciful.",
         language = Language.ENGLISH
     ),
     SurahVerseTranslation(
-        number = 2,
+        verseNumber = 2,
         surahNumber = 1,
-        translation = "All praise is for Allah—Lord of all worlds,",
+        text = "All praise is for Allah—Lord of all worlds,",
         language = Language.ENGLISH
     ),
     SurahVerseTranslation(
-        number = 3,
+        verseNumber = 3,
         surahNumber = 1,
-        translation = "the Most Compassionate, Most Merciful,",
+        text = "the Most Compassionate, Most Merciful,",
         language = Language.ENGLISH
     ),
     SurahVerseTranslation(
-        number = 4,
+        verseNumber = 4,
         surahNumber = 1,
-        translation = "Master of the Day of Judgment.",
+        text = "Master of the Day of Judgment.",
         language = Language.ENGLISH
     ),
     SurahVerseTranslation(
-        number = 5,
+        verseNumber = 5,
         surahNumber = 1,
-        translation = "You ˹alone˺ we worship and You ˹alone˺ we ask for help.",
+        text = "You ˹alone˺ we worship and You ˹alone˺ we ask for help.",
         language = Language.ENGLISH
     ),
     SurahVerseTranslation(
-        number = 6,
+        verseNumber = 6,
         surahNumber = 1,
-        translation = "Guide us along the Straight Path,",
+        text = "Guide us along the Straight Path,",
         language = Language.ENGLISH
     ),
     SurahVerseTranslation(
-        number = 7,
+        verseNumber = 7,
         surahNumber = 1,
-        translation = "the Path of those You have blessed—not those You are displeased with, or those who are astray.",
+        text = "the Path of those You have blessed—not those You are displeased with, or those who are astray.",
         language = Language.ENGLISH
     )
 )
@@ -218,7 +257,7 @@ val reciterFixtures = listOf(
 )
 
 val surahVerseAudioFixture = SurahVerseAudio(
-    verseNumber = surahVerseFixture.verseNumber,
+    verseNumber = verseFixture.verseNumber,
     audioUri = "https://example.com"
 )
 
@@ -231,5 +270,6 @@ val surahVersePlayerDataFixture = SurahVersePlayerData(
 val surahVersePreferencesFixture = SurahVersePreferences(
     displayTranslation = true,
     translationLanguage = Language.ENGLISH,
-    reciter = reciterFixture
+    reciter = reciterFixture,
+    displayMode = SurahVersePreferences.DisplayMode.LIST
 )

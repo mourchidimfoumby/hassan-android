@@ -5,6 +5,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.mfoumby.hassan.common.R
@@ -44,6 +45,18 @@ val Typography.bodyUthmanic: TextStyle
         lineHeight = 54.sp
     )
 
+val Typography.bismillah: TextStyle
+    get() = TextStyle(
+        fontFamily = BismillahFont,
+        textAlign = TextAlign.Center,
+        fontSize = 24.sp,
+        baselineShift = BaselineShift(-1f)
+    )
+
 private val UthmanicHafsFamily = FontFamily(
     Font(resId = R.font.uthmanic_hafs)
+)
+
+private val BismillahFont = FontFamily(
+    Font(resId = R.font.bismillah)
 )

@@ -1,21 +1,25 @@
 package com.mfoumby.hassan.quran.data.repository
 
-import com.mfoumby.hassan.quran.data.local.SurahVerseLocalDataSource
-import com.mfoumby.hassan.quran.data.remote.SurahVerseRemoteDataSource
+import com.mfoumby.hassan.quran.data.local.VerseLocalDataSource
+import com.mfoumby.hassan.quran.data.remote.VerseRemoteDataSource
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseRepository
 
 class SurahVerseRepositoryImpl(
-    private val surahVerseRemoteDataSource: SurahVerseRemoteDataSource,
-    private val surahVerseLocalDataSource: SurahVerseLocalDataSource
+    private val verseRemoteDataSource: VerseRemoteDataSource,
+    private val verseLocalDataSource: VerseLocalDataSource
 ): SurahVerseRepository {
-    override suspend fun getSurahVerses(surahNumber: Int): List<SurahVerse> = surahVerseLocalDataSource.getSurahVerses(surahNumber)
+    override suspend fun getSurahVerseFromSurahNumber(surahNumber: Int): List<SurahVerse> =
+        verseLocalDataSource.getSurahVerseFromNumber(surahNumber)
 
-    override suspend fun getSurahVersesCount(): Int = surahVerseLocalDataSource.getSurahVersesCount()
+    override suspend fun getSurahVerseFromPage(page: Int): List<SurahVerse> =
+        verseLocalDataSource.getSurahVerseFromPage(page)
 
-    override suspend fun downloadSurahVerses() {
-        surahVerseRemoteDataSource.getAllSurahVerses().collect {
-            surahVerseLocalDataSource.upsertSurahVerses(it)
+    override suspend fun getVerseCount(): Int = verseLocalDataSource.getVerseCount()
+
+    override suspend fun downloadVerses() {
+        verseRemoteDataSource.getAllVerses().collect {
+            verseLocalDataSource.upsertVerses(it)
         }
     }
 }

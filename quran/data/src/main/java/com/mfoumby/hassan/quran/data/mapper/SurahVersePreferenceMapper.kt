@@ -11,11 +11,13 @@ private val gson = Gson()
 fun LocalSurahVersePreferences.toSurahVersePreferences() = SurahVersePreferences(
     displayTranslation = displayTranslation,
     translationLanguage = translationLanguage?.let(Language::valueOf),
-    reciter = gson.fromJson(reciter, LocalReciter::class.java)?.toReciter()
+    reciter = gson.fromJson(reciter, LocalReciter::class.java)?.toReciter(),
+    displayMode = SurahVersePreferences.DisplayMode.valueOf(displayMode)
 )
 
 fun SurahVersePreferences.toLocalSurahVersePreferences() = LocalSurahVersePreferences(
     displayTranslation = displayTranslation,
     translationLanguage = translationLanguage?.name,
-    reciter = reciter?.let { gson.toJson(it.toLocal()) }
+    reciter = reciter?.let { gson.toJson(it.toLocal()) },
+    displayMode = displayMode.name
 )

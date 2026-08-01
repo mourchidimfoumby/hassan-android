@@ -5,18 +5,18 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
-import com.mfoumby.hassan.quran.data.model.RemoteSurahVerse
-import com.mfoumby.hassan.quran.data.model.RemoteSurahVerses
+import com.mfoumby.hassan.quran.data.model.RemoteVerse
+import com.mfoumby.hassan.quran.data.model.RemoteVerses
 import com.mfoumby.hassan.quran.data.remote.FirestoreCollectionReferences.SURAH_VERSE_COLLECTION
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
-class SurahVerseApiImpl: SurahVerseApi {
+class VerseApiImpl: VerseApi {
     private val surahVerseCollection = Firebase.firestore.collection(SURAH_VERSE_COLLECTION)
 
-    override fun getAllSurahVerses(): Flow<List<RemoteSurahVerse>> = callbackFlow {
+    override fun getAllVerses(): Flow<List<RemoteVerse>> = callbackFlow {
         val batchSize = 20
         var lastDocument: DocumentSnapshot? = null
         var query = surahVerseCollection.limit(batchSize.toLong())
@@ -31,7 +31,7 @@ class SurahVerseApiImpl: SurahVerseApi {
                 break
             }
 
-            val remoteSurahVerseList = snapshot.toObjects<RemoteSurahVerses>().map { it.values }.flatten()
+            val remoteSurahVerseList = snapshot.toObjects<RemoteVerses>().map { it.values }.flatten()
             trySend(remoteSurahVerseList)
             lastDocument = snapshot.documents.last()
         }
@@ -39,9 +39,9 @@ class SurahVerseApiImpl: SurahVerseApi {
         awaitClose {}
     }
 
-    override suspend fun getSurahVerses(surahNumber: Int): List<RemoteSurahVerse> =
+    override suspend fun getVerses(surahNumber: Int): List<RemoteVerse> =
         surahVerseCollection.document(surahNumber.toString())
             .get()
             .await()
-            .toObject<RemoteSurahVerses>()?.values ?: emptyList()
+            .toObject<RemoteVerses>()?.values ?: emptyList()
 }

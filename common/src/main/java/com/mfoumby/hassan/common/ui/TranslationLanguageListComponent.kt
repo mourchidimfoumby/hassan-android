@@ -10,9 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -111,7 +108,7 @@ private fun TranslationLanguageItem(
 
                         Icon(
                             modifier = Modifier.clickable(onClick = onDeleteClick),
-                            imageVector = Icons.Outlined.Delete,
+                            painter = painterResource(R.drawable.ic_outline_delete),
                             contentDescription = "Delete translation language",
                             tint = MaterialTheme.colorScheme.error
                         )
@@ -129,7 +126,7 @@ private fun TranslationLanguageItem(
                 is TranslationLanguageState.Downloading -> {
                     Icon(
                         modifier = Modifier.clickable(onClick = onCancelDownloadClick),
-                        imageVector = Icons.Default.Close,
+                        painter = painterResource(R.drawable.ic_outline_close),
                         contentDescription = "Cancel downloading",
                         tint = MaterialTheme.colorScheme.error
                     )

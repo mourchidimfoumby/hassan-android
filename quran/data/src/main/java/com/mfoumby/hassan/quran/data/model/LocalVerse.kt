@@ -1,0 +1,27 @@
+package com.mfoumby.hassan.quran.data.model
+
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_JUZ
+import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_NUMBER
+import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_PAGE
+import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_SURAH_NUMBER
+import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_TABLE_NAME
+import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_TEXT
+
+@Entity(
+    tableName = VERSE_TABLE_NAME,
+    primaryKeys = [VERSE_NUMBER, VERSE_SURAH_NUMBER]
+)
+data class LocalVerse(
+    @ColumnInfo(name = VERSE_NUMBER)
+    val number: Int,
+    @ColumnInfo(name = VERSE_SURAH_NUMBER)
+    val surahNumber: Int,
+    @ColumnInfo(name = VERSE_TEXT)
+    val text: String,
+    @ColumnInfo(name = VERSE_PAGE)
+    val page: Int,
+    @ColumnInfo(name = VERSE_JUZ)
+    val juz: Int
+)

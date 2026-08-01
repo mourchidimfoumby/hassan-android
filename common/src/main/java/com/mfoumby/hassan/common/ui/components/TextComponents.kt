@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.mfoumby.hassan.common.ui.Previews
+import com.mfoumby.hassan.common.ui.theme.bismillah
 
 @Composable
 fun SectionTitle(
@@ -21,10 +22,29 @@ fun SectionTitle(
     )
 }
 
+@Composable
+fun BismillahText(
+    modifier: Modifier = Modifier
+) {
+    Text(
+        modifier = modifier,
+        text = "5",
+        style = MaterialTheme.typography.bismillah
+    )
+}
+
 @Preview
 @Composable
 private fun SectionTitlePreview() {
     Previews.Preview {
         SectionTitle(text = "Section title")
+    }
+}
+
+@Preview
+@Composable
+private fun BismillahTextPreview() {
+    Previews.Preview {
+        BismillahText()
     }
 }

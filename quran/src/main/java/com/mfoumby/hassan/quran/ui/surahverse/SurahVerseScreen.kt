@@ -1,25 +1,22 @@
 package com.mfoumby.hassan.quran.ui.surahverse
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -29,35 +26,44 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.painterResource
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.mfoumby.hassan.common.R
 import com.mfoumby.hassan.common.SingleUiEvent
-import com.mfoumby.hassan.common.domain.NumberFormatUtils
+import com.mfoumby.hassan.common.domain.extension.fromIndex
+import com.mfoumby.hassan.common.domain.extension.half
+import com.mfoumby.hassan.common.domain.extension.toIndex
 import com.mfoumby.hassan.common.snackbarLauncher
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.components.BackTopBar
-import com.mfoumby.hassan.common.ui.components.VerticalScrollBarIndicator
-import com.mfoumby.hassan.common.ui.theme.bodyUthmanic
-import com.mfoumby.hassan.common.ui.theme.padding
+import com.mfoumby.hassan.quran.domain.entity.Constants
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePlayerData
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
+import com.mfoumby.hassan.quran.domain.entity.SurahVerseTranslation
 import com.mfoumby.hassan.quran.domain.surahFixture
 import com.mfoumby.hassan.quran.domain.surahVerseFixtures
 import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
+import com.mfoumby.hassan.quran.domain.surahVerseTranslationFixtures
 import com.mfoumby.hassan.quran.ui.surahverse.components.DownloadAudioDialog
 import com.mfoumby.hassan.quran.ui.surahverse.components.DownloadingAudioDialog
-import com.mfoumby.hassan.quran.ui.surahverse.components.SurahVerseBottomSheet
+import com.mfoumby.hassan.quran.ui.surahverse.components.SurahVerseList
+import com.mfoumby.hassan.quran.ui.surahverse.components.SurahVersePage
 import com.mfoumby.hassan.quran.ui.surahverse.components.SurahVersePlayer
-import com.mfoumby.hassan.quran.ui.surahverse.components.SurahVerseSettingsBottomSheet
+import com.mfoumby.hassan.quran.ui.surahverse.components.bottomsheets.SurahVerseBottomSheet
+import com.mfoumby.hassan.quran.ui.surahverse.components.bottomsheets.SurahVerseSettingsBottomSheet
+import kotlinx.coroutines.flow.drop
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.math.max
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,6 +78,7 @@ fun SurahVerseDestination(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val resources = LocalResources.current
     val player = remember { ExoPlayer.Builder(context).build() }
     val surahVerseAudios = uiState.surahVersePlayerData?.surahVerseAudios
     val surahVersePlayerData = uiState.surahVersePlayerData
@@ -82,21 +89,20 @@ fun SurahVerseDestination(
     LaunchedEffect(Unit) {
         viewModel.event.collect {
             when (it) {
-                SurahVerseViewModel.SurahVerseUiEvent.AudioDownloadSuccess -> {
-                    viewModel.refreshSurahVerseAudios()
-                    activeDialog = null
-                }
+                SurahVerseViewModel.SurahVerseUiEvent.AudioDownloadSuccess -> activeDialog = null
 
                 is SurahVerseViewModel.SurahVerseUiEvent.AudioDownloadError -> {
                     activeDialog = null
-                    showSnackbar(context.getString(it.messageId))
+                    showSnackbar(resources.getString(it.messageId))
                 }
 
-                SurahVerseViewModel.SurahVerseUiEvent.DownloadAudioRequest -> {
+                SurahVerseViewModel.SurahVerseUiEvent.DownloadAudioRequest ->
                     activeDialog = SurahVerseDialog.DownloadAudioDialog
-                }
 
-                is SingleUiEvent.Error -> showSnackbar(context.getString(it.messageId))
+                is SingleUiEvent.Error -> {
+                    activeDialog = null
+                    showSnackbar(resources.getString(it.messageId))
+                }
             }
         }
     }
@@ -179,7 +185,10 @@ fun SurahVerseDestination(
         SurahVerseScreen(
             surah = uiState.surah!!,
             surahVerses = uiState.surahVerses,
+            surahVerseTranslations = uiState.surahVerseTranslations,
+            page = uiState.page,
             surahVersePreferences = uiState.surahVersePreferences!!,
+            informativeDisplayMode = uiState.informativeDisplayMode!!,
             surahVersePlayerData = surahVersePlayerData,
             player = player,
             snackBarHostState = snackBarHostState,
@@ -187,7 +196,10 @@ fun SurahVerseDestination(
             onTranslationLanguageClick = onTranslationLanguageClick,
             onDisplayTranslationChange = viewModel::onDisplayTranslationChange,
             onReciterClick = onReciterClick,
-            onPlayVerseAudioClick = viewModel::onPlayAudio
+            onPlayVerseAudioClick = viewModel::onPlayAudio,
+            onDisplayModeClick = viewModel::onDisplayModeChange,
+            onPageChange = viewModel::onPageChange,
+            onSurahChange = viewModel::onSurahChange
         )
     }
 }
@@ -197,18 +209,25 @@ fun SurahVerseDestination(
 private fun SurahVerseScreen(
     surah: Surah,
     surahVerses: List<SurahVerse>,
+    surahVerseTranslations: List<SurahVerseTranslation>,
+    page: Int,
     surahVersePreferences: SurahVersePreferences,
     surahVersePlayerData: SurahVersePlayerData?,
+    informativeDisplayMode: SurahVerseViewModel.InformativeDisplayMode,
     player: Player?,
     snackBarHostState: SnackbarHostState,
     onBackClick: () -> Unit,
     onTranslationLanguageClick: () -> Unit,
     onDisplayTranslationChange: (Boolean) -> Unit,
     onReciterClick: () -> Unit,
-    onPlayVerseAudioClick: (Int) -> Unit
+    onPlayVerseAudioClick: (Int) -> Unit,
+    onDisplayModeClick: (SurahVerseViewModel.InformativeDisplayMode) -> Unit,
+    onPageChange: (Int) -> Unit,
+    onSurahChange: (Int) -> Unit
 ) {
-    val listState = rememberLazyListState()
     var activeBottomSheet by remember { mutableStateOf<SurahVerseBottomSheet?>(null) }
+    val listState = rememberLazyListState()
+    val pageScrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
@@ -218,7 +237,7 @@ private fun SurahVerseScreen(
                 actions = {
                     IconButton(onClick = { activeBottomSheet = SurahVerseBottomSheet.SettingsBottomSheet }) {
                         Icon(
-                            imageVector = Icons.Outlined.Settings,
+                            painter = painterResource(R.drawable.ic_outline_settings),
                             contentDescription = "Show settings"
                         )
                     }
@@ -232,44 +251,60 @@ private fun SurahVerseScreen(
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            Box(modifier = Modifier.weight(1f)) {
-                LazyColumn(state = listState) {
-                    items(surahVerses.size) { index ->
-                        val surahVerse = surahVerses[index]
-                        if (index == 0) {
-                            HorizontalDivider()
-                        }
-                        SurahVerseCell(
-                            surahVerse = surahVerse,
-                            displayTranslation = surahVersePreferences.displayTranslation,
-                            onClick = {
-                                activeBottomSheet =
-                                    SurahVerseBottomSheet.VerseBottomSheet(surahVerse)
-                            }
-                        )
-                        HorizontalDivider()
+            when (informativeDisplayMode) {
+                is SurahVerseViewModel.InformativeDisplayMode.ListMode -> {
+                    LaunchedEffect(Unit) {
+                        val index = max(surahVerses.indexOf(informativeDisplayMode.surahVerse), 0)
+                        listState.animateScrollToItem(index)
                     }
-                }
 
-                VerticalScrollBarIndicator(
-                    modifier = Modifier.align(Alignment.CenterEnd),
-                    state = listState,
-                    itemsCount = surahVerses.size
-                )
-            }
-
-            when (val state = surahVersePlayerData?.state) {
-                is SurahVersePlayerData.State.Playing -> {
-                    SurahVersePlayer(
-                        player = player,
+                    SurahVerseListMode(
+                        modifier = Modifier.weight(1f),
                         surah = surah,
-                        reciter = surahVersePlayerData.reciter,
-                        surahVerseAudio = state.surahVerseAudio
+                        surahVerses = surahVerses,
+                        surahVerseTranslations = surahVerseTranslations,
+                        surahVersePreferences = surahVersePreferences,
+                        listState = listState,
+                        onSurahChange = onSurahChange,
+                        onSurahVerseClick = {
+                            activeBottomSheet = SurahVerseBottomSheet.VerseBottomSheet(it)
+                        }
                     )
                 }
 
-                else -> Unit
+                is SurahVerseViewModel.InformativeDisplayMode.PageMode -> {
+                    LaunchedEffect(Unit) {
+                        val index = surahVerses.indexOf(informativeDisplayMode.surahVerse)
+                        if (index > surahVerses.size.half()) {
+                            pageScrollState.animateScrollTo(pageScrollState.maxValue)
+                        }
+                    }
+
+                    SurahVersePageMode(
+                        modifier = Modifier.weight(1f),
+                        surahVerses = surahVerses,
+                        page = page,
+                        onPageChange = onPageChange,
+                        scrollState = pageScrollState,
+                        onSurahVerseClick = {
+                            activeBottomSheet = SurahVerseBottomSheet.VerseBottomSheet(it)
+                        }
+                    )
+                }
             }
+        }
+
+        when (val state = surahVersePlayerData?.state) {
+            is SurahVersePlayerData.State.Playing -> {
+                SurahVersePlayer(
+                    player = player,
+                    surah = surah,
+                    reciter = surahVersePlayerData.reciter,
+                    surahVerseAudio = state.surahVerseAudio
+                )
+            }
+
+            else -> Unit
         }
     }
 
@@ -280,6 +315,7 @@ private fun SurahVerseScreen(
                 translationLanguage = surahVersePreferences.translationLanguage,
                 displayTranslation = surahVersePreferences.displayTranslation,
                 reciter = surahVersePreferences.reciter,
+                displayMode = surahVersePreferences.displayMode,
                 onTranslationLanguageClick = {
                     activeBottomSheet = null
                     onTranslationLanguageClick()
@@ -288,6 +324,25 @@ private fun SurahVerseScreen(
                 onReciterClick = {
                     activeBottomSheet = null
                     onReciterClick()
+                },
+                onDisplayModeClick = { displayMode ->
+                    if (surahVersePreferences.displayMode != displayMode) {
+                        val informativeDisplayMode = when (displayMode) {
+                            SurahVersePreferences.DisplayMode.LIST -> {
+                                val index = if (pageScrollState.value > pageScrollState.maxValue.half()) {
+                                    surahVerses.size.half()
+                                } else 0
+                                val surahVerse = surahVerses[index]
+                                SurahVerseViewModel.InformativeDisplayMode.ListMode(surahVerse)
+                            }
+
+                            SurahVersePreferences.DisplayMode.PAGE -> {
+                                val surahVerse = surahVerses[listState.firstVisibleItemIndex]
+                                SurahVerseViewModel.InformativeDisplayMode.PageMode(surahVerse)
+                            }
+                        }
+                        onDisplayModeClick(informativeDisplayMode)
+                    }
                 }
             )
         }
@@ -297,7 +352,7 @@ private fun SurahVerseScreen(
                 onDismissRequest = { activeBottomSheet = null },
                 onPlayVerseAudioClick = {
                     activeBottomSheet = null
-                    onPlayVerseAudioClick(bottomSheet.surahVerse.verseNumber)
+                    onPlayVerseAudioClick(bottomSheet.surahVerse.verse.verseNumber)
                 }
             )
         }
@@ -307,29 +362,77 @@ private fun SurahVerseScreen(
 }
 
 @Composable
-private fun SurahVerseCell(
-    surahVerse: SurahVerse,
-    displayTranslation: Boolean,
-    onClick: () -> Unit
+private fun SurahVerseListMode(
+    modifier: Modifier = Modifier,
+    surah: Surah,
+    surahVerses: List<SurahVerse>,
+    surahVerseTranslations: List<SurahVerseTranslation>,
+    surahVersePreferences: SurahVersePreferences,
+    listState: LazyListState,
+    onSurahChange: (Int) -> Unit,
+    onSurahVerseClick: (SurahVerse) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(MaterialTheme.padding.medium),
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.smallMedium)
-    ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = surahVerse.text + " " + NumberFormatUtils.toArabic(surahVerse.verseNumber),
-            style = MaterialTheme.typography.bodyUthmanic
-        )
+    val pagerState = rememberPagerState(
+        initialPage = surah.number.toIndex(),
+        pageCount = { Constants.TOTAL_QURAN_SURAH }
+    )
 
-        if (displayTranslation) {
-            surahVerse.translation?.let {
-                Text(text = surahVerse.verseNumber.toString() + ". " + it)
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.settledPage }
+            .drop(1)
+            .collect { surahNumber ->
+                onSurahChange(surahNumber.fromIndex())
             }
-        }
+    }
+
+    HorizontalPager(
+        modifier = modifier,
+        reverseLayout = true,
+        state = pagerState
+    ) { surahNumber ->
+        SurahVerseList(
+            modifier = Modifier.fillMaxSize(),
+            surahVerses = surahVerses.filter { it.surah.number == surahNumber.fromIndex() },
+            surahVerseTranslations = surahVerseTranslations,
+            surahVersePreferences = surahVersePreferences,
+            listState = listState,
+            onSurahVerseClick = onSurahVerseClick
+        )
+    }
+}
+
+@Composable
+private fun SurahVersePageMode(
+    modifier: Modifier = Modifier,
+    surahVerses: List<SurahVerse>,
+    page: Int,
+    scrollState: ScrollState,
+    onPageChange: (Int) -> Unit,
+    onSurahVerseClick: (SurahVerse) -> Unit
+) {
+    val pagerState = rememberPagerState(
+        initialPage = page.toIndex(),
+        pageCount = { Constants.TOTAL_QURAN_PAGES }
+    )
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.settledPage }
+            .drop(1)
+            .collect { page ->
+                onPageChange(page.fromIndex())
+            }
+    }
+
+    HorizontalPager(
+        modifier = modifier,
+        reverseLayout = true,
+        state = pagerState
+    ) { page ->
+        SurahVersePage(
+            modifier = Modifier.fillMaxSize().verticalScroll(scrollState),
+            surahVerses = surahVerses.filter { it.verse.page == page.fromIndex() },
+            onSurahVerseClick = onSurahVerseClick
+        )
     }
 }
 
@@ -350,7 +453,10 @@ private fun SurahVerseScreenPreview() {
         SurahVerseScreen(
             surah = surahFixture,
             surahVerses = surahVerseFixtures,
+            surahVerseTranslations = surahVerseTranslationFixtures,
+            page = 1,
             surahVersePreferences = surahVersePreferencesFixture,
+            informativeDisplayMode = SurahVerseViewModel.InformativeDisplayMode.ListMode(surahVerseFixtures.first()),
             surahVersePlayerData = null,
             player = null,
             snackBarHostState = SnackbarHostState(),
@@ -358,7 +464,10 @@ private fun SurahVerseScreenPreview() {
             onTranslationLanguageClick = {},
             onDisplayTranslationChange = {},
             onReciterClick = {},
-            onPlayVerseAudioClick = {}
+            onPlayVerseAudioClick = {},
+            onDisplayModeClick = {},
+            onPageChange = {},
+            onSurahChange = {}
         )
     }
 }
