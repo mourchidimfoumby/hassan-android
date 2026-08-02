@@ -4,7 +4,7 @@ import com.mfoumby.hassan.quran.data.local.ReciterDataStore
 import com.mfoumby.hassan.quran.data.local.ReciterFileStorage
 import com.mfoumby.hassan.quran.data.local.ReciterLocalDataSource
 import com.mfoumby.hassan.quran.data.local.SurahLocalDataSource
-import com.mfoumby.hassan.quran.data.local.VerseLocalDataSource
+import com.mfoumby.hassan.quran.data.local.SurahVerseLocalDataSource
 import com.mfoumby.hassan.quran.data.local.SurahVersePreferencesDataStore
 import com.mfoumby.hassan.quran.data.local.SurahVersePreferencesLocalDataSource
 import com.mfoumby.hassan.quran.data.local.SurahVerseTranslationLanguageDataStore
@@ -18,7 +18,7 @@ import com.mfoumby.hassan.quran.data.remote.SurahApiImpl
 import com.mfoumby.hassan.quran.data.remote.SurahRemoteDataSource
 import com.mfoumby.hassan.quran.data.remote.VerseApi
 import com.mfoumby.hassan.quran.data.remote.VerseApiImpl
-import com.mfoumby.hassan.quran.data.remote.VerseRemoteDataSource
+import com.mfoumby.hassan.quran.data.remote.SurahVerseRemoteDataSource
 import com.mfoumby.hassan.quran.data.remote.SurahVerseTranslationApi
 import com.mfoumby.hassan.quran.data.remote.SurahVerseTranslationApiImpl
 import com.mfoumby.hassan.quran.data.remote.SurahVerseTranslationLanguageApi
@@ -54,8 +54,8 @@ val quranDataModule = module {
     singleOf(::SurahVersePreferencesRepositoryImpl) { bind<SurahVersePreferencesRepository>() }
 
     singleOf(::VerseApiImpl) { bind<VerseApi>() }
-    singleOf(::VerseRemoteDataSource)
-    singleOf(::VerseLocalDataSource)
+    singleOf(::SurahVerseRemoteDataSource)
+    singleOf(::SurahVerseLocalDataSource)
     singleOf(::SurahVerseRepositoryImpl) { bind<SurahVerseRepository>() }
 
     singleOf(::SurahVerseTranslationApiImpl) { bind<SurahVerseTranslationApi>() }

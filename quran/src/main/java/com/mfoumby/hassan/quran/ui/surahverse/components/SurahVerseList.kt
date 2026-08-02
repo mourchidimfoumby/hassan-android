@@ -7,12 +7,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mfoumby.hassan.common.domain.NumberFormatUtils
@@ -28,6 +29,8 @@ import com.mfoumby.hassan.quran.domain.entity.SurahVerseTranslation
 import com.mfoumby.hassan.quran.domain.surahVerseFixtures
 import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
 import com.mfoumby.hassan.quran.domain.surahVerseTranslationFixtures
+import com.mfoumby.hassan.quran.ui.surahverse.ScrollValue
+import kotlin.math.max
 
 @Composable
 fun SurahVerseList(
@@ -35,9 +38,27 @@ fun SurahVerseList(
     surahVerses: List<SurahVerse>,
     surahVerseTranslations: List<SurahVerseTranslation>,
     surahVersePreferences: SurahVersePreferences,
-    listState: LazyListState,
-    onSurahVerseClick: (SurahVerse) -> Unit
+    surahVerseToScroll: SurahVerse?,
+    onSurahVerseClick: (SurahVerse) -> Unit,
+    onScrollValueChange: (ScrollValue) -> Unit
 ) {
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(Unit) {
+        snapshotFlow {
+            listState.firstVisibleItemIndex
+        }.collect {
+            onScrollValueChange(ScrollValue(it, surahVerses.size))
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        surahVerseToScroll?.let {
+            val index = max(surahVerses.indexOf(it), 0)
+            listState.animateScrollToItem(index)
+        }
+    }
+
     Box(modifier = modifier) {
         LazyColumn(state = listState) {
             items(surahVerses.size) { index ->
@@ -100,8 +121,9 @@ private fun SurahVerseListPreview() {
             surahVerses = surahVerseFixtures,
             surahVerseTranslations = surahVerseTranslationFixtures,
             surahVersePreferences = surahVersePreferencesFixture,
-            listState = rememberLazyListState(),
-            onSurahVerseClick = {}
+            surahVerseToScroll = null,
+            onSurahVerseClick = {},
+            onScrollValueChange = {}
         )
     }
 }

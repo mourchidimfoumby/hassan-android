@@ -1,4 +1,4 @@
-package com.mfoumby.hassan.quran.ui.surahverse
+package com.mfoumby.hassan.quran.ui.surahverse.juzsurahverse
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -6,24 +6,25 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.mfoumby.hassan.common.Route
 import com.mfoumby.hassan.quran.QuranMode
+import com.mfoumby.hassan.quran.ui.surahverse.SurahVerseDestination
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SurahVerseRoute(val surahNumber: Int): Route
+data class JuzRoute(val juzNumber: Int): Route
 
-fun NavController.navigateToSurahVerse(surahNumber: Int) {
-    navigate(route = SurahVerseRoute(surahNumber))
+fun NavController.navigateToJuz(juzNumber: Int) {
+    navigate(route = JuzRoute(juzNumber))
 }
 
-fun NavGraphBuilder.surahVerseScreen(
+fun NavGraphBuilder.juzScreen(
     onBackClick: () -> Unit,
     onTranslationLanguageClick: () -> Unit,
     onReciterClick: () -> Unit
 ) {
-    composable<SurahVerseRoute> {
-        val surahNumber = it.toRoute<SurahVerseRoute>().surahNumber
+    composable<JuzRoute> {
+        val juzNumber = it.toRoute<JuzRoute>().juzNumber
         SurahVerseDestination(
-            quranMode = QuranMode.SurahMode(surahNumber),
+            quranMode = QuranMode.JuzMode(juzNumber),
             onBackClick = onBackClick,
             onTranslationLanguageClick = onTranslationLanguageClick,
             onReciterClick = onReciterClick

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-class VerseRemoteDataSource(private val verseApi: VerseApi) {
+class SurahVerseRemoteDataSource(private val verseApi: VerseApi) {
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 
     fun getAllVerses(): Flow<List<Verse>> =

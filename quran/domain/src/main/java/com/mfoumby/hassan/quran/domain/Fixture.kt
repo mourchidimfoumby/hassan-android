@@ -1,6 +1,7 @@
 package com.mfoumby.hassan.quran.domain
 
 import com.mfoumby.hassan.common.domain.entity.Language
+import com.mfoumby.hassan.quran.domain.entity.Juz
 import com.mfoumby.hassan.quran.domain.entity.Reciter
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
@@ -146,6 +147,18 @@ val surahVerseFixtures = verseFixtures.map {
     SurahVerse(
         surah = surahFixture,
         verse = it
+    )
+}
+
+val juzFixture = Juz(
+    number = surahVerseFixture.verse.juz,
+    firstSurahVerse = surahVerseFixture
+)
+
+val juzFixtures = surahVerseFixtures.map {
+    Juz(
+        number = it.verse.juz,
+        firstSurahVerse = it
     )
 }
 
