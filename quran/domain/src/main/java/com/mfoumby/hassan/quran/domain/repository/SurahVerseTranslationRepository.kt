@@ -9,6 +9,8 @@ interface SurahVerseTranslationRepository {
 
     suspend fun getSurahVerseTranslationsFromJuz(juzNumber: Int, language: Language): List<SurahVerseTranslation>
 
+    suspend fun getSurahVerseTranslationsFromHizb(hizbNumber: Int, language: Language): List<SurahVerseTranslation>
+
     suspend fun getSurahVerseTranslationCount(language: Language): Int
 
     fun downloadSurahVerseTranslations(language: Language): Flow<List<SurahVerseTranslation>>

@@ -14,6 +14,9 @@ class SurahVerseTranslationLocalDataSource(
     suspend fun getSurahVerseTranslationsFromJuz(juzNumber: Int, language: Language): List<SurahVerseTranslation> =
         surahVerseTranslationDao.getSurahVerseTranslationsFromJuz(juzNumber, language.name).map { it.toSurahVerseTranslation() }
 
+    suspend fun getSurahVerseTranslationsFromHizb(hizbNumber: Int, language: Language): List<SurahVerseTranslation> =
+        surahVerseTranslationDao.getSurahVerseTranslationsFromHizb(hizbNumber, language.name).map { it.toSurahVerseTranslation() }
+
     suspend fun getSurahVerseTranslationCount(language: Language): Int =
         surahVerseTranslationDao.getSurahVerseTranslationCount(language.name)
 

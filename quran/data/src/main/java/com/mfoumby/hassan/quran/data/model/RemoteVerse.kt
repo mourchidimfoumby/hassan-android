@@ -19,7 +19,10 @@ data class RemoteVerse(
     var page: Int = 0,
     @get:PropertyName(VerseField.Remote.VERSE_JUZ)
     @set:PropertyName(VerseField.Remote.VERSE_JUZ)
-    var juz: Int = 0
+    var juz: Int = 0,
+    @get:PropertyName(VerseField.Remote.VERSE_HIZB)
+    @set:PropertyName(VerseField.Remote.VERSE_HIZB)
+    var hizb: Int = 0
 )
 
 data class RemoteVerses(

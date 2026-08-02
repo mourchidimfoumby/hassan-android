@@ -18,6 +18,9 @@ class SurahVerseTranslationRepositoryImpl(
     override suspend fun getSurahVerseTranslationsFromJuz(juzNumber: Int, language: Language): List<SurahVerseTranslation> =
         localDataSource.getSurahVerseTranslationsFromJuz(juzNumber, language)
 
+    override suspend fun getSurahVerseTranslationsFromHizb(hizbNumber: Int, language: Language): List<SurahVerseTranslation> =
+        localDataSource.getSurahVerseTranslationsFromHizb(hizbNumber, language)
+
     override suspend fun getSurahVerseTranslationCount(language: Language): Int =
         localDataSource.getSurahVerseTranslationCount(language)
 

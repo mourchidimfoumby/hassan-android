@@ -5,6 +5,7 @@ object Constants {
     const val TOTAL_QURAN_VERSES = 6236
     const val TOTAL_QURAN_PAGES = 604
     const val TOTAL_QURAN_JUZ = 30
+    const val TOTAL_QURAN_HIZB = 60
     val DEFAULT_PREFERENCES = SurahVersePreferences(
         displayTranslation = true,
         translationLanguage = null,

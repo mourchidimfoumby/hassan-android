@@ -1,8 +1,10 @@
 package com.mfoumby.hassan.quran.data.local
 
+import com.mfoumby.hassan.quran.data.mapper.toHizb
 import com.mfoumby.hassan.quran.data.mapper.toJuz
 import com.mfoumby.hassan.quran.data.mapper.toLocal
 import com.mfoumby.hassan.quran.data.mapper.toSurahVerse
+import com.mfoumby.hassan.quran.domain.entity.Hizb
 import com.mfoumby.hassan.quran.domain.entity.Juz
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
 import com.mfoumby.hassan.quran.domain.entity.Verse
@@ -14,11 +16,18 @@ class SurahVerseLocalDataSource(private val verseDao: VerseDao) {
         it.map { localJuz -> localJuz.toJuz() }
     }
 
-    suspend fun getSurahVerseFromNumber(surahNumber: Int, limit: Int): List<SurahVerse> =
-        verseDao.getSurahVerseFromNumber(surahNumber, limit).map { it.toSurahVerse() }
+    fun getAllHizb(): Flow<List<Hizb>> = verseDao.getAllHizb().map {
+        it.map { localHizb -> localHizb.toHizb() }
+    }
 
-    suspend fun getSurahVerseFromJuzNumber(juzNumber: Int, limit: Int): List<SurahVerse> =
-        verseDao.getSurahVerseFromJuzNumber(juzNumber, limit).map { it.toSurahVerse() }
+    suspend fun getSurahVerseFromSurah(surahNumber: Int, limit: Int): List<SurahVerse> =
+        verseDao.getSurahVerseFromSurah(surahNumber, limit).map { it.toSurahVerse() }
+
+    suspend fun getSurahVerseFromJuz(juzNumber: Int, limit: Int): List<SurahVerse> =
+        verseDao.getSurahVerseFromJuz(juzNumber, limit).map { it.toSurahVerse() }
+
+    suspend fun getSurahVerseFromHizb(hizbNumber: Int, limit: Int): List<SurahVerse> =
+        verseDao.getSurahVerseFromHizb(hizbNumber, limit).map { it.toSurahVerse() }
 
     suspend fun getSurahVerseFromPage(page: Int): List<SurahVerse> =
         verseDao.getSurahVerseFromPage(page).map { it.toSurahVerse() }

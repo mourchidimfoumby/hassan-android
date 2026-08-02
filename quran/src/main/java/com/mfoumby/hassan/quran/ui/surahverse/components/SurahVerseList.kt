@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import com.mfoumby.hassan.common.domain.NumberFormatUtils
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
-import com.mfoumby.hassan.common.ui.components.BismillahText
 import com.mfoumby.hassan.common.ui.components.VerticalScrollBarIndicator
 import com.mfoumby.hassan.common.ui.theme.bodyUthmanic
 import com.mfoumby.hassan.common.ui.theme.padding
@@ -63,10 +62,13 @@ fun SurahVerseList(
         LazyColumn(state = listState) {
             items(surahVerses.size) { index ->
                 val surahVerse = surahVerses[index]
-                if (index == 0) {
-                    BismillahText(modifier = Modifier.fillMaxWidth())
-                    HorizontalDivider()
+                if (surahVerse.verse.verseNumber == 1) {
+                    SurahHeader(surah = surahVerse.surah)
+                    if (surahVerse.verse.verseNumber != 1) {
+                        HorizontalDivider()
+                    }
                 }
+
                 SurahVerseCell(
                     surahVerse = surahVerse,
                     surahVerseTranslation = surahVerseTranslations.getOrNull(index),

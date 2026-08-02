@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.mfoumby.hassan.common.R
 import com.mfoumby.hassan.common.SingleUiEvent
 import com.mfoumby.hassan.common.domain.entity.Progress
+import com.mfoumby.hassan.common.domain.extension.asIndex
 import com.mfoumby.hassan.quran.QuranMode
+import com.mfoumby.hassan.quran.domain.QuranUtils
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseAudio
@@ -53,6 +55,7 @@ class SurahVerseViewModel(
     init {
         initSurah()
         initJuzNumber()
+        initHizbNumber()
         initSurahVerses()
         initSurahVerseTranslations()
         initSurahVersePreferences()
@@ -75,8 +78,9 @@ class SurahVerseViewModel(
             val surahVerses = when (informativeDisplayMode) {
                 is InformativeDisplayMode.ListMode -> {
                     when (quranMode) {
-                        is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurahNumber(informativeDisplayMode.surahVerse.surah.number)
-                        is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuzNumber(informativeDisplayMode.surahVerse.verse.juz)
+                        is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurah(informativeDisplayMode.surahVerse.surah.number)
+                        is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuz(informativeDisplayMode.surahVerse.verse.juz)
+                        is QuranMode.HizbMode -> surahVerseRepository.getSurahVersesFromHizb(informativeDisplayMode.surahVerse.verse.hizb)
                     }
                 }
 
@@ -88,6 +92,8 @@ class SurahVerseViewModel(
                     surah = informativeDisplayMode.surahVerse.surah,
                     surahVerses = surahVerses,
                     page = informativeDisplayMode.surahVerse.verse.page,
+                    juz = informativeDisplayMode.surahVerse.verse.juz,
+                    hizb = informativeDisplayMode.surahVerse.verse.hizb,
                     informativeDisplayMode = informativeDisplayMode
                 )
             }
@@ -178,7 +184,7 @@ class SurahVerseViewModel(
     }
 
     fun onAudioChange(verseNumber: Int) {
-        updateSurahVersePlayerDataState(verseNumber - 1) {
+        updateSurahVersePlayerDataState(verseNumber.asIndex()) {
             SurahVersePlayerData.State.Playing(it)
         }
     }
@@ -188,8 +194,9 @@ class SurahVerseViewModel(
         val surahVerses = when(informativeDisplayMode) {
             is InformativeDisplayMode.ListMode -> {
                 when (quranMode) {
-                    is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurahNumber(page)
-                    is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuzNumber(page)
+                    is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurah(page)
+                    is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuz(page)
+                    is QuranMode.HizbMode -> surahVerseRepository.getSurahVersesFromHizb(page)
                 }
             }
 
@@ -201,6 +208,7 @@ class SurahVerseViewModel(
                 surah = fistVerse.surah,
                 surahVerses = surahVerses,
                 juz = fistVerse.verse.juz,
+                hizb = fistVerse.verse.hizb,
                 page = fistVerse.verse.page
             )
         }
@@ -231,7 +239,8 @@ class SurahVerseViewModel(
         viewModelScope.launch {
             val surah = when (quranMode) {
                 is QuranMode.SurahMode -> surahRepository.getSurah(quranMode.surahNumber)
-                is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuzNumber(quranMode.juzNumber, 1).first().surah
+                is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuz(quranMode.juzNumber, 1).first().surah
+                is QuranMode.HizbMode -> surahVerseRepository.getSurahVersesFromHizb(quranMode.hizbNumber, 1).first().surah
             }
             _uiState.update {
                 it.copy(surah = surah)
@@ -242,12 +251,27 @@ class SurahVerseViewModel(
 
     private fun initJuzNumber() {
         viewModelScope.launch {
-            val juzNumber = when (quranMode) {
-                is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurahNumber(quranMode.surahNumber, 1).first().verse.juz
+            val juz = when (quranMode) {
+                is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurah(quranMode.surahNumber, 1).first().verse.juz
                 is QuranMode.JuzMode -> quranMode.juzNumber
+                is QuranMode.HizbMode -> QuranUtils.calculateJuz(quranMode.hizbNumber)
             }
             _uiState.update {
-                it.copy(juz = juzNumber)
+                it.copy(juz = juz)
+            }
+            refreshInitializingState()
+        }
+    }
+
+    private fun initHizbNumber() {
+        viewModelScope.launch {
+            val hizb = when (quranMode) {
+                is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurah(quranMode.surahNumber, 1).first().verse.hizb
+                is QuranMode.JuzMode -> QuranUtils.calculateHizb(quranMode.juzNumber)
+                is QuranMode.HizbMode -> quranMode.hizbNumber
+            }
+            _uiState.update {
+                it.copy(hizb = hizb)
             }
             refreshInitializingState()
         }
@@ -257,8 +281,9 @@ class SurahVerseViewModel(
         viewModelScope.launch {
             val displayMode = surahVersePreferencesRepository.getSurahVersePreferences()?.displayMode
             var surahVerses = when (quranMode) {
-                is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurahNumber(quranMode.surahNumber)
-                is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuzNumber(quranMode.juzNumber)
+                is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurah(quranMode.surahNumber)
+                is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuz(quranMode.juzNumber)
+                is QuranMode.HizbMode -> surahVerseRepository.getSurahVersesFromHizb(quranMode.hizbNumber)
             }
             val page = surahVerses.first().verse.page
             if (displayMode == SurahVersePreferences.DisplayMode.PAGE) {
@@ -280,11 +305,13 @@ class SurahVerseViewModel(
                 .mapNotNull { it.translationLanguage }
                 .distinctUntilChanged(),
                 uiState.mapNotNull { it.surah }.distinctUntilChanged(),
-                uiState.map { it.juz }.distinctUntilChanged()
-        ) { language, surah, juzNumber ->
+                uiState.map { it.juz }.distinctUntilChanged(),
+                uiState.map { it.hizb }.distinctUntilChanged()
+        ) { language, surah, juz, hizb ->
             val surahVerseTranslations = when (quranMode) {
                 is QuranMode.SurahMode -> surahVerseTranslationRepository.getSurahVerseTranslations(surah.number, language)
-                is QuranMode.JuzMode -> surahVerseTranslationRepository.getSurahVerseTranslationsFromJuz(juzNumber, language)
+                is QuranMode.JuzMode -> surahVerseTranslationRepository.getSurahVerseTranslationsFromJuz(juz, language)
+                is QuranMode.HizbMode -> surahVerseTranslationRepository.getSurahVerseTranslationsFromHizb(hizb, language)
             }
             _uiState.update {
                 it.copy(surahVerseTranslations = surahVerseTranslations)
@@ -307,9 +334,10 @@ class SurahVerseViewModel(
         viewModelScope.launch {
             val displayMode = surahVersePreferencesRepository.getSurahVersePreferences()?.displayMode ?: SurahVersePreferences.DisplayMode.LIST
             val firstSurahVerse = when(quranMode)  {
-                is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurahNumber(quranMode.surahNumber, 1).first()
-                is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuzNumber(quranMode.juzNumber, 1).first()
-            }
+                is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurah(quranMode.surahNumber, 1)
+                is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuz(quranMode.juzNumber, 1)
+                is QuranMode.HizbMode -> surahVerseRepository.getSurahVersesFromHizb(quranMode.hizbNumber, 1)
+            }.first()
             _uiState.update {
                 it.copy(informativeDisplayMode = InformativeDisplayMode.fromDisplayMode(displayMode, firstSurahVerse))
             }
@@ -325,7 +353,8 @@ class SurahVerseViewModel(
                 .collect{ reciter ->
                     val surahNumber = when (quranMode) {
                         is QuranMode.SurahMode -> quranMode.surahNumber
-                        is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuzNumber(quranMode.juzNumber, 1).first().surah.number
+                        is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuz(quranMode.juzNumber, 1).first().surah.number
+                        is QuranMode.HizbMode -> surahVerseRepository.getSurahVersesFromJuz(quranMode.hizbNumber, 1).first().surah.number
                     }
                     val surahVerseAudios = reciterRepository.getSurahVerseAudios(surahNumber, reciter.id)
                     val surahVersePlayerData = SurahVersePlayerData(
@@ -353,6 +382,7 @@ class SurahVerseViewModel(
         val surahVerses: List<SurahVerse> = emptyList(),
         val surahVerseTranslations: List<SurahVerseTranslation> = emptyList(),
         val juz: Int = -1,
+        val hizb: Int = -1,
         val page: Int = -1,
         val surahVersePreferences: SurahVersePreferences? = null,
         val informativeDisplayMode: InformativeDisplayMode? = null,
@@ -363,6 +393,9 @@ class SurahVerseViewModel(
         val initialized: Boolean
             get() = surah != null &&
                     surahVerses.isNotEmpty() &&
+                    juz != -1 &&
+                    hizb != -1 &&
+                    page != -1 &&
                     surahVersePreferences != null &&
                     informativeDisplayMode != null
     }

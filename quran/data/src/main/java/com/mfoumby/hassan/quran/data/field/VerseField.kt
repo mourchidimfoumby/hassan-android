@@ -8,6 +8,7 @@ object VerseField {
         const val VERSE_TEXT = "verse_text"
         const val VERSE_PAGE = "verse_page"
         const val VERSE_JUZ = "verse_juz"
+        const val VERSE_HIZB = "verse_hizb"
     }
 
     object Remote {
@@ -16,6 +17,7 @@ object VerseField {
         const val VERSE_TEXT = "text"
         const val VERSE_PAGE = "page"
         const val VERSE_JUZ = "juz"
+        const val VERSE_HIZB = "hizb"
     }
 }
 

@@ -1,4 +1,4 @@
-package com.mfoumby.hassan.quran.ui.surahverse.juzsurahverse
+package com.mfoumby.hassan.quran.ui.surahverse
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -6,7 +6,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.mfoumby.hassan.common.Route
 import com.mfoumby.hassan.quran.QuranMode
-import com.mfoumby.hassan.quran.ui.surahverse.SurahVerseDestination
 import kotlinx.serialization.Serializable
 
 @Serializable

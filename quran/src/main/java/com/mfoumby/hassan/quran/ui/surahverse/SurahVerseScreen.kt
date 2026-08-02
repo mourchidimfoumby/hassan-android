@@ -33,7 +33,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.mfoumby.hassan.common.SingleUiEvent
 import com.mfoumby.hassan.common.domain.extension.fromIndex
 import com.mfoumby.hassan.common.domain.extension.half
-import com.mfoumby.hassan.common.domain.extension.toIndex
+import com.mfoumby.hassan.common.domain.extension.asIndex
 import com.mfoumby.hassan.common.snackbarLauncher
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
@@ -183,6 +183,7 @@ fun SurahVerseDestination(
             surahVerses = uiState.surahVerses,
             surahVerseTranslations = uiState.surahVerseTranslations,
             juz = uiState.juz,
+            hizb = uiState.hizb,
             page = uiState.page,
             surahVersePreferences = uiState.surahVersePreferences!!,
             informativeDisplayMode = uiState.informativeDisplayMode!!,
@@ -208,6 +209,7 @@ private fun SurahVerseScreen(
     surahVerses: List<SurahVerse>,
     surahVerseTranslations: List<SurahVerseTranslation>,
     juz: Int,
+    hizb: Int,
     page: Int,
     surahVersePreferences: SurahVersePreferences,
     informativeDisplayMode: SurahVerseViewModel.InformativeDisplayMode,
@@ -225,8 +227,9 @@ private fun SurahVerseScreen(
 ) {
     var activeBottomSheet by remember { mutableStateOf<SurahVerseBottomSheet?>(null) }
     val title = when (quranMode) {
-        is QuranMode.JuzMode -> "${stringResource(R.string.juz)} $juz"
         is QuranMode.SurahMode -> surah.transliteration
+        is QuranMode.JuzMode -> "${stringResource(R.string.juz)} $juz"
+        is QuranMode.HizbMode -> "${stringResource(R.string.hizb)} $hizb"
     }
     var scrollValue by remember { mutableStateOf(ScrollValue()) }
 
@@ -259,6 +262,7 @@ private fun SurahVerseScreen(
                         surah = surah,
                         surahVerses = surahVerses,
                         juz = juz,
+                        hizb = hizb,
                         surahVerseTranslations = surahVerseTranslations,
                         surahVersePreferences = surahVersePreferences,
                         quranMode = quranMode,
@@ -359,6 +363,7 @@ private fun SurahVerseListMode(
     surah: Surah,
     surahVerses: List<SurahVerse>,
     juz: Int,
+    hizb: Int,
     surahVerseTranslations: List<SurahVerseTranslation>,
     surahVersePreferences: SurahVersePreferences,
     quranMode: QuranMode,
@@ -371,16 +376,18 @@ private fun SurahVerseListMode(
         initialPage = when (quranMode) {
             is QuranMode.SurahMode -> surah.number
             is QuranMode.JuzMode -> juz
-        }.toIndex(),
+            is QuranMode.HizbMode -> hizb
+        }.asIndex(),
         pageCount = {
             when (quranMode) {
                 is QuranMode.SurahMode -> Constants.TOTAL_QURAN_SURAH
                 is QuranMode.JuzMode -> Constants.TOTAL_QURAN_JUZ
+                is QuranMode.HizbMode -> Constants.TOTAL_QURAN_HIZB
             }
         }
     )
 
-    LaunchedEffect(pagerState) {
+    LaunchedEffect(Unit) {
         snapshotFlow { pagerState.settledPage }
             .drop(1)
             .collect { page ->
@@ -398,6 +405,7 @@ private fun SurahVerseListMode(
             surahVerses = when (quranMode) {
                 is QuranMode.SurahMode -> surahVerses.filter { it.surah.number == page.fromIndex() }
                 is QuranMode.JuzMode -> surahVerses.filter { it.verse.juz == page.fromIndex() }
+                is QuranMode.HizbMode -> surahVerses.filter { it.verse.hizb == page.fromIndex() }
             },
             surahVerseTranslations = surahVerseTranslations,
             surahVersePreferences = surahVersePreferences,
@@ -419,11 +427,11 @@ private fun SurahVersePageMode(
     onScrollValueChange: (ScrollValue) -> Unit
 ) {
     val pagerState = rememberPagerState(
-        initialPage = page.toIndex(),
+        initialPage = page.asIndex(),
         pageCount = { Constants.TOTAL_QURAN_PAGES }
     )
 
-    LaunchedEffect(pagerState) {
+    LaunchedEffect(Unit) {
         snapshotFlow { pagerState.settledPage }
             .drop(1)
             .collect { page ->
@@ -470,6 +478,7 @@ private fun SurahVerseScreenPreview() {
             surahVerses = surahVerseFixtures,
             surahVerseTranslations = surahVerseTranslationFixtures,
             juz = surahVerseFixtures.first().verse.juz,
+            hizb = surahVerseFixtures.first().verse.hizb,
             page = surahVerseFixtures.first().verse.page,
             surahVersePreferences = surahVersePreferencesFixture,
             informativeDisplayMode = SurahVerseViewModel.InformativeDisplayMode.ListMode(surahVerseFixtures.first()),

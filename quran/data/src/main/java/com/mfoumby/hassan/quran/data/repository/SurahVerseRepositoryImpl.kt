@@ -2,6 +2,7 @@ package com.mfoumby.hassan.quran.data.repository
 
 import com.mfoumby.hassan.quran.data.local.SurahVerseLocalDataSource
 import com.mfoumby.hassan.quran.data.remote.SurahVerseRemoteDataSource
+import com.mfoumby.hassan.quran.domain.entity.Hizb
 import com.mfoumby.hassan.quran.domain.entity.Juz
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseRepository
@@ -13,11 +14,16 @@ class SurahVerseRepositoryImpl(
 ): SurahVerseRepository {
     override fun getAllJuz(): Flow<List<Juz>> = surahVerseLocalDataSource.getAllJuz()
 
-    override suspend fun getSurahVersesFromSurahNumber(surahNumber: Int, limit: Int): List<SurahVerse> =
-        surahVerseLocalDataSource.getSurahVerseFromNumber(surahNumber, limit)
+    override fun getAllHizb(): Flow<List<Hizb>> = surahVerseLocalDataSource.getAllHizb()
 
-    override suspend fun getSurahVersesFromJuzNumber(juzNumber: Int, limit: Int): List<SurahVerse> =
-        surahVerseLocalDataSource.getSurahVerseFromJuzNumber(juzNumber, limit)
+    override suspend fun getSurahVersesFromSurah(surahNumber: Int, limit: Int): List<SurahVerse> =
+        surahVerseLocalDataSource.getSurahVerseFromSurah(surahNumber, limit)
+
+    override suspend fun getSurahVersesFromJuz(juzNumber: Int, limit: Int): List<SurahVerse> =
+        surahVerseLocalDataSource.getSurahVerseFromJuz(juzNumber, limit)
+
+    override suspend fun getSurahVersesFromHizb(hizbNumber: Int, limit: Int): List<SurahVerse> =
+        surahVerseLocalDataSource.getSurahVerseFromHizb(hizbNumber, limit)
 
     override suspend fun getSurahVersesFromPage(page: Int): List<SurahVerse> =
         surahVerseLocalDataSource.getSurahVerseFromPage(page)
