@@ -2,26 +2,76 @@ package com.mfoumby.hassan.quran.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mfoumby.hassan.quran.domain.entity.Juz
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.repository.SurahRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
+import com.mfoumby.hassan.quran.domain.repository.SurahVerseRepository
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class QuranViewModel(
-    private val surahRepository: SurahRepository
+    private val surahRepository: SurahRepository,
+    private val surahVerseRepository: SurahVerseRepository
 ): ViewModel() {
-    val uiState: StateFlow<QuranState> = initUiState().stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = QuranState()
-    )
+    private val _uiState = MutableStateFlow(QuranState())
+    val uiState: StateFlow<QuranState> = _uiState.asStateFlow()
 
-    private fun initUiState(): Flow<QuranState> = combine(surahRepository.getSurahs()) { (surahs) ->
-            QuranState(surahs = surahs)
+    init {
+        initSurahs()
+        initAllJuz()
+    }
+
+    fun onTabChange(tab: QuranTab) {
+        _uiState.update {
+            it.copy(tab = tab)
         }
+    }
 
-    data class QuranState(val surahs: List<Surah>? = null)
+    private fun initSurahs() {
+        viewModelScope.launch {
+            surahRepository.getSurahs().collect { surahs ->
+                _uiState.update {
+                    it.copy(surahs = surahs)
+                }
+                refreshInitializingState()
+            }
+        }
+    }
+
+    private fun initAllJuz() {
+        viewModelScope.launch {
+            surahVerseRepository.getAllJuz().collect { allJuz ->
+                _uiState.update {
+                    it.copy(allJuz = allJuz)
+                }
+                refreshInitializingState()
+            }
+        }
+    }
+
+    private fun refreshInitializingState() {
+        if (!uiState.value.initializing) return
+        _uiState.update {
+            it.copy(initializing = !it.initialized)
+        }
+    }
+
+    data class QuranState(
+        val surahs: List<Surah>? = null,
+        val allJuz: List<Juz>? = null,
+        val tab: QuranTab = QuranTab.SURAH,
+        val initializing: Boolean = true
+    ) {
+        val initialized: Boolean
+            get() = surahs != null &&
+                    allJuz != null
+    }
+
+    enum class QuranTab {
+        SURAH,
+        JUZ
+    }
 }

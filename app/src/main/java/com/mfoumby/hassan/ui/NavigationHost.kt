@@ -15,6 +15,8 @@ import com.mfoumby.hassan.quran.ui.navigateToQuran
 import com.mfoumby.hassan.quran.ui.quranSection
 import com.mfoumby.hassan.quran.ui.reciters.navigateToReciters
 import com.mfoumby.hassan.quran.ui.reciters.recitersScreen
+import com.mfoumby.hassan.quran.ui.surahverse.juzsurahverse.juzScreen
+import com.mfoumby.hassan.quran.ui.surahverse.juzsurahverse.navigateToJuz
 import com.mfoumby.hassan.quran.ui.surahverse.navigateToSurahVerse
 import com.mfoumby.hassan.quran.ui.surahverse.surahVerseScreen
 import com.mfoumby.hassan.quran.ui.surahverse.surahversetranslationlanguage.navigateToSurahVerseTranslationLanguage
@@ -68,9 +70,15 @@ fun NavigationHost(
 
         quranSection(
             bottomBar = bottomBar,
-            onSurahClick = navController::navigateToSurahVerse
+            onSurahClick = navController::navigateToSurahVerse,
+            onJuzClick = navController::navigateToJuz
         ) {
             surahVerseScreen(
+                onBackClick = navController::popBackStack,
+                onTranslationLanguageClick = navController::navigateToSurahVerseTranslationLanguage,
+                onReciterClick = navController::navigateToReciters
+            )
+            juzScreen(
                 onBackClick = navController::popBackStack,
                 onTranslationLanguageClick = navController::navigateToSurahVerseTranslationLanguage,
                 onReciterClick = navController::navigateToReciters

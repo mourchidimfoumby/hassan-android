@@ -9,10 +9,14 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +30,7 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.mfoumby.hassan.common.domain.NumberFormatUtils
+import com.mfoumby.hassan.common.domain.extension.half
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.components.BismillahText
@@ -36,15 +41,36 @@ import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
 import com.mfoumby.hassan.quran.domain.surahFixture
 import com.mfoumby.hassan.quran.domain.surahVerseFixtures
+import com.mfoumby.hassan.quran.ui.surahverse.ScrollValue
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SurahVersePage(
     modifier: Modifier = Modifier,
     surahVerses: List<SurahVerse>,
-    onSurahVerseClick: (SurahVerse) -> Unit
+    surahVerseToScroll: SurahVerse?,
+    onSurahVerseClick: (SurahVerse) -> Unit,
+    onScrollValueChange: (ScrollValue) -> Unit
 ) {
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { scrollState.value }
+            .collect {
+                onScrollValueChange(ScrollValue(it, scrollState.maxValue))
+            }
+    }
+
+    LaunchedEffect(Unit) {
+        surahVerseToScroll?.let {
+            if (surahVerses.indexOf(it) > surahVerses.size.half()) {
+                scrollState.animateScrollTo(scrollState.maxValue)
+            }
+        }
+    }
+
     Column(
+        modifier = modifier,
         verticalArrangement = Arrangement.mediumSpacing()
     ) {
         surahVerses.firstOrNull()?.verse?.let { firstVerse ->
@@ -57,7 +83,7 @@ fun SurahVersePage(
         }
 
         Column(
-            modifier = modifier,
+            modifier = Modifier.verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             surahVerses.groupBy { it.surah.number }.forEach { groupedSurahVerses ->
@@ -153,7 +179,9 @@ private fun SurahVersePagePreview() {
     Previews.Preview {
         SurahVersePage(
             surahVerses = surahVerseFixtures,
-            onSurahVerseClick = {}
+            surahVerseToScroll = null,
+            onSurahVerseClick = {},
+            onScrollValueChange = {}
         )
     }
 }

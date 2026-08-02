@@ -5,8 +5,8 @@ import com.mfoumby.hassan.quran.data.field.SurahVerseTranslationField
 import com.mfoumby.hassan.quran.data.field.SurahVerseTranslationsField
 
 data class RemoteSurahVerseTranslation(
-    @get:PropertyName(SurahVerseTranslationField.Remote.NUMBER)
-    @set:PropertyName(SurahVerseTranslationField.Remote.NUMBER)
+    @get:PropertyName(SurahVerseTranslationField.Remote.VERSE_NUMBER)
+    @set:PropertyName(SurahVerseTranslationField.Remote.VERSE_NUMBER)
     var number: Int = 0,
     @get:PropertyName(SurahVerseTranslationField.Remote.SURAH_NUMBER)
     @set:PropertyName(SurahVerseTranslationField.Remote.SURAH_NUMBER)

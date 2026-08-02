@@ -43,8 +43,8 @@ class SurahVerseViewModelTest {
     @Before
     fun setUp() {
         coEvery { surahRepository.getSurah(any()) } returns surahFixture
-        coEvery { surahVerseRepository.getSurahVerseFromPage(any()) } returns listOf(surahVerseFixture)
-        coEvery { surahVerseRepository.getSurahVerseFromSurahNumber(any()) } returns listOf(surahVerseFixture)
+        coEvery { surahVerseRepository.getSurahVersesFromPage(any()) } returns listOf(surahVerseFixture)
+        coEvery { surahVerseRepository.getSurahVersesFromSurahNumber(any()) } returns listOf(surahVerseFixture)
         coEvery { surahVerseTranslationRepository.getSurahVerseTranslations(any(), any()) } returns listOf()
         every { surahVersePreferencesRepository.getSurahVersePreferencesFlow() } returns flowOf(surahVersePreferencesFixture)
         coEvery { surahVersePreferencesRepository.getSurahVersePreferences() } returns surahVersePreferencesFixture
@@ -91,7 +91,7 @@ class SurahVerseViewModelTest {
     fun onSurahChange_should_update_ui_surah_data() = runTest {
         // Given
         val surahVerse = surahVerseFixture2
-        coEvery { surahVerseRepository.getSurahVerseFromSurahNumber(any()) } returns listOf(surahVerse)
+        coEvery { surahVerseRepository.getSurahVersesFromSurahNumber(any()) } returns listOf(surahVerse)
 
         // When
         viewModel.onSurahChange(surahVerse.surah.number)
@@ -111,7 +111,7 @@ class SurahVerseViewModelTest {
     fun onPageChange_should_update_ui_surah_data() = runTest {
         // Given
         val surahVerse = surahVerseFixture2
-        coEvery { surahVerseRepository.getSurahVerseFromPage(any()) } returns listOf(surahVerse)
+        coEvery { surahVerseRepository.getSurahVersesFromPage(any()) } returns listOf(surahVerse)
 
         // When
         viewModel.onPageChange(surahVerse.verse.page)
@@ -131,8 +131,8 @@ class SurahVerseViewModelTest {
     fun onDisplayModeChange_should_update_ui_surah_data() = runTest {
         // Given
         val informativeDisplayMode = SurahVerseViewModel.InformativeDisplayMode.PageMode(surahVerseFixture2)
-        coEvery { surahVerseRepository.getSurahVerseFromSurahNumber(any()) } returns listOf(informativeDisplayMode.surahVerse)
-        coEvery { surahVerseRepository.getSurahVerseFromPage(any()) } returns listOf(informativeDisplayMode.surahVerse)
+        coEvery { surahVerseRepository.getSurahVersesFromSurahNumber(any()) } returns listOf(informativeDisplayMode.surahVerse)
+        coEvery { surahVerseRepository.getSurahVersesFromPage(any()) } returns listOf(informativeDisplayMode.surahVerse)
 
         // When
         viewModel.onDisplayModeChange(informativeDisplayMode)
