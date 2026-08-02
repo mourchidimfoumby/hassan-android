@@ -22,6 +22,7 @@ fun NavGraphBuilder.quranSection(
     bottomBar: @Composable () -> Unit,
     onSurahClick: (Int) -> Unit,
     onJuzClick: (Int) -> Unit,
+    onHizbClick: (Int) -> Unit,
     quranDestinations: NavGraphBuilder.() -> Unit
 ) {
     navigation<QuranBaseRoute>(startDestination = QuranRoute) {
@@ -29,7 +30,8 @@ fun NavGraphBuilder.quranSection(
             QuranDestination(
                 bottomBar = bottomBar,
                 onSurahClick = onSurahClick,
-                onJuzClick = onJuzClick
+                onJuzClick = onJuzClick,
+                onHizbClick = onHizbClick
             )
         }
         quranDestinations()

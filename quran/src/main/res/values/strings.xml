@@ -12,4 +12,5 @@
 
     <string name="download_audio_dialog_text">L\'audio doit être téléchargé. Voulez-vous le télécharger ?</string>
     <string name="display_mode">Mode d\'affichage</string>
+    <string name="hizb">Hizb</string>
 </resources>

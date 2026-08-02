@@ -2,6 +2,7 @@ package com.mfoumby.hassan.quran.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mfoumby.hassan.quran.domain.entity.Hizb
 import com.mfoumby.hassan.quran.domain.entity.Juz
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.repository.SurahRepository
@@ -22,12 +23,7 @@ class QuranViewModel(
     init {
         initSurahs()
         initAllJuz()
-    }
-
-    fun onTabChange(tab: QuranTab) {
-        _uiState.update {
-            it.copy(tab = tab)
-        }
+        initAllHizb()
     }
 
     private fun initSurahs() {
@@ -52,6 +48,17 @@ class QuranViewModel(
         }
     }
 
+    private fun initAllHizb() {
+        viewModelScope.launch {
+            surahVerseRepository.getAllHizb().collect { allHizb ->
+                _uiState.update {
+                    it.copy(allHizb = allHizb)
+                }
+                refreshInitializingState()
+            }
+        }
+    }
+
     private fun refreshInitializingState() {
         if (!uiState.value.initializing) return
         _uiState.update {
@@ -62,16 +69,12 @@ class QuranViewModel(
     data class QuranState(
         val surahs: List<Surah>? = null,
         val allJuz: List<Juz>? = null,
-        val tab: QuranTab = QuranTab.SURAH,
+        val allHizb: List<Hizb>? = null,
         val initializing: Boolean = true
     ) {
         val initialized: Boolean
             get() = surahs != null &&
-                    allJuz != null
-    }
-
-    enum class QuranTab {
-        SURAH,
-        JUZ
+                    allJuz != null &&
+                    allHizb != null
     }
 }

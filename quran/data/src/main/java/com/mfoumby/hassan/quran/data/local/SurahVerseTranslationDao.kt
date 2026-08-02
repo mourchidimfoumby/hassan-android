@@ -34,6 +34,18 @@ interface SurahVerseTranslationDao {
     suspend fun getSurahVerseTranslationsFromJuz(juzNumber: Int, language: String): List<LocalSurahVerseTranslation>
 
     @Query("""
+        SELECT VT.*
+        FROM $TABLE_NAME VT
+        INNER JOIN ${VerseField.Local.VERSE_TABLE_NAME} V 
+            ON V.${VerseField.Local.VERSE_SURAH_NUMBER} = VT.$SURAH_NUMBER
+            AND V.${VerseField.Local.VERSE_NUMBER} = VT.$VERSE_NUMBER
+        WHERE V.${VerseField.Local.VERSE_HIZB} = :hizbNumber 
+            AND VT.$LANGUAGE = :language
+        ORDER BY VT.$SURAH_NUMBER, VT.$VERSE_NUMBER
+    """)
+    suspend fun getSurahVerseTranslationsFromHizb(hizbNumber: Int, language: String): List<LocalSurahVerseTranslation>
+
+    @Query("""
         SELECT COUNT(*)
         FROM $TABLE_NAME
         WHERE $LANGUAGE = :language
