@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
@@ -27,13 +28,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.mfoumby.hassan.common.SingleUiEvent
+import com.mfoumby.hassan.common.domain.extension.asIndex
 import com.mfoumby.hassan.common.domain.extension.fromIndex
 import com.mfoumby.hassan.common.domain.extension.half
-import com.mfoumby.hassan.common.domain.extension.asIndex
 import com.mfoumby.hassan.common.snackbarLauncher
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
@@ -48,6 +52,7 @@ import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseTranslation
 import com.mfoumby.hassan.quran.domain.surahFixture
 import com.mfoumby.hassan.quran.domain.surahVerseFixtures
+import com.mfoumby.hassan.quran.domain.surahVerseFixtures2
 import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
 import com.mfoumby.hassan.quran.domain.surahVerseTranslationFixtures
 import com.mfoumby.hassan.quran.ui.surahverse.components.DownloadAudioDialog
@@ -197,7 +202,8 @@ fun SurahVerseDestination(
             onReciterClick = onReciterClick,
             onPlayVerseAudioClick = viewModel::onPlayAudio,
             onDisplayModeClick = viewModel::onDisplayModeChange,
-            onPageChange = viewModel::onPageChange
+            onPageChange = viewModel::onPageChange,
+            onSaveBookmark = viewModel::onSaveBookmark
         )
     }
 }
@@ -223,7 +229,9 @@ private fun SurahVerseScreen(
     onReciterClick: () -> Unit,
     onPlayVerseAudioClick: (Int) -> Unit,
     onDisplayModeClick: (SurahVerseViewModel.InformativeDisplayMode) -> Unit,
-    onPageChange: (Int) -> Unit
+    onPageChange: (Int) -> Unit,
+    onSaveBookmark: (SurahVerse) -> Unit
+
 ) {
     var activeBottomSheet by remember { mutableStateOf<SurahVerseBottomSheet?>(null) }
     val title = when (quranMode) {
@@ -232,6 +240,32 @@ private fun SurahVerseScreen(
         is QuranMode.HizbMode -> "${stringResource(R.string.hizb)} $hizb"
     }
     var scrollValue by remember { mutableStateOf(ScrollValue()) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val bookmarkState by rememberUpdatedState(
+        BookmarkState(
+            surahVerses = surahVerses,
+            scrollValue = scrollValue,
+            displayMode = surahVersePreferences.displayMode
+        )
+    )
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_STOP -> {
+                    onSaveBookmark(retrieveLastSurahVerseRead(bookmarkState.surahVerses, bookmarkState.scrollValue, bookmarkState.displayMode))
+                }
+
+                else -> {}
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -324,19 +358,10 @@ private fun SurahVerseScreen(
                 },
                 onDisplayModeClick = { displayMode ->
                     if (surahVersePreferences.displayMode != displayMode) {
+                        val surahVerse = retrieveLastSurahVerseRead(surahVerses, scrollValue, surahVersePreferences.displayMode)
                         when (displayMode) {
-                            SurahVersePreferences.DisplayMode.LIST -> {
-                                val index = if (scrollValue.currentValue > scrollValue.maxValue.half()) {
-                                    surahVerses.size.half()
-                                } else 0
-                                val surahVerse = surahVerses[index]
-                                SurahVerseViewModel.InformativeDisplayMode.ListMode(surahVerse)
-                            }
-
-                            SurahVersePreferences.DisplayMode.PAGE -> {
-                                val surahVerse = surahVerses[scrollValue.currentValue]
-                                SurahVerseViewModel.InformativeDisplayMode.PageMode(surahVerse)
-                            }
+                            SurahVersePreferences.DisplayMode.LIST -> SurahVerseViewModel.InformativeDisplayMode.ListMode(surahVerse)
+                            SurahVersePreferences.DisplayMode.PAGE -> SurahVerseViewModel.InformativeDisplayMode.PageMode(surahVerse)
                         }.let(onDisplayModeClick)
                     }
                 }
@@ -454,6 +479,29 @@ private fun SurahVersePageMode(
     }
 }
 
+data class BookmarkState(
+    val surahVerses: List<SurahVerse>,
+    val scrollValue: ScrollValue,
+    val displayMode: SurahVersePreferences.DisplayMode
+)
+
+private fun retrieveLastSurahVerseRead(
+    surahVerses: List<SurahVerse>,
+    scrollValue: ScrollValue,
+    displayMode: SurahVersePreferences.DisplayMode
+): SurahVerse {
+    return when (displayMode) {
+        SurahVersePreferences.DisplayMode.LIST -> surahVerses[scrollValue.currentValue]
+
+        SurahVersePreferences.DisplayMode.PAGE -> {
+            val index = if (scrollValue.currentValue > scrollValue.maxValue.half()) {
+                surahVerses.size.half()
+            } else 0
+            surahVerses[index]
+        }
+    }
+}
+
 private sealed class SurahVerseBottomSheet {
     data object SettingsBottomSheet: SurahVerseBottomSheet()
     data class VerseBottomSheet(val surahVerse: SurahVerse): SurahVerseBottomSheet()
@@ -474,15 +522,15 @@ data class ScrollValue(
 private fun SurahVerseScreenPreview() {
     Previews.Preview {
         SurahVerseScreen(
-            surah = surahFixture,
-            surahVerses = surahVerseFixtures,
+            surah = surahVerseFixtures2.first().surah,
+            surahVerses = surahVerseFixtures2,
             surahVerseTranslations = surahVerseTranslationFixtures,
-            juz = surahVerseFixtures.first().verse.juz,
-            hizb = surahVerseFixtures.first().verse.hizb,
-            page = surahVerseFixtures.first().verse.page,
+            juz = surahVerseFixtures2.first().verse.juz,
+            hizb = surahVerseFixtures2.first().verse.hizb,
+            page = surahVerseFixtures2.first().verse.page,
             surahVersePreferences = surahVersePreferencesFixture,
             informativeDisplayMode = SurahVerseViewModel.InformativeDisplayMode.ListMode(surahVerseFixtures.first()),
-            quranMode = QuranMode.SurahMode(surahFixture.number),
+            quranMode = QuranMode.SurahMode(surahFixture.number, null),
             surahVersePlayerData = null,
             player = null,
             snackBarHostState = SnackbarHostState(),
@@ -492,7 +540,8 @@ private fun SurahVerseScreenPreview() {
             onReciterClick = {},
             onPlayVerseAudioClick = {},
             onDisplayModeClick = {},
-            onPageChange = {}
+            onPageChange = {},
+            onSaveBookmark = {}
         )
     }
 }

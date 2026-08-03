@@ -18,6 +18,8 @@ interface SurahVerseRepository {
 
     suspend fun getSurahVersesFromPage(page: Int): List<SurahVerse>
 
+    suspend fun getSurahVerse(surahNumber: Int, verseNumber: Int): SurahVerse?
+
     suspend fun getVerseCount(): Int
 
     suspend fun downloadVerses()

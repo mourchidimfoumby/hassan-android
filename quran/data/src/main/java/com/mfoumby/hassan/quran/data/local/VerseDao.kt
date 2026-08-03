@@ -42,7 +42,7 @@ interface VerseDao {
         ORDER BY $VERSE_SURAH_NUMBER, $VERSE_NUMBER
         LIMIT :limit
     """)
-    suspend fun getSurahVerseFromJuz(juzNumber: Int, limit: Int): List<LocalSurahVerse>
+    suspend fun getSurahVersesFromJuz(juzNumber: Int, limit: Int): List<LocalSurahVerse>
 
     @Transaction
     @Query("""
@@ -51,7 +51,7 @@ interface VerseDao {
         ORDER BY $VERSE_SURAH_NUMBER, $VERSE_NUMBER
         LIMIT :limit
     """)
-    suspend fun getSurahVerseFromHizb(hizbNumber: Int, limit: Int): List<LocalSurahVerse>
+    suspend fun getSurahVersesFromHizb(hizbNumber: Int, limit: Int): List<LocalSurahVerse>
 
     @Transaction
     @Query("""
@@ -59,7 +59,15 @@ interface VerseDao {
         WHERE $VERSE_PAGE = :page 
         ORDER BY $VERSE_SURAH_NUMBER, $VERSE_NUMBER
     """)
-    suspend fun getSurahVerseFromPage(page: Int): List<LocalSurahVerse>
+    suspend fun getSurahVersesFromPage(page: Int): List<LocalSurahVerse>
+
+    @Transaction
+    @Query("""
+        SELECT * FROM $VERSE_TABLE_NAME 
+        WHERE $VERSE_SURAH_NUMBER = :surahNumber 
+        AND $VERSE_NUMBER = :verseNumber
+    """)
+    suspend fun getSurahVerse(surahNumber: Int, verseNumber: Int): LocalSurahVerse?
 
     @Query("SELECT COUNT(*) FROM $VERSE_TABLE_NAME")
     suspend fun getVersesCount(): Int

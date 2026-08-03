@@ -64,9 +64,13 @@ fun SurahVerseList(
                 val surahVerse = surahVerses[index]
                 if (surahVerse.verse.verseNumber == 1) {
                     SurahHeader(surah = surahVerse.surah)
-                    if (surahVerse.verse.verseNumber != 1) {
-                        HorizontalDivider()
-                    }
+                }
+
+                if (
+                    surahVerse.surah.number != 1 ||
+                    surahVerse.verse.verseNumber != 1
+                ) {
+                    HorizontalDivider()
                 }
 
                 SurahVerseCell(
@@ -75,14 +79,13 @@ fun SurahVerseList(
                     displayTranslation = surahVersePreferences.displayTranslation,
                     onClick = { onSurahVerseClick(surahVerse) }
                 )
-                HorizontalDivider()
             }
         }
 
         VerticalScrollBarIndicator(
             modifier = Modifier.align(Alignment.CenterEnd),
             state = listState,
-            itemsCount = surahVerses.size
+            itemCount = surahVerses.size
         )
     }
 }

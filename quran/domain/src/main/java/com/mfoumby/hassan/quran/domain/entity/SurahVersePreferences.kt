@@ -6,7 +6,10 @@ data class SurahVersePreferences(
     val displayTranslation: Boolean,
     val translationLanguage: Language?,
     val reciter: Reciter?,
-    val displayMode: DisplayMode
+    val displayMode: DisplayMode,
+    val surahBookmark: SurahVerse?,
+    val juzBookmark: SurahVerse?,
+    val hizbBookmark: SurahVerse?
 ) {
     enum class DisplayMode {
         LIST, PAGE

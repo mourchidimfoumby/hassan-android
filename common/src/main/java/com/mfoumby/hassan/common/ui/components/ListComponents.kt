@@ -15,14 +15,14 @@ import com.mfoumby.hassan.common.ui.components.scrollbar.scrollbarState
 fun VerticalScrollBarIndicator(
     modifier: Modifier = Modifier,
     state: LazyListState,
-    itemsCount: Int
+    itemCount: Int
 ) {
     state.DraggableScrollbar(
         modifier = modifier
             .fillMaxHeight()
             .padding(horizontal = 2.dp),
-        state = state.scrollbarState(itemsAvailable = itemsCount),
+        state = state.scrollbarState(itemsAvailable = itemCount),
         orientation = Orientation.Vertical,
-        onThumbMoved = state.rememberDraggableScroller(itemsAvailable = itemsCount)
+        onThumbMoved = state.rememberDraggableScroller(itemsAvailable = itemCount)
     )
 }

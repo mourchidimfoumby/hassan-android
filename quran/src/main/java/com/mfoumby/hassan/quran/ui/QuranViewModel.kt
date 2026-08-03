@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.mfoumby.hassan.quran.domain.entity.Hizb
 import com.mfoumby.hassan.quran.domain.entity.Juz
 import com.mfoumby.hassan.quran.domain.entity.Surah
+import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
 import com.mfoumby.hassan.quran.domain.repository.SurahRepository
+import com.mfoumby.hassan.quran.domain.repository.SurahVersePreferencesRepository
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +17,8 @@ import kotlinx.coroutines.launch
 
 class QuranViewModel(
     private val surahRepository: SurahRepository,
-    private val surahVerseRepository: SurahVerseRepository
+    private val surahVerseRepository: SurahVerseRepository,
+    private val surahVersePreferencesRepository: SurahVersePreferencesRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(QuranState())
     val uiState: StateFlow<QuranState> = _uiState.asStateFlow()
@@ -24,6 +27,7 @@ class QuranViewModel(
         initSurahs()
         initAllJuz()
         initAllHizb()
+        initSurahVersePreferences()
     }
 
     private fun initSurahs() {
@@ -59,6 +63,17 @@ class QuranViewModel(
         }
     }
 
+    private fun initSurahVersePreferences() {
+        viewModelScope.launch {
+            surahVersePreferencesRepository.getSurahVersePreferencesFlow().collect { surahVersePreferences ->
+                _uiState.update {
+                    it.copy(surahVersePreferences = surahVersePreferences)
+                }
+                refreshInitializingState()
+            }
+        }
+    }
+
     private fun refreshInitializingState() {
         if (!uiState.value.initializing) return
         _uiState.update {
@@ -67,14 +82,16 @@ class QuranViewModel(
     }
 
     data class QuranState(
-        val surahs: List<Surah>? = null,
-        val allJuz: List<Juz>? = null,
-        val allHizb: List<Hizb>? = null,
+        val surahs: List<Surah> = emptyList(),
+        val allJuz: List<Juz> = emptyList(),
+        val allHizb: List<Hizb> = emptyList(),
+        val surahVersePreferences: SurahVersePreferences? = null,
         val initializing: Boolean = true
     ) {
         val initialized: Boolean
-            get() = surahs != null &&
-                    allJuz != null &&
-                    allHizb != null
+            get() = surahs.isNotEmpty() &&
+                    allJuz.isNotEmpty() &&
+                    allHizb.isNotEmpty() &&
+                    surahVersePreferences != null
     }
 }

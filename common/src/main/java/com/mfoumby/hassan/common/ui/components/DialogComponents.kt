@@ -13,7 +13,7 @@ import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
 
 @Composable
-fun DefaultDialog(
+fun SimpleDialog(
     modifier: Modifier = Modifier,
     text: String,
     title: String? = null,
@@ -49,7 +49,7 @@ fun DefaultDialog(
 @Composable
 private fun SimpleDialogPreview() {
     Previews.Preview {
-        DefaultDialog(
+        SimpleDialog(
             text = "There is the text area",
             title = "Simple dialog",
             confirmText = "Confirm",
@@ -64,7 +64,7 @@ private fun SimpleDialogPreview() {
 @Composable
 private fun CriticalDialogPreview() {
     Previews.Preview {
-        DefaultDialog(
+        SimpleDialog(
             text = "Do you want to do this sensible action ?",
             title = "Sensible action",
             confirmText = "Delete",

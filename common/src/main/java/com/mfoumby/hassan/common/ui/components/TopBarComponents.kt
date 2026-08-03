@@ -12,12 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
+import com.mfoumby.hassan.common.ui.theme.topAppBarColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TitleTopBar(
     title: String,
-    actions: @Composable (RowScope.() -> Unit) = {}
+    actions: @Composable (RowScope.() -> Unit) = {},
+    scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     TopAppBar(
         title = {
@@ -27,7 +29,9 @@ fun TitleTopBar(
                 maxLines = 1
             )
         },
-        actions = actions
+        colors = MaterialTheme.colorScheme.topAppBarColor,
+        actions = actions,
+        scrollBehavior = scrollBehavior
     )
 }
 
@@ -53,6 +57,7 @@ fun BackTopBar(
         navigationIcon = {
             BackButton(onClick = onBackClick)
         },
+        colors = MaterialTheme.colorScheme.topAppBarColor,
         actions = actions,
         scrollBehavior = scrollBehavior
     )
@@ -64,6 +69,7 @@ fun BackTopBar(
  =====================================================================
  */
 
+@OptIn(ExperimentalMaterial3Api::class)
 @PhonePreviews
 @Composable
 private fun TitleTopBarPreview() {

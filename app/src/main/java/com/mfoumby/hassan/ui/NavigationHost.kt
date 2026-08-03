@@ -15,10 +15,10 @@ import com.mfoumby.hassan.quran.ui.navigateToQuran
 import com.mfoumby.hassan.quran.ui.quranSection
 import com.mfoumby.hassan.quran.ui.reciters.navigateToReciters
 import com.mfoumby.hassan.quran.ui.reciters.recitersScreen
-import com.mfoumby.hassan.quran.ui.surahverse.hizbScreen
-import com.mfoumby.hassan.quran.ui.surahverse.juzScreen
-import com.mfoumby.hassan.quran.ui.surahverse.navigateToHizb
-import com.mfoumby.hassan.quran.ui.surahverse.navigateToJuz
+import com.mfoumby.hassan.quran.ui.surahverse.hizbSurahVerseScreen
+import com.mfoumby.hassan.quran.ui.surahverse.juzSurahVerseScreen
+import com.mfoumby.hassan.quran.ui.surahverse.navigateToHizbSurahVerse
+import com.mfoumby.hassan.quran.ui.surahverse.navigateToJuzSurahVerse
 import com.mfoumby.hassan.quran.ui.surahverse.navigateToSurahVerse
 import com.mfoumby.hassan.quran.ui.surahverse.surahVerseScreen
 import com.mfoumby.hassan.quran.ui.surahverse.surahversetranslationlanguage.navigateToSurahVerseTranslationLanguage
@@ -73,8 +73,11 @@ fun NavigationHost(
         quranSection(
             bottomBar = bottomBar,
             onSurahClick = navController::navigateToSurahVerse,
-            onJuzClick = navController::navigateToJuz,
-            onHizbClick = navController::navigateToHizb
+            onJuzClick = navController::navigateToJuzSurahVerse,
+            onHizbClick = navController::navigateToHizbSurahVerse,
+            onSurahBookmarkClick = navController::navigateToSurahVerse,
+            onJuzBookmarkClick = navController::navigateToJuzSurahVerse,
+            onHizbBookmarkClick = navController::navigateToHizbSurahVerse
         ) {
             surahVerseScreen(
                 onBackClick = navController::popBackStack,
@@ -82,13 +85,13 @@ fun NavigationHost(
                 onReciterClick = navController::navigateToReciters
             )
 
-            juzScreen(
+            juzSurahVerseScreen(
                 onBackClick = navController::popBackStack,
                 onTranslationLanguageClick = navController::navigateToSurahVerseTranslationLanguage,
                 onReciterClick = navController::navigateToReciters
             )
 
-            hizbScreen(
+            hizbSurahVerseScreen(
                 onBackClick = navController::popBackStack,
                 onTranslationLanguageClick = navController::navigateToSurahVerseTranslationLanguage,
                 onReciterClick = navController::navigateToReciters
