@@ -52,7 +52,7 @@ fun SurahVersePage(
 
     LaunchedEffect(Unit) {
         surahVerseToScroll?.let {
-            if (surahVerses.indexOf(it) > surahVerses.size.half()) {
+            if (surahVerses.indexOf(it) >= surahVerses.size.half()) {
                 scrollState.animateScrollTo(scrollState.maxValue)
             }
         }

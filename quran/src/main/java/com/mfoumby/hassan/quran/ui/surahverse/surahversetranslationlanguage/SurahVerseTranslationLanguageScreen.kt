@@ -19,7 +19,7 @@ import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.TranslationLanguageListComponent
 import com.mfoumby.hassan.common.ui.components.BackTopBar
-import com.mfoumby.hassan.common.ui.components.DefaultDialog
+import com.mfoumby.hassan.common.ui.components.SimpleDialog
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -55,7 +55,7 @@ private fun SurahVerseTranslationLanguageScreen(
 
     when (val dialog = activeDialog) {
         is SurahVerseTranslationLanguageDialog.DownloadLanguageDialog -> {
-            DefaultDialog(
+            SimpleDialog(
                 text = stringResource(id = R.string.download_language_dialog_text),
                 confirmText = stringResource(id = R.string.download),
                 onConfirm = {
@@ -67,7 +67,7 @@ private fun SurahVerseTranslationLanguageScreen(
         }
 
         is SurahVerseTranslationLanguageDialog.DeleteLanguageDialog -> {
-            DefaultDialog(
+            SimpleDialog(
                 text = stringResource(id = R.string.delete_language_dialog_text),
                 confirmText = stringResource(id = R.string.delete),
                 onConfirm = {

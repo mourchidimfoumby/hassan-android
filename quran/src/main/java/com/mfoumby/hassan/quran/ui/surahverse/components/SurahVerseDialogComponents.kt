@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
-import com.mfoumby.hassan.common.ui.components.DefaultDialog
+import com.mfoumby.hassan.common.ui.components.SimpleDialog
 import com.mfoumby.hassan.common.ui.extension.mediumSpacing
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.R
@@ -33,7 +33,7 @@ fun DownloadAudioDialog(
     onConfirm: () -> Unit,
     onCancel: () -> Unit
 ) {
-    DefaultDialog(
+    SimpleDialog(
         text = stringResource(R.string.download_audio_dialog_text),
         confirmText = stringResource(com.mfoumby.hassan.common.R.string.download),
         onConfirm = onConfirm,

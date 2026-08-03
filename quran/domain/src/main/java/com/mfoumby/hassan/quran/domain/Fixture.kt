@@ -357,5 +357,8 @@ val surahVersePreferencesFixture = SurahVersePreferences(
     displayTranslation = true,
     translationLanguage = Language.ENGLISH,
     reciter = reciterFixture,
-    displayMode = SurahVersePreferences.DisplayMode.LIST
+    displayMode = SurahVersePreferences.DisplayMode.LIST,
+    surahBookmark = surahVerseFixture2,
+    juzBookmark = surahVerseFixture2,
+    hizbBookmark = surahVerseFixture2,
 )

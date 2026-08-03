@@ -20,13 +20,16 @@ class SurahVerseRepositoryImpl(
         surahVerseLocalDataSource.getSurahVerseFromSurah(surahNumber, limit)
 
     override suspend fun getSurahVersesFromJuz(juzNumber: Int, limit: Int): List<SurahVerse> =
-        surahVerseLocalDataSource.getSurahVerseFromJuz(juzNumber, limit)
+        surahVerseLocalDataSource.getSurahVersesFromJuz(juzNumber, limit)
 
     override suspend fun getSurahVersesFromHizb(hizbNumber: Int, limit: Int): List<SurahVerse> =
-        surahVerseLocalDataSource.getSurahVerseFromHizb(hizbNumber, limit)
+        surahVerseLocalDataSource.getSurahVersesFromHizb(hizbNumber, limit)
 
     override suspend fun getSurahVersesFromPage(page: Int): List<SurahVerse> =
-        surahVerseLocalDataSource.getSurahVerseFromPage(page)
+        surahVerseLocalDataSource.getSurahVersesFromPage(page)
+
+    override suspend fun getSurahVerse(surahNumber: Int, verseNumber: Int): SurahVerse? =
+        surahVerseLocalDataSource.getSurahVerse(surahNumber, verseNumber)
 
     override suspend fun getVerseCount(): Int = surahVerseLocalDataSource.getVerseCount()
 

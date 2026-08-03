@@ -23,14 +23,17 @@ class SurahVerseLocalDataSource(private val verseDao: VerseDao) {
     suspend fun getSurahVerseFromSurah(surahNumber: Int, limit: Int): List<SurahVerse> =
         verseDao.getSurahVerseFromSurah(surahNumber, limit).map { it.toSurahVerse() }
 
-    suspend fun getSurahVerseFromJuz(juzNumber: Int, limit: Int): List<SurahVerse> =
-        verseDao.getSurahVerseFromJuz(juzNumber, limit).map { it.toSurahVerse() }
+    suspend fun getSurahVersesFromJuz(juzNumber: Int, limit: Int): List<SurahVerse> =
+        verseDao.getSurahVersesFromJuz(juzNumber, limit).map { it.toSurahVerse() }
 
-    suspend fun getSurahVerseFromHizb(hizbNumber: Int, limit: Int): List<SurahVerse> =
-        verseDao.getSurahVerseFromHizb(hizbNumber, limit).map { it.toSurahVerse() }
+    suspend fun getSurahVersesFromHizb(hizbNumber: Int, limit: Int): List<SurahVerse> =
+        verseDao.getSurahVersesFromHizb(hizbNumber, limit).map { it.toSurahVerse() }
 
-    suspend fun getSurahVerseFromPage(page: Int): List<SurahVerse> =
-        verseDao.getSurahVerseFromPage(page).map { it.toSurahVerse() }
+    suspend fun getSurahVersesFromPage(page: Int): List<SurahVerse> =
+        verseDao.getSurahVersesFromPage(page).map { it.toSurahVerse() }
+
+    suspend fun getSurahVerse(surahNumber: Int, verseNumber: Int): SurahVerse? =
+        verseDao.getSurahVerse(surahNumber, verseNumber)?.toSurahVerse()
 
     suspend fun getVerseCount(): Int = verseDao.getVersesCount()
 

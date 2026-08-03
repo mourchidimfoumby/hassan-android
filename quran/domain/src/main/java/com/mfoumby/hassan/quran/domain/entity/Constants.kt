@@ -10,6 +10,9 @@ object Constants {
         displayTranslation = true,
         translationLanguage = null,
         reciter = null,
-        displayMode = SurahVersePreferences.DisplayMode.LIST
+        displayMode = SurahVersePreferences.DisplayMode.LIST,
+        surahBookmark = null,
+        juzBookmark = null,
+        hizbBookmark = null
     )
 }

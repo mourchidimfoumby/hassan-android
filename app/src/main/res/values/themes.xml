@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Hassan" parent="android:Theme.DeviceDefault.NoActionBar">
-        <item name="android:windowSplashScreenBackground">@color/primary</item>
+    <style name="Theme.Hassan.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/primary</item>
+        <item name="postSplashScreenTheme">@style/Theme.Hassan</item>
+    </style>
+
+    <style name="Theme.Hassan" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/background</item>
     </style>
 </resources>

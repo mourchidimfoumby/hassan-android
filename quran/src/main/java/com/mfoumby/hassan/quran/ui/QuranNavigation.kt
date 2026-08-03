@@ -7,6 +7,10 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.mfoumby.hassan.common.Route
+import com.mfoumby.hassan.quran.HizbNumber
+import com.mfoumby.hassan.quran.JuzNumber
+import com.mfoumby.hassan.quran.SurahNumber
+import com.mfoumby.hassan.quran.VerseNumber
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -20,9 +24,12 @@ fun NavController.navigateToQuran(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.quranSection(
     bottomBar: @Composable () -> Unit,
-    onSurahClick: (Int) -> Unit,
-    onJuzClick: (Int) -> Unit,
-    onHizbClick: (Int) -> Unit,
+    onSurahClick: (SurahNumber) -> Unit,
+    onJuzClick: (JuzNumber, SurahNumber) -> Unit,
+    onHizbClick: (HizbNumber, SurahNumber) -> Unit,
+    onSurahBookmarkClick: (SurahNumber, VerseNumber?) -> Unit,
+    onJuzBookmarkClick: (JuzNumber, SurahNumber, VerseNumber?) -> Unit,
+    onHizbBookmarkClick: (HizbNumber, SurahNumber, VerseNumber?) -> Unit,
     quranDestinations: NavGraphBuilder.() -> Unit
 ) {
     navigation<QuranBaseRoute>(startDestination = QuranRoute) {
@@ -31,7 +38,10 @@ fun NavGraphBuilder.quranSection(
                 bottomBar = bottomBar,
                 onSurahClick = onSurahClick,
                 onJuzClick = onJuzClick,
-                onHizbClick = onHizbClick
+                onHizbClick = onHizbClick,
+                onSurahBookmarkClick = onSurahBookmarkClick,
+                onJuzBookmarkClick = onJuzBookmarkClick,
+                onHizbBookmarkClick = onHizbBookmarkClick
             )
         }
         quranDestinations()
