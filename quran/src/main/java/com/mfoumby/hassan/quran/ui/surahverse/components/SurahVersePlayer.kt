@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.material3.buttons.NextButton
 import androidx.media3.ui.compose.material3.buttons.PlayPauseButton
 import androidx.media3.ui.compose.material3.buttons.PreviousButton
@@ -25,17 +26,14 @@ import com.mfoumby.hassan.common.ui.extension.smallSpacing
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.entity.Reciter
-import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseAudio
 import com.mfoumby.hassan.quran.domain.reciterFixture
-import com.mfoumby.hassan.quran.domain.surahFixture
 import com.mfoumby.hassan.quran.domain.surahVerseAudioFixture
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SurahVersePlayer(
     player: Player?,
-    surah: Surah,
     surahVerseAudio: SurahVerseAudio,
     reciter: Reciter,
 ) {
@@ -47,7 +45,6 @@ fun SurahVersePlayer(
     ) {
         HeadlineSection(
             player = player,
-            surah = surah,
             surahVerseAudio = surahVerseAudio,
             reciter = reciter
         )
@@ -55,10 +52,10 @@ fun SurahVersePlayer(
     }
 }
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 private fun HeadlineSection(
     player: Player?,
-    surah: Surah,
     surahVerseAudio: SurahVerseAudio,
     reciter: Reciter
 ) {
@@ -71,7 +68,7 @@ private fun HeadlineSection(
                     initialDelayMillis = 1000,
                     repeatDelayMillis = 1500
                 ),
-                text = "${stringResource(R.string.surah)} ${surah.transliteration}" +
+                text = "${stringResource(R.string.surah)} ${surahVerseAudio.surah.transliteration}" +
                         " - " +
                         "${stringResource(R.string.verse)} ${surahVerseAudio.verseNumber}"
             )
@@ -97,7 +94,6 @@ private fun SurahVersePlayerPreview() {
     Previews.Preview {
         SurahVersePlayer(
             player = null,
-            surah = surahFixture,
             surahVerseAudio = surahVerseAudioFixture,
             reciter = reciterFixture
         )

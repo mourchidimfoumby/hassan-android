@@ -43,11 +43,11 @@ import com.mfoumby.hassan.common.ui.components.TitleTopBar
 import com.mfoumby.hassan.common.ui.components.VerticalScrollBarIndicator
 import com.mfoumby.hassan.common.ui.extension.smallSpacing
 import com.mfoumby.hassan.common.ui.theme.padding
-import com.mfoumby.hassan.quran.HizbNumber
-import com.mfoumby.hassan.quran.JuzNumber
 import com.mfoumby.hassan.quran.R
-import com.mfoumby.hassan.quran.SurahNumber
-import com.mfoumby.hassan.quran.VerseNumber
+import com.mfoumby.hassan.quran.domain.HizbNumber
+import com.mfoumby.hassan.quran.domain.JuzNumber
+import com.mfoumby.hassan.quran.domain.SurahNumber
+import com.mfoumby.hassan.quran.domain.VerseNumber
 import com.mfoumby.hassan.quran.domain.entity.Hizb
 import com.mfoumby.hassan.quran.domain.entity.Juz
 import com.mfoumby.hassan.quran.domain.entity.Surah

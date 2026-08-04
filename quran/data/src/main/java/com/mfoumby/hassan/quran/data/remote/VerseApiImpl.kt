@@ -7,14 +7,14 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
 import com.mfoumby.hassan.quran.data.model.RemoteVerse
 import com.mfoumby.hassan.quran.data.model.RemoteVerses
-import com.mfoumby.hassan.quran.data.remote.FirestoreCollectionReferences.SURAH_VERSE_COLLECTION
+import com.mfoumby.hassan.quran.data.remote.FirestoreCollectionReferences.SURAH_VERSES_COLLECTION
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class VerseApiImpl: VerseApi {
-    private val surahVerseCollection = Firebase.firestore.collection(SURAH_VERSE_COLLECTION)
+    private val surahVerseCollection = Firebase.firestore.collection(SURAH_VERSES_COLLECTION)
 
     override fun getAllVerses(): Flow<List<RemoteVerse>> = callbackFlow {
         val batchSize = 20

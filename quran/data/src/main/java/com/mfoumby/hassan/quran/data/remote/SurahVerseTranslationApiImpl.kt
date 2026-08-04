@@ -6,13 +6,13 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObjects
 import com.mfoumby.hassan.quran.data.model.RemoteSurahVerseTranslation
 import com.mfoumby.hassan.quran.data.model.RemoteSurahVerseTranslations
-import com.mfoumby.hassan.quran.data.remote.FirestoreCollectionReferences.SURAH_VERSE_TRANSLATION_COLLECTION
+import com.mfoumby.hassan.quran.data.remote.FirestoreCollectionReferences.SURAH_VERSE_TRANSLATIONS_COLLECTION
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
 class SurahVerseTranslationApiImpl: SurahVerseTranslationApi {
-    private val surahVerseTranslationCollection = Firebase.firestore.collection(SURAH_VERSE_TRANSLATION_COLLECTION)
+    private val surahVerseTranslationCollection = Firebase.firestore.collection(SURAH_VERSE_TRANSLATIONS_COLLECTION)
     companion object {
         private const val SURAH_VERSE_TRANSLATION_DOCUMENT = "surahs"
     }

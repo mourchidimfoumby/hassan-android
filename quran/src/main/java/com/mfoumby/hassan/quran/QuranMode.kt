@@ -1,9 +1,9 @@
 package com.mfoumby.hassan.quran
 
-typealias SurahNumber = Int
-typealias JuzNumber = Int
-typealias HizbNumber = Int
-typealias VerseNumber = Int
+import com.mfoumby.hassan.quran.domain.HizbNumber
+import com.mfoumby.hassan.quran.domain.JuzNumber
+import com.mfoumby.hassan.quran.domain.SurahNumber
+import com.mfoumby.hassan.quran.domain.VerseNumber
 
 sealed class QuranMode(
     open val surahNumber: SurahNumber,

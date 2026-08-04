@@ -47,6 +47,8 @@ fun DownloadingAudioDialog(
     progress: Float,
     surah: Surah,
     reciter: Reciter,
+    currentStep: Int,
+    totalSteps: Int,
     onCancelDownloadingClick: () -> Unit
 ) {
     BasicAlertDialog(
@@ -56,41 +58,58 @@ fun DownloadingAudioDialog(
             dismissOnClickOutside = false
         )
     ) {
-        Surface(
-            shape = MaterialTheme.shapes.extraLarge
+        DownloadingAudioDialogContent(
+            progress = progress,
+            surah = surah,
+            reciter = reciter,
+            currentStep = currentStep,
+            totalSteps = totalSteps,
+            onCancelDownloadingClick = onCancelDownloadingClick
+        )
+    }
+}
+
+@Composable
+private fun DownloadingAudioDialogContent(
+    progress: Float,
+    surah: Surah,
+    reciter: Reciter,
+    currentStep: Int,
+    totalSteps: Int,
+    onCancelDownloadingClick: () -> Unit
+) {
+    Surface(shape = MaterialTheme.shapes.extraLarge) {
+        Column(
+            modifier = Modifier.padding(MaterialTheme.padding.large),
+            verticalArrangement = Arrangement.mediumSpacing()
         ) {
-            Column(
-                modifier = Modifier.padding(MaterialTheme.padding.medium),
-                verticalArrangement = Arrangement.mediumSpacing()
+            val step = if (totalSteps > 1) "(${currentStep}/$totalSteps) \u2022 " else ""
+
+            Text(
+                text = step +
+                        "${stringResource(R.string.surah)} " +
+                        surah.transliteration +
+                        " - " + reciter.name,
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Text(
+                text = "${stringResource(com.mfoumby.hassan.common.R.string.downloading)} " +
+                        "${(progress * 100).toInt()}%",
+                style = MaterialTheme.typography.bodySmall
+            )
+
+
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                progress = { progress }
+            )
+
+            Box(
+                modifier = Modifier.align(Alignment.End)
             ) {
-                Text(
-                    text = stringResource(R.string.surah) +
-                            " " + surah.transliteration +
-                            " - " + reciter.name,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Text(
-                    text = stringResource(com.mfoumby.hassan.common.R.string.downloading) +
-                            " " +
-                            (progress * 100).toInt() +
-                            "%",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodySmall
-                )
-
-
-                LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth(),
-                    progress = { progress }
-                )
-
-                Box(
-                    modifier = Modifier.align(Alignment.End)
-                ) {
-                    TextButton(onClick = onCancelDownloadingClick) {
-                        Text(text = stringResource(com.mfoumby.hassan.common.R.string.cancel))
-                    }
+                TextButton(onClick = onCancelDownloadingClick) {
+                    Text(text = stringResource(com.mfoumby.hassan.common.R.string.cancel))
                 }
             }
         }
@@ -110,12 +129,14 @@ private fun DownloadAudioDialogPreview() {
 
 @PhonePreviews
 @Composable
-private fun DownloadingAudioDialogPreview() {
+private fun DownloadingAudioDialogContentPreview() {
     Previews.Preview {
-        DownloadingAudioDialog(
+        DownloadingAudioDialogContent(
             progress = 0.5f,
             surah = surahFixture,
             reciter = reciterFixture,
+            currentStep = 1,
+            totalSteps = 4,
             onCancelDownloadingClick = {}
         )
     }
