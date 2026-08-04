@@ -149,34 +149,40 @@ class SurahVerseViewModel(
                 val stateValue = uiState.value
                 val reciter = requireNotNull(stateValue.surahVersePreferences?.reciter)
                 var currentStep = 0
-                val surahVerseAudios = stateValue.surahVerses
-                    .groupBy { it.surah }
+                val groupedSurahVerses = stateValue.surahVerses.groupBy { it.surah }
+                groupedSurahVerses
+                    .filterNot {
+                        surahVerseAudioRepository.isSurahVerseAudioDownloaded(
+                            it.value.first().surah,
+                            reciter.id
+                        )
+                    }
                     .run {
                         val totalSteps = keys.size
-                        flatMap { (surah, surahVerses) ->
+                        forEach { (surah, _) ->
                             currentStep++
-                            if (!surahVerseAudioRepository.isSurahVerseAudioDownloaded(surah, reciter.id)) {
-                                surahVerseAudioRepository.downloadSurahVerseAudio(surah, reciter.id).collect {
-                                    _uiState.update { state ->
-                                        val audioDownloadProgress = AudioDownloadProgress(
-                                            surah = surah,
-                                            reciter = reciter,
-                                            progress = Progress(it, surah.totalVerses),
-                                            currentStep = currentStep,
-                                            totalSteps = totalSteps
-                                        )
-                                        state.copy(audioDownloadProgress = audioDownloadProgress)
-                                    }
+                            surahVerseAudioRepository.downloadSurahVerseAudio(surah, reciter.id).collect {
+                                _uiState.update { state ->
+                                    val audioDownloadProgress = AudioDownloadProgress(
+                                        surah = surah,
+                                        reciter = reciter,
+                                        progress = Progress(it, surah.totalVerses),
+                                        currentStep = currentStep,
+                                        totalSteps = totalSteps
+                                    )
+                                    state.copy(audioDownloadProgress = audioDownloadProgress)
                                 }
                             }
-
-                            val firstVerseNumber = surahVerses.first().verse.verseNumber
-                            val lastVerseNumber = surahVerses.last().verse.verseNumber
-                            val offset = firstVerseNumber - 1
-                            val limit = lastVerseNumber - firstVerseNumber + 1
-                            surahVerseAudioRepository.getSurahVerseAudios(surah, reciter.id, offset, limit)
                         }
                     }
+
+                val surahVerseAudios = groupedSurahVerses.flatMap { (surah, surahVerses) ->
+                    val firstVerseNumber = surahVerses.first().verse.verseNumber
+                    val lastVerseNumber = surahVerses.last().verse.verseNumber
+                    val offset = firstVerseNumber - 1
+                    val limit = lastVerseNumber - firstVerseNumber + 1
+                    surahVerseAudioRepository.getSurahVerseAudios(surah, reciter.id, offset, limit)
+                }
 
                 _uiState.update { state ->
                     state.copy(
