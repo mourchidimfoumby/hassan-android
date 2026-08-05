@@ -152,10 +152,7 @@ class SurahVerseViewModel(
                 val groupedSurahVerses = stateValue.surahVerses.groupBy { it.surah }
                 groupedSurahVerses
                     .filterNot {
-                        surahVerseAudioRepository.isSurahVerseAudioDownloaded(
-                            it.value.first().surah,
-                            reciter.id
-                        )
+                        surahVerseAudioRepository.isSurahVerseAudioDownloaded(it.value.first().surah, reciter.id)
                     }
                     .run {
                         val totalSteps = keys.size
