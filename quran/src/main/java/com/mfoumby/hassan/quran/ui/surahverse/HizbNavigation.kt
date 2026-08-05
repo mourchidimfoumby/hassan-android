@@ -5,10 +5,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.mfoumby.hassan.common.Route
-import com.mfoumby.hassan.quran.HizbNumber
 import com.mfoumby.hassan.quran.QuranMode
-import com.mfoumby.hassan.quran.SurahNumber
-import com.mfoumby.hassan.quran.VerseNumber
+import com.mfoumby.hassan.quran.domain.HizbNumber
+import com.mfoumby.hassan.quran.domain.SurahNumber
+import com.mfoumby.hassan.quran.domain.VerseNumber
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -24,7 +24,7 @@ import com.mfoumby.hassan.quran.R
 @Composable
 fun SurahVerseBottomSheet(
     onDismissRequest: () -> Unit,
-    onPlayVerseAudioClick: () -> Unit
+    onPlaySurahVerseAudioClick: () -> Unit
 ) {
     ModalBottomSheet(onDismissRequest = onDismissRequest) {
         Column(
@@ -32,7 +32,7 @@ fun SurahVerseBottomSheet(
         ) {
             itemValues.forEach { value ->
                 val action = when (value.first) {
-                    ItemType.PLAY -> onPlayVerseAudioClick
+                    ItemType.PLAY -> onPlaySurahVerseAudioClick
                 }
 
                 ListItem(
@@ -68,7 +68,7 @@ private fun SurahVerseBottomSheetPreview() {
     Previews.Preview {
         SurahVerseBottomSheet(
             onDismissRequest = {},
-            onPlayVerseAudioClick = {}
+            onPlaySurahVerseAudioClick = {}
         )
     }
 }

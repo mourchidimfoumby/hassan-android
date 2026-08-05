@@ -7,13 +7,13 @@ import com.google.firebase.firestore.toObjects
 import com.mfoumby.hassan.quran.data.model.RemoteSurah
 import com.mfoumby.hassan.quran.data.model.RemoteSurahTranslation
 import com.mfoumby.hassan.quran.data.model.RemoteSurahTranslations
-import com.mfoumby.hassan.quran.data.remote.FirestoreCollectionReferences.SURAH_COLLECTION
-import com.mfoumby.hassan.quran.data.remote.FirestoreCollectionReferences.SURAH_TRANSLATION_COLLECTION
+import com.mfoumby.hassan.quran.data.remote.FirestoreCollectionReferences.SURAHS_COLLECTION
+import com.mfoumby.hassan.quran.data.remote.FirestoreCollectionReferences.SURAH_TRANSLATIONS_COLLECTION
 import kotlinx.coroutines.tasks.await
 
 class SurahApiImpl: SurahApi {
-    private val surahCollection = Firebase.firestore.collection(SURAH_COLLECTION)
-    private val surahTranslationCollection = Firebase.firestore.collection(SURAH_TRANSLATION_COLLECTION)
+    private val surahCollection = Firebase.firestore.collection(SURAHS_COLLECTION)
+    private val surahTranslationCollection = Firebase.firestore.collection(SURAH_TRANSLATIONS_COLLECTION)
 
     override suspend fun getSurahs(): List<RemoteSurah> = surahCollection.get().await().toObjects<RemoteSurah>()
 

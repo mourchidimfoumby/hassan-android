@@ -343,13 +343,14 @@ val reciterFixtures = listOf(
 )
 
 val surahVerseAudioFixture = SurahVerseAudio(
-    verseNumber = verseFixture.verseNumber,
+    surah = surahVerseFixture.surah,
+    verseNumber = surahVerseFixture.verse.verseNumber,
     audioUri = "https://example.com"
 )
 
 val surahVersePlayerDataFixture = SurahVersePlayerData(
     reciter = reciterFixture,
-    surahVerseAudios = listOf(surahVerseAudioFixture),
+    surahVerseAudios = mapOf((surahVerseFixture.surah.number to surahVerseFixture.verse.verseNumber) to surahVerseAudioFixture),
     state = SurahVersePlayerData.State.Playing(surahVerseAudioFixture)
 )
 

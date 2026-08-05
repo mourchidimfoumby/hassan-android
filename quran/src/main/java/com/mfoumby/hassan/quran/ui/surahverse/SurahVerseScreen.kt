@@ -1,5 +1,6 @@
 package com.mfoumby.hassan.quran.ui.surahverse
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,7 +18,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -47,12 +47,14 @@ import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.entity.Constants
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
+import com.mfoumby.hassan.quran.domain.entity.SurahVerseAudio
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePlayerData
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseTranslation
 import com.mfoumby.hassan.quran.domain.surahFixture
 import com.mfoumby.hassan.quran.domain.surahVerseFixtures
 import com.mfoumby.hassan.quran.domain.surahVerseFixtures2
+import com.mfoumby.hassan.quran.domain.surahVersePlayerDataFixture
 import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
 import com.mfoumby.hassan.quran.domain.surahVerseTranslationFixtures
 import com.mfoumby.hassan.quran.ui.surahverse.components.DownloadAudioDialog
@@ -65,6 +67,7 @@ import com.mfoumby.hassan.quran.ui.surahverse.components.bottomsheets.SurahVerse
 import kotlinx.coroutines.flow.drop
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.math.max
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,10 +84,9 @@ fun SurahVerseDestination(
     val context = LocalContext.current
     val resources = LocalResources.current
     val player = remember { ExoPlayer.Builder(context).build() }
-    val surahVerseAudios = uiState.surahVersePlayerData?.surahVerseAudios
-    val surahVersePlayerData = uiState.surahVersePlayerData
     val snackBarHostState = remember { SnackbarHostState() }
     val showSnackbar = snackbarLauncher(snackBarHostState)
+    val surahVersePlayerData = uiState.surahVersePlayerData
     var activeDialog by remember { mutableStateOf<SurahVerseDialog?>(null) }
 
     LaunchedEffect(Unit) {
@@ -120,27 +122,29 @@ fun SurahVerseDestination(
         }
 
         SurahVerseDialog.DownloadingAudioDialog -> {
-            var progress by remember { mutableFloatStateOf(0f) }
-            uiState.audioDownloadProgress?.progress?.let { progress = it }
-            DownloadingAudioDialog(
-                progress = progress,
-                surah = uiState.surah!!,
-                reciter = uiState.surahVersePreferences?.reciter!!,
-                onCancelDownloadingClick = {
-                    viewModel.stopAudioDownload()
-                    activeDialog = null
-                }
-            )
+            uiState.audioDownloadProgress?.let { audioDownloadProgress ->
+                DownloadingAudioDialog(
+                    progress = audioDownloadProgress.progress.progress,
+                    surah = audioDownloadProgress.surah,
+                    reciter = audioDownloadProgress.reciter,
+                    currentStep = audioDownloadProgress.currentStep,
+                    totalSteps = audioDownloadProgress.totalSteps,
+                    onCancelDownloadingClick = {
+                        viewModel.stopAudioDownload()
+                        activeDialog = null
+                    }
+                )
+            }
         }
 
         else -> Unit
     }
 
-    LaunchedEffect(surahVerseAudios) {
-        surahVerseAudios?.map {
+    LaunchedEffect(surahVersePlayerData?.surahVerseAudios) {
+        surahVersePlayerData?.surahVerseAudios?.values?.map {
             MediaItem.Builder()
                 .setUri(it.audioUri)
-                .setMediaId(it.verseNumber.toString())
+                .setMediaId(it.id.toString())
                 .build()
         }?.also {
             player.setMediaItems(it)
@@ -151,7 +155,8 @@ fun SurahVerseDestination(
     LaunchedEffect(surahVersePlayerData?.state) {
         when (val state = surahVersePlayerData?.state) {
             is SurahVersePlayerData.State.Playing -> {
-                player.seekTo(state.surahVerseAudio.verseNumber - 1, 0)
+                val index = max(surahVersePlayerData.surahVerseAudios.values.indexOf(state.surahVerseAudio), 0)
+                player.seekTo(index, 0)
                 player.play()
             }
 
@@ -169,7 +174,11 @@ fun SurahVerseDestination(
                     reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO ||
                     reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK
                 ) {
-                    mediaItem?.mediaId?.toInt()?.let(viewModel::onAudioChange)
+                    mediaItem?.mediaId?.toInt()?.let { id ->
+                        val surahNumber = SurahVerseAudio.getSurahNumberFromId(id)
+                        val verseNumber = SurahVerseAudio.getVerseNumberFromId(id)
+                        viewModel.onAudioChange(surahNumber, verseNumber)
+                    }
                 }
             }
         }
@@ -200,7 +209,7 @@ fun SurahVerseDestination(
             onTranslationLanguageClick = onTranslationLanguageClick,
             onDisplayTranslationChange = viewModel::onDisplayTranslationChange,
             onReciterClick = onReciterClick,
-            onPlayVerseAudioClick = viewModel::onPlayAudio,
+            onPlaySurahVerseAudioClick = viewModel::onPlaySurahVerseAudio,
             onDisplayModeClick = viewModel::onDisplayModeChange,
             onPageChange = viewModel::onPageChange,
             onSaveBookmark = viewModel::onSaveBookmark
@@ -227,7 +236,7 @@ private fun SurahVerseScreen(
     onTranslationLanguageClick: () -> Unit,
     onDisplayTranslationChange: (Boolean) -> Unit,
     onReciterClick: () -> Unit,
-    onPlayVerseAudioClick: (Int) -> Unit,
+    onPlaySurahVerseAudioClick: (SurahVerse) -> Unit,
     onDisplayModeClick: (SurahVerseViewModel.InformativeDisplayMode) -> Unit,
     onPageChange: (Int) -> Unit,
     onSaveBookmark: (SurahVerse) -> Unit
@@ -289,53 +298,52 @@ private fun SurahVerseScreen(
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            when (informativeDisplayMode) {
-                is SurahVerseViewModel.InformativeDisplayMode.ListMode -> {
-                    SurahVerseListMode(
-                        modifier = Modifier.weight(1f),
-                        surah = surah,
-                        surahVerses = surahVerses,
-                        juz = juz,
-                        hizb = hizb,
-                        surahVerseTranslations = surahVerseTranslations,
-                        surahVersePreferences = surahVersePreferences,
-                        quranMode = quranMode,
-                        surahVerseToScroll = informativeDisplayMode.surahVerse,
-                        onPageChange = onPageChange,
-                        onSurahVerseClick = {
-                            activeBottomSheet = SurahVerseBottomSheet.VerseBottomSheet(it)
-                        },
-                        onScrollValueChange = { scrollValue = it }
+            Box(modifier = Modifier.weight(1f)) {
+                when (informativeDisplayMode) {
+                    is SurahVerseViewModel.InformativeDisplayMode.ListMode -> {
+                        SurahVerseListMode(
+                            surah = surah,
+                            surahVerses = surahVerses,
+                            juz = juz,
+                            hizb = hizb,
+                            surahVerseTranslations = surahVerseTranslations,
+                            surahVersePreferences = surahVersePreferences,
+                            quranMode = quranMode,
+                            surahVerseToScroll = informativeDisplayMode.surahVerse,
+                            onPageChange = onPageChange,
+                            onSurahVerseClick = {
+                                activeBottomSheet = SurahVerseBottomSheet.VerseBottomSheet(it)
+                            },
+                            onScrollValueChange = { scrollValue = it }
+                        )
+                    }
+
+                    is SurahVerseViewModel.InformativeDisplayMode.PageMode -> {
+                        SurahVersePageMode(
+                            surahVerses = surahVerses,
+                            page = page,
+                            surahVerseToScroll = informativeDisplayMode.surahVerse,
+                            onPageChange = onPageChange,
+                            onSurahVerseClick = {
+                                activeBottomSheet = SurahVerseBottomSheet.VerseBottomSheet(it)
+                            },
+                            onScrollValueChange = { scrollValue = it }
+                        )
+                    }
+                }
+            }
+
+            when (val state = surahVersePlayerData?.state) {
+                is SurahVersePlayerData.State.Playing -> {
+                    SurahVersePlayer(
+                        player = player,
+                        reciter = surahVersePlayerData.reciter,
+                        surahVerseAudio = state.surahVerseAudio
                     )
                 }
 
-                is SurahVerseViewModel.InformativeDisplayMode.PageMode -> {
-                    SurahVersePageMode(
-                        modifier = Modifier.weight(1f),
-                        surahVerses = surahVerses,
-                        page = page,
-                        surahVerseToScroll = informativeDisplayMode.surahVerse,
-                        onPageChange = onPageChange,
-                        onSurahVerseClick = {
-                            activeBottomSheet = SurahVerseBottomSheet.VerseBottomSheet(it)
-                        },
-                        onScrollValueChange = { scrollValue = it }
-                    )
-                }
+                else -> Unit
             }
-        }
-
-        when (val state = surahVersePlayerData?.state) {
-            is SurahVersePlayerData.State.Playing -> {
-                SurahVersePlayer(
-                    player = player,
-                    surah = surah,
-                    reciter = surahVersePlayerData.reciter,
-                    surahVerseAudio = state.surahVerseAudio
-                )
-            }
-
-            else -> Unit
         }
     }
 
@@ -371,9 +379,9 @@ private fun SurahVerseScreen(
         is SurahVerseBottomSheet.VerseBottomSheet -> {
             SurahVerseBottomSheet(
                 onDismissRequest = { activeBottomSheet = null },
-                onPlayVerseAudioClick = {
+                onPlaySurahVerseAudioClick = {
                     activeBottomSheet = null
-                    onPlayVerseAudioClick(bottomSheet.surahVerse.verse.verseNumber)
+                    onPlaySurahVerseAudioClick(bottomSheet.surahVerse)
                 }
             )
         }
@@ -531,14 +539,14 @@ private fun SurahVerseScreenPreview() {
             surahVersePreferences = surahVersePreferencesFixture,
             informativeDisplayMode = SurahVerseViewModel.InformativeDisplayMode.ListMode(surahVerseFixtures.first()),
             quranMode = QuranMode.SurahMode(surahFixture.number, null),
-            surahVersePlayerData = null,
+            surahVersePlayerData = surahVersePlayerDataFixture,
             player = null,
             snackBarHostState = SnackbarHostState(),
             onBackClick = {},
             onTranslationLanguageClick = {},
             onDisplayTranslationChange = {},
             onReciterClick = {},
-            onPlayVerseAudioClick = {},
+            onPlaySurahVerseAudioClick = {},
             onDisplayModeClick = {},
             onPageChange = {},
             onSaveBookmark = {}
