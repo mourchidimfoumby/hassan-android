@@ -86,7 +86,7 @@ fun SurahVerseDestination(
     val player = remember { ExoPlayer.Builder(context).build() }
     val snackBarHostState = remember { SnackbarHostState() }
     val showSnackbar = snackbarLauncher(snackBarHostState)
-    val surahVersePlayerData = uiState.surahVersePlayerData
+    val surahVersePlayerData = uiState.playerData
     var activeDialog by remember { mutableStateOf<SurahVerseDialog?>(null) }
 
     LaunchedEffect(Unit) {
@@ -191,15 +191,15 @@ fun SurahVerseDestination(
         }
     }
 
-    if (!uiState.initializing) {
+    if (!uiState.isLoading) {
         SurahVerseScreen(
             surah = uiState.surah!!,
             surahVerses = uiState.surahVerses,
-            surahVerseTranslations = uiState.surahVerseTranslations,
-            juz = uiState.juz,
-            hizb = uiState.hizb,
-            page = uiState.page,
-            surahVersePreferences = uiState.surahVersePreferences!!,
+            surahVerseTranslations = uiState.translations,
+            juz = uiState.juz!!,
+            hizb = uiState.hizb!!,
+            page = uiState.page!!,
+            surahVersePreferences = uiState.preferences!!,
             informativeDisplayMode = uiState.informativeDisplayMode!!,
             quranMode = quranMode,
             surahVersePlayerData = surahVersePlayerData,
@@ -240,7 +240,6 @@ private fun SurahVerseScreen(
     onDisplayModeClick: (SurahVerseViewModel.InformativeDisplayMode) -> Unit,
     onPageChange: (Int) -> Unit,
     onSaveBookmark: (SurahVerse) -> Unit
-
 ) {
     var activeBottomSheet by remember { mutableStateOf<SurahVerseBottomSheet?>(null) }
     val title = when (quranMode) {

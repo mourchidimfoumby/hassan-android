@@ -74,13 +74,13 @@ fun QuranDestination(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    if (!uiState.initializing) {
+    if (!uiState.isLoading) {
         QuranScreen(
             bottomBar = bottomBar,
             surahs = uiState.surahs,
             allJuz = uiState.allJuz,
             allHizb = uiState.allHizb,
-            surahVersePreferences = uiState.surahVersePreferences!!,
+            surahVersePreferences = uiState.preferences!!,
             onSurahClick = onSurahClick,
             onJuzClick = onJuzClick,
             onHizbClick = onHizbClick,

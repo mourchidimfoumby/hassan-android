@@ -7,40 +7,41 @@ import com.mfoumby.hassan.quran.domain.entity.Constants.TOTAL_QURAN_VERSES
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseTranslationLanguageRepository
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseTranslationRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
 
 class DownloadSurahVerseTranslationUseCase(
     private val surahVerseTranslationRepository: SurahVerseTranslationRepository,
     private val surahVerseTranslationLanguageRepository: SurahVerseTranslationLanguageRepository
 ) {
-    private val _downloadingProgress = MutableStateFlow<TranslationLanguage?>(null)
-    val downloadingProgress: Flow<TranslationLanguage> = _downloadingProgress.filterNotNull()
-
-    suspend fun execute(translationLanguage: TranslationLanguage) {
-        if (translationLanguage.state !is TranslationLanguageState.NotDownloaded) return
+    fun execute(translationLanguage: TranslationLanguage): Flow<TranslationLanguage> {
+        if (translationLanguage.state !is TranslationLanguageState.NotDownloaded) return emptyFlow()
         var verseCount = 0
-
-        surahVerseTranslationRepository.downloadSurahVerseTranslations(translationLanguage.language)
-            .catch {
-                _downloadingProgress.update {
-                    translationLanguage.copy(state = TranslationLanguageState.NotDownloaded)
-                }
-            }
-            .collect {
-                verseCount += it.size
-                _downloadingProgress.update {
-                    translationLanguage.copy(
-                        state = TranslationLanguageState.Downloading(Progress(verseCount, TOTAL_QURAN_VERSES).progress)
+        return surahVerseTranslationRepository
+            .downloadSurahVerseTranslations(translationLanguage.language)
+            .map { surahVerseTranslation ->
+                verseCount += surahVerseTranslation.size
+                translationLanguage.copy(
+                    state = TranslationLanguageState.Downloading(
+                        Progress(verseCount, TOTAL_QURAN_VERSES).progress
                     )
+                )
+            }
+            .onEach(surahVerseTranslationLanguageRepository::updateTranslationLanguage)
+            .onCompletion { cause ->
+                if (cause == null) {
+                    val downloaded = translationLanguage.copy(state = TranslationLanguageState.Downloaded)
+                    surahVerseTranslationLanguageRepository.updateTranslationLanguage(downloaded)
                 }
             }
-
-        surahVerseTranslationLanguageRepository.updateTranslationLanguage(translationLanguage.copy(state = TranslationLanguageState.Downloaded))
-        _downloadingProgress.update {
-            translationLanguage.copy(state = TranslationLanguageState.Downloaded)
-        }
+            .catch { e ->
+                val notDownloaded = translationLanguage.copy(state = TranslationLanguageState.NotDownloaded)
+                surahVerseTranslationLanguageRepository.updateTranslationLanguage(notDownloaded)
+                emit(notDownloaded)
+                throw e
+            }
     }
 }

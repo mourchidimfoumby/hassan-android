@@ -10,11 +10,19 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SurahDao {
-    @Query("SELECT * FROM $SURAH_TABLE_NAME ORDER BY $SURAH_NUMBER")
+    @Query("""
+        SELECT * FROM 
+        $SURAH_TABLE_NAME 
+        ORDER BY $SURAH_NUMBER
+    """)
     fun getSurahs(): Flow<List<LocalSurah>>
 
-    @Query("SELECT * FROM $SURAH_TABLE_NAME WHERE $SURAH_NUMBER = :surahNumber")
-    fun getSurah(surahNumber: Int): LocalSurah
+    @Query("""
+        SELECT * 
+        FROM $SURAH_TABLE_NAME 
+        WHERE $SURAH_NUMBER = :surahNumber
+    """)
+    fun getSurah(surahNumber: Int): LocalSurah?
 
     @Query("SELECT COUNT(*) FROM $SURAH_TABLE_NAME")
     suspend fun getSurahCount(): Int

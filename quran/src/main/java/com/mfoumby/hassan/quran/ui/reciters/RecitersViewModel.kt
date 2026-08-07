@@ -9,7 +9,11 @@ import com.mfoumby.hassan.quran.domain.repository.SurahVersePreferencesRepositor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 class RecitersViewModel(
@@ -20,55 +24,45 @@ class RecitersViewModel(
     val uiState: StateFlow<RecitersUiState> = _uiState.asStateFlow()
 
     init {
-        initReciters()
-        listenSurahVersePreferences()
+        initUiState()
     }
 
     fun onReciterClick(reciter: Reciter) {
-        val surahVersePreferences = uiState.value.surahVersePreferences ?: return
-        val newReciter = if (surahVersePreferences.reciter?.id != reciter.id) reciter else null
+        val preferences = uiState.value.preferences ?: return
+        val newReciter = if (preferences.reciter?.id != reciter.id) reciter else null
         viewModelScope.launch {
             surahVersePreferencesRepository.setSurahVersePreferences(
-                surahVersePreferences.copy(reciter = newReciter)
+                preferences.copy(reciter = newReciter)
             )
         }
     }
 
-    private fun initReciters() {
+    private fun initUiState() {
         viewModelScope.launch {
             val reciters = reciterRepository.getReciters()
+            val preferencesFlow = surahVersePreferencesRepository.getSurahVersePreferencesFlow()
+
             _uiState.update {
-                it.copy(reciters = reciters)
+                it.copy(
+                    reciters = reciters,
+                    preferences = preferencesFlow.first(),
+                    isLoading = false
+                )
             }
-            refreshInitializingState()
-        }
-    }
 
-    private fun listenSurahVersePreferences() {
-        viewModelScope.launch {
-            surahVersePreferencesRepository.getSurahVersePreferencesFlow().collect { surahVersePreferences ->
-                _uiState.update {
-                    it.copy(surahVersePreferences = surahVersePreferences)
+            val preferencesJob = preferencesFlow.map {
+                _uiState.update { state ->
+                    state.copy(preferences = it)
                 }
-                refreshInitializingState()
-            }
-        }
-    }
+            }.launchIn(viewModelScope)
 
-    private fun refreshInitializingState() {
-        if (!uiState.value.initializing) return
-        _uiState.update {
-            it.copy(initializing = !it.initialized)
+            listOf(preferencesJob).joinAll()
         }
     }
 
     data class RecitersUiState(
         val reciters: List<Reciter>? = null,
-        val surahVersePreferences: SurahVersePreferences? = null,
-        val initializing: Boolean = true
-    ) {
-        val initialized: Boolean
-            get() = surahVersePreferences != null &&
-                    reciters != null
-    }
+        val preferences: SurahVersePreferences? = null,
+        val isLoading: Boolean = true
+    )
 }

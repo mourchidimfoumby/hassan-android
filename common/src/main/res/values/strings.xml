@@ -22,4 +22,5 @@
     <string name="not_internet_connection_error">Aucune connexion Internet.</string>
     <string name="downloading">Téléchargement</string>
     <string name="none_reciter_selected_error">Veuillez séléctionner un récitateur pour écouter l\'audio.</string>
+    <string name="download_translation_error">Une erreur est survenue durant le téléchargement de la traduction %s</string>
 </resources>

@@ -12,8 +12,9 @@ import com.mfoumby.hassan.quran.domain.repository.SurahVerseRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class QuranViewModel(
     private val surahRepository: SurahRepository,
@@ -24,74 +25,38 @@ class QuranViewModel(
     val uiState: StateFlow<QuranState> = _uiState.asStateFlow()
 
     init {
-        initSurahs()
-        initAllJuz()
-        initAllHizb()
-        initSurahVersePreferences()
+        initUiState()
     }
 
-    private fun initSurahs() {
-        viewModelScope.launch {
-            surahRepository.getSurahs().collect { surahs ->
-                _uiState.update {
-                    it.copy(surahs = surahs)
-                }
-                refreshInitializingState()
+    private fun initUiState() {
+        val surahsFlow = surahRepository.getSurahs()
+        val allJuzFlow = surahVerseRepository.getAllJuz()
+        val allHizbFlow = surahVerseRepository.getAllHizb()
+        val preferencesFlow = surahVersePreferencesRepository.getSurahVersePreferencesFlow()
+
+        combine(
+            surahsFlow,
+            allJuzFlow,
+            allHizbFlow,
+            preferencesFlow
+        ) { surahs, allJuz, allHizb, preferences ->
+            _uiState.update {
+                it.copy(
+                    surahs = surahs,
+                    allJuz = allJuz,
+                    allHizb = allHizb,
+                    preferences = preferences,
+                    isLoading = false
+                )
             }
-        }
-    }
-
-    private fun initAllJuz() {
-        viewModelScope.launch {
-            surahVerseRepository.getAllJuz().collect { allJuz ->
-                _uiState.update {
-                    it.copy(allJuz = allJuz)
-                }
-                refreshInitializingState()
-            }
-        }
-    }
-
-    private fun initAllHizb() {
-        viewModelScope.launch {
-            surahVerseRepository.getAllHizb().collect { allHizb ->
-                _uiState.update {
-                    it.copy(allHizb = allHizb)
-                }
-                refreshInitializingState()
-            }
-        }
-    }
-
-    private fun initSurahVersePreferences() {
-        viewModelScope.launch {
-            surahVersePreferencesRepository.getSurahVersePreferencesFlow().collect { surahVersePreferences ->
-                _uiState.update {
-                    it.copy(surahVersePreferences = surahVersePreferences)
-                }
-                refreshInitializingState()
-            }
-        }
-    }
-
-    private fun refreshInitializingState() {
-        if (!uiState.value.initializing) return
-        _uiState.update {
-            it.copy(initializing = !it.initialized)
-        }
+        }.launchIn(viewModelScope)
     }
 
     data class QuranState(
         val surahs: List<Surah> = emptyList(),
         val allJuz: List<Juz> = emptyList(),
         val allHizb: List<Hizb> = emptyList(),
-        val surahVersePreferences: SurahVersePreferences? = null,
-        val initializing: Boolean = true
-    ) {
-        val initialized: Boolean
-            get() = surahs.isNotEmpty() &&
-                    allJuz.isNotEmpty() &&
-                    allHizb.isNotEmpty() &&
-                    surahVersePreferences != null
-    }
+        val preferences: SurahVersePreferences? = null,
+        val isLoading: Boolean = true
+    )
 }

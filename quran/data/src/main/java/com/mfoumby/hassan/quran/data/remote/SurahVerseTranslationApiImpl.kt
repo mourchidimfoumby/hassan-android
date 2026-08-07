@@ -35,7 +35,7 @@ class SurahVerseTranslationApiImpl: SurahVerseTranslationApi {
                 break
             }
 
-            val remoteSurahVerseTranslationList = snapshot.toObjects<RemoteSurahVerseTranslations>().map { it.values }.flatten()
+            val remoteSurahVerseTranslationList = snapshot.toObjects<RemoteSurahVerseTranslations>().flatMap { it.values }
             emit(remoteSurahVerseTranslationList)
             lastDocument = snapshot.documents.last()
         }
