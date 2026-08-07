@@ -17,7 +17,7 @@ class SurahRepositoryImpl(
 
     override fun getSurahs(): Flow<List<Surah>> = surahLocalDataSource.getSurahsFlow()
 
-    override suspend fun getSurah(surahNumber: Int): Surah = surahLocalDataSource.getSurah(surahNumber)
+    override suspend fun getSurah(surahNumber: Int): Surah? = surahLocalDataSource.getSurah(surahNumber)
 
     override suspend fun getSurahCount(): Int = surahLocalDataSource.getSurahCount()
 

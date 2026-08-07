@@ -23,6 +23,7 @@ class RecitersViewModelTest {
     private val surahVersePreferencesRepository: SurahVersePreferencesRepository = mockk()
 
     lateinit var viewModel: RecitersViewModel
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
@@ -30,7 +31,7 @@ class RecitersViewModelTest {
         coEvery { surahVersePreferencesRepository.setSurahVersePreferences(any()) } returns Unit
         every { surahVersePreferencesRepository.getSurahVersePreferencesFlow() } returns flowOf(surahVersePreferencesFixture)
 
-        Dispatchers.setMain(UnconfinedTestDispatcher())
+        Dispatchers.setMain(testDispatcher)
 
         viewModel = RecitersViewModel(
             reciterRepository = reciterRepository,
@@ -46,8 +47,8 @@ class RecitersViewModelTest {
 
         // Then
         assert(viewModel.uiState.value.reciters == reciters)
-        assert(viewModel.uiState.value.surahVersePreferences == surahVersePreferences)
-        assert(!viewModel.uiState.value.initializing)
+        assert(viewModel.uiState.value.preferences == surahVersePreferences)
+        assert(!viewModel.uiState.value.isLoading)
     }
 
     @Test

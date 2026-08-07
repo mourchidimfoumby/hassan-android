@@ -40,9 +40,9 @@ fun RecitersDestination(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    if (!uiState.initializing) {
+    if (!uiState.isLoading) {
         RecitersScreen(
-            surahVersePreferences = uiState.surahVersePreferences!!,
+            surahVersePreferences = uiState.preferences!!,
             reciters = uiState.reciters!!,
             onBackClick = onBackClick,
             onReciterClick = viewModel::onReciterClick

@@ -13,8 +13,8 @@ class SurahLocalDataSource(private val surahDao: SurahDao) {
     fun getSurahsFlow(): Flow<List<Surah>> = surahDao.getSurahs()
         .map { surahs -> surahs.map { it.toSurah() } }
 
-    suspend fun getSurah(surahNumber: Int): Surah = withContext(dispatcher) {
-        surahDao.getSurah(surahNumber).toSurah()
+    suspend fun getSurah(surahNumber: Int): Surah? = withContext(dispatcher) {
+        surahDao.getSurah(surahNumber)?.toSurah()
     }
 
     suspend fun getSurahCount(): Int = withContext(dispatcher) {

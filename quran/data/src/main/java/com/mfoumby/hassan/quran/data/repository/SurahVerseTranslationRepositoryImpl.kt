@@ -1,11 +1,13 @@
 package com.mfoumby.hassan.quran.data.repository
 
+import com.mfoumby.hassan.common.data.e
 import com.mfoumby.hassan.common.domain.entity.Language
 import com.mfoumby.hassan.quran.data.local.SurahVerseTranslationLocalDataSource
 import com.mfoumby.hassan.quran.data.remote.SurahVerseTranslationRemoteDataSource
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseTranslation
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseTranslationRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
 
 class SurahVerseTranslationRepositoryImpl(
@@ -27,6 +29,9 @@ class SurahVerseTranslationRepositoryImpl(
     override fun downloadSurahVerseTranslations(language: Language): Flow<List<SurahVerseTranslation>> {
         return remoteDataSource.getSurahVerseTranslations(language).onEach {
             localDataSource.upsertSurahVerseTranslations(it)
+        }.catch { error ->
+            e("Error while downloading surah verse translations: ${error.message}")
+            throw error
         }
     }
 

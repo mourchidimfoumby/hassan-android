@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
@@ -101,15 +102,15 @@ class SurahVerseViewModelTest {
         // Then
         assert(viewModel.uiState.value.surah == surah)
         assert(viewModel.uiState.value.surahVerses == surahVerses)
-        assert(viewModel.uiState.value.surahVerseTranslations == surahVerseTranslations)
+        assert(viewModel.uiState.value.translations == surahVerseTranslations)
         assert(viewModel.uiState.value.juz == juz)
         assert(viewModel.uiState.value.hizb == hizb)
         assert(viewModel.uiState.value.page == page)
-        assert(viewModel.uiState.value.surahVersePreferences == surahVersePreferences)
+        assert(viewModel.uiState.value.preferences == surahVersePreferences)
         assert(viewModel.uiState.value.informativeDisplayMode == informativeDisplayMode)
-        assert(viewModel.uiState.value.surahVersePlayerData == surahVersePlayerData)
+        assert(viewModel.uiState.value.playerData == surahVersePlayerData)
         assert(viewModel.uiState.value.audioDownloadProgress == null)
-        assert(!viewModel.uiState.value.initializing)
+        assert(!viewModel.uiState.value.isLoading)
     }
 
     @Test
@@ -204,7 +205,7 @@ class SurahVerseViewModelTest {
     }
 
     @Test
-    fun downloadAudio_should_download_all_not_downloaded_surah_verse_audio() {
+    fun downloadAudio_should_download_all_not_downloaded_surah_verse_audio() = runTest {
         // Given
         val surahVerses = (surahVerseFixtures + surahVerseFixtures2).associateBy { it.surah }
         val first = surahVerses.entries.first()
@@ -224,6 +225,7 @@ class SurahVerseViewModelTest {
 
         // When
         viewModel.downloadAudio()
+        advanceUntilIdle()
 
         // Then
         coVerify {
@@ -317,9 +319,10 @@ class SurahVerseViewModelTest {
             viewModel.uiState.toList(results)
         }
         viewModel.downloadAudio()
+        advanceUntilIdle()
 
         // Then
-        assertEquals(expectedResult, results.last().surahVersePlayerData?.surahVerseAudios)
+        assertEquals(expectedResult, results.last().playerData?.surahVerseAudios)
         assertEquals(null, results.last().audioDownloadProgress)
     }
 
@@ -419,7 +422,7 @@ class SurahVerseViewModelTest {
 
         // When
         viewModel.onPlaySurahVerseAudio(surahVerses.first())
-        val result = viewModel.uiState.value.surahVersePlayerData
+        val result = viewModel.uiState.value.playerData
 
         // Then
         assert(result?.state == expectedResult)
@@ -435,7 +438,7 @@ class SurahVerseViewModelTest {
 
         // When
         viewModel.onAudioChange(1, 1)
-        val result = viewModel.uiState.value.surahVersePlayerData
+        val result = viewModel.uiState.value.playerData
 
         // Then
         assert(result?.state == expectedResult)
