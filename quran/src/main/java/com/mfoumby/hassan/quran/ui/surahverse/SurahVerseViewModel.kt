@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
@@ -287,7 +288,7 @@ class SurahVerseViewModel(
                 val page = surahVerses.first().verse.page
                 val informativeDisplayMode = getInformativeDisplayMode(preferences, targetSurahVerse, surahVerses) ?: throw Exception("Informative display mode not found")
                 val translationsFlow = getSurahVerseTranslationsFlow(surah, juz, hizb)
-                val playerDataFlow = getSurahVersePlayerDataFlow(surahVerses)
+                val playerDataFlow = getSurahVersePlayerDataFlow()
 
                 _uiState.update {
                     SurahVerseUiState(
@@ -298,7 +299,6 @@ class SurahVerseViewModel(
                         page = page,
                         preferences = preferences,
                         informativeDisplayMode = informativeDisplayMode,
-                        playerData = playerDataFlow.first(),
                         audioDownloadProgress = null,
                         isLoading = false
                     )
@@ -318,7 +318,8 @@ class SurahVerseViewModel(
 
                 val playerDataJob = playerDataFlow.map { playerData ->
                     _uiState.update { state ->
-                        state.copy(playerData = playerData)
+                        val playerState = state.playerData?.state ?: SurahVersePlayerData.State.Idle
+                        state.copy(playerData = playerData.copy(state = playerState))
                     }
                 }.launchIn(viewModelScope)
 
@@ -422,16 +423,21 @@ class SurahVerseViewModel(
         }
     }
 
-    private fun getSurahVersePlayerDataFlow(surahVerses: List<SurahVerse>) : Flow<SurahVersePlayerData> {
+    private fun getSurahVersePlayerDataFlow() : Flow<SurahVersePlayerData> {
         val reciterFlow = surahVersePreferencesRepository.getSurahVersePreferencesFlow()
             .mapNotNull { it.reciter }
             .distinctUntilChanged()
 
         val surahVersesFlow = uiState
             .map { it.surahVerses }
-            .onStart { emit(surahVerses) }
             .filterNot { it.isEmpty() }
-            .distinctUntilChanged()
+            .distinctUntilChangedBy { surahVerses ->
+                when (quranMode) {
+                    is QuranMode.SurahMode -> surahVerses.first().surah
+                    is QuranMode.JuzMode -> surahVerses.first().verse.juz
+                    is QuranMode.HizbMode -> surahVerses.first().verse.hizb
+                }
+            }
 
         return combine(reciterFlow, surahVersesFlow) { reciter, surahVerses ->
             reciter to surahVerses
