@@ -391,7 +391,7 @@ class SurahVerseViewModel(
 
     private fun getSurahVerseTranslationsFlow(surah: Surah, juz: Int, hizb: Int): Flow<List<SurahVerseTranslation>> {
         val translationLanguageFlow = surahVersePreferencesRepository.getSurahVersePreferencesFlow()
-            .mapNotNull { it.translationLanguage }
+            .map { it.translationLanguage }
             .distinctUntilChanged()
 
         val surahFlow = uiState
@@ -415,6 +415,7 @@ class SurahVerseViewModel(
             juzFlow,
             hizbFlow
         ) { language, surah, juz, hizb ->
+            if (language == null) return@combine emptyList()
             when (quranMode) {
                 is QuranMode.SurahMode -> surahVerseTranslationRepository.getSurahVerseTranslations(surah.number, language)
                 is QuranMode.JuzMode -> surahVerseTranslationRepository.getSurahVerseTranslationsFromJuz(juz, language)
