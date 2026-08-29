@@ -1,10 +1,11 @@
 package com.mfoumby.hassan.quran.data.model
 
 data class LocalSurahVersePreferences(
-    val displayTranslation: Boolean,
-    val translationLanguage: String?,
-    val reciter: String?,
     val displayMode: String,
+    val translationLanguage: String?,
+    val displayTranslation: Boolean,
+    val reciter: String?,
+    val audioAutomaticScrolling: Boolean,
     val surahBookmark: String?,
     val juzBookmark: String?,
     val hizbBookmark: String?

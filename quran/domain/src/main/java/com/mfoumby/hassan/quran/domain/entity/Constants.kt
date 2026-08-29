@@ -7,10 +7,11 @@ object Constants {
     const val TOTAL_QURAN_JUZ = 30
     const val TOTAL_QURAN_HIZB = 60
     val DEFAULT_PREFERENCES = SurahVersePreferences(
-        displayTranslation = true,
-        translationLanguage = null,
-        reciter = null,
         displayMode = SurahVersePreferences.DisplayMode.LIST,
+        translationLanguage = null,
+        displayTranslation = true,
+        reciter = null,
+        audioAutomaticScrolling = true,
         surahBookmark = null,
         juzBookmark = null,
         hizbBookmark = null

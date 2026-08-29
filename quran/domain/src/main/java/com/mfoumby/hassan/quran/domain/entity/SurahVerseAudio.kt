@@ -12,4 +12,8 @@ data class SurahVerseAudio(
 
         fun getVerseNumberFromId(id: Int) = id % 1000
     }
+
+    fun matchTo(surahVerse: SurahVerse): Boolean =
+        surah.number == surahVerse.surah.number &&
+                verseNumber == surahVerse.verse.verseNumber
 }

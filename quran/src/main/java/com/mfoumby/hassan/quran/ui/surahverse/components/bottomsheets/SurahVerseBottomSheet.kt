@@ -7,7 +7,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import com.mfoumby.hassan.common.ui.BottomSheetItemValue
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
+import com.mfoumby.hassan.common.ui.components.SimpleBottomSheet
 import com.mfoumby.hassan.common.ui.extension.mediumSpacing
 import com.mfoumby.hassan.quran.R
 
@@ -26,27 +26,32 @@ fun SurahVerseBottomSheet(
     onDismissRequest: () -> Unit,
     onPlaySurahVerseAudioClick: () -> Unit
 ) {
-    ModalBottomSheet(onDismissRequest = onDismissRequest) {
-        Column(
-            verticalArrangement = Arrangement.mediumSpacing()
-        ) {
-            itemValues.forEach { value ->
-                val action = when (value.first) {
-                    ItemType.PLAY -> onPlaySurahVerseAudioClick
-                }
+    SimpleBottomSheet(onDismissRequest = onDismissRequest) {
+        SurahVerseBottomSheetContent(onPlaySurahVerseAudioClick = onPlaySurahVerseAudioClick)
+    }
+}
 
-                ListItem(
-                    modifier = Modifier.clickable(onClick = action),
-                    headlineContent = { Text(text = stringResource(value.second.textRes)) },
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(value.second.iconRes),
-                            contentDescription = null
-                        )
-                    },
-                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
-                )
+@Composable
+private fun SurahVerseBottomSheetContent(onPlaySurahVerseAudioClick: () -> Unit) {
+    Column(
+        verticalArrangement = Arrangement.mediumSpacing()
+    ) {
+        itemValues.forEach { value ->
+            val action = when (value.first) {
+                ItemType.PLAY -> onPlaySurahVerseAudioClick
             }
+
+            ListItem(
+                modifier = Modifier.clickable(onClick = action),
+                headlineContent = { Text(text = stringResource(value.second.textRes)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(value.second.iconRes),
+                        contentDescription = null
+                    )
+                },
+                colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+            )
         }
     }
 }
@@ -64,10 +69,9 @@ private enum class ItemType {
 
 @PhonePreviews
 @Composable
-private fun SurahVerseBottomSheetPreview() {
+private fun SurahVerseBottomSheetContentPreview() {
     Previews.Preview {
-        SurahVerseBottomSheet(
-            onDismissRequest = {},
+        SurahVerseBottomSheetContent(
             onPlaySurahVerseAudioClick = {}
         )
     }
