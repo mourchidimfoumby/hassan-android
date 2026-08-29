@@ -9,8 +9,6 @@
     <string name="verse">Verset</string>
     <string name="surah">Sourate</string>
     <string name="juz">Juz</string>
-    <string name="display">Affichage</string>
-    <string name="audio" translatable="false">Audio</string>
 
     <string name="download_audio_dialog_text">L\'audio doit être téléchargé. Voulez-vous le télécharger ?</string>
     <string name="display_mode">Mode d\'affichage</string>
@@ -20,5 +18,10 @@
     <string name="all_surahs">Toute les sourates</string>
     <string name="all_juz">Tous les Juz</string>
     <string name="all_hizb">Tous les Hizb</string>
+    <string name="display">Affichage</string>
+    <string name="text">Texte</string>
+    <string name="audio">Audio</string>
+    <string name="playback">Lecture</string>
+    <string name="automatic_scrolling">Défilement automatique</string>
     <string name="display_tajweed">Afficher Tajweed</string>
 </resources>

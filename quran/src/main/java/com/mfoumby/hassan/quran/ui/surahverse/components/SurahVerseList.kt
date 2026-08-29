@@ -1,5 +1,6 @@
 package com.mfoumby.hassan.quran.ui.surahverse.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,9 +25,11 @@ import com.mfoumby.hassan.common.ui.components.VerticalScrollBarIndicator
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.domain.entity.ArabicTextFont
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
+import com.mfoumby.hassan.quran.domain.entity.SurahVerseAudio
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseTranslation
-import com.mfoumby.hassan.quran.domain.surahVerseFixtures2
+import com.mfoumby.hassan.quran.domain.surahVerseAudioFixture
+import com.mfoumby.hassan.quran.domain.surahVerseFixtures
 import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
 import com.mfoumby.hassan.quran.domain.surahVerseTranslationFixtures
 import com.mfoumby.hassan.quran.ui.surahverse.ScrollValue
@@ -41,6 +44,8 @@ fun SurahVerseList(
     surahVerseTranslations: List<SurahVerseTranslation>,
     surahVersePreferences: SurahVersePreferences,
     surahVerseToScroll: SurahVerse?,
+    audioAutomaticScrolling: Boolean,
+    currentAudioTrack: SurahVerseAudio?,
     onSurahVerseClick: (SurahVerse) -> Unit,
     onScrollValueChange: (ScrollValue) -> Unit
 ) {
@@ -58,6 +63,15 @@ fun SurahVerseList(
         surahVerseToScroll?.let {
             val index = max(surahVerses.indexOf(it), 0)
             listState.animateScrollToItem(index)
+        }
+    }
+
+    LaunchedEffect(currentAudioTrack) {
+        if (audioAutomaticScrolling) {
+            currentAudioTrack?.let {
+                val index = max(surahVerses.indexOfFirst(currentAudioTrack::matchTo), 0)
+                listState.animateScrollToItem(index)
+            }
         }
     }
 
@@ -82,6 +96,7 @@ fun SurahVerseList(
                     arabicTextFont = surahVersePreferences.arabicTextFont,
                     arabicTextFontSize = surahVersePreferences.arabicTextFontSize,
                     displayTranslation = surahVersePreferences.displayTranslation,
+                    tracked = currentAudioTrack?.matchTo(surahVerse) == true,
                     displayTajweed = surahVersePreferences.displayTajweed,
                     onClick = { onSurahVerseClick(surahVerse) }
                 )
@@ -103,13 +118,17 @@ private fun SurahVerseCell(
     arabicTextFont: ArabicTextFont,
     arabicTextFontSize: Int,
     displayTranslation: Boolean,
+    tracked: Boolean,
     displayTajweed: Boolean,
     onClick: () -> Unit
 ) {
+    val backgroundColor = if (tracked) MaterialTheme.colorScheme.surfaceContainer else MaterialTheme.colorScheme.surface
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
+            .background(backgroundColor)
             .padding(MaterialTheme.padding.medium),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.smallMedium)
     ) {
@@ -142,10 +161,12 @@ private fun SurahVerseCell(
 private fun SurahVerseListPreview() {
     Previews.Preview {
         SurahVerseList(
-            surahVerses = surahVerseFixtures2,
+            surahVerses = surahVerseFixtures,
             surahVerseTranslations = surahVerseTranslationFixtures,
-            surahVersePreferences = surahVersePreferencesFixture.copy(displayTajweed = true),
+            surahVersePreferences = surahVersePreferencesFixture,
             surahVerseToScroll = null,
+            audioAutomaticScrolling = true,
+            currentAudioTrack = surahVerseAudioFixture,
             onSurahVerseClick = {},
             onScrollValueChange = {}
         )

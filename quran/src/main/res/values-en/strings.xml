@@ -20,4 +20,8 @@
     <string name="all_juz">All Juz</string>
     <string name="all_hizb">All Hizb</string>
     <string name="display">Display</string>
+    <string name="text">Text</string>
+    <string name="audio">Audio</string>
+    <string name="playback">Playback</string>
+    <string name="automatic_scrolling">Automatic scrolling</string>
 </resources>

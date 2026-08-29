@@ -14,6 +14,7 @@ object Constants {
         arabicTextFontSize = 34,
         translationLanguage = null,
         reciter = null,
+        audioAutomaticScrolling = true,
         surahBookmark = null,
         juzBookmark = null,
         hizbBookmark = null
