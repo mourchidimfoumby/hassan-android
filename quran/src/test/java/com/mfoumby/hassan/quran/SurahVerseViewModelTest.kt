@@ -4,7 +4,7 @@ import com.mfoumby.hassan.common.SingleUiEvent
 import com.mfoumby.hassan.common.domain.entity.Progress
 import com.mfoumby.hassan.common.domain.extension.fromIndex
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseAudio
-import com.mfoumby.hassan.quran.domain.entity.SurahVersePlayerData
+import com.mfoumby.hassan.quran.domain.entity.SurahVersePlayerManifest
 import com.mfoumby.hassan.quran.domain.repository.SurahRepository
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseAudioRepository
 import com.mfoumby.hassan.quran.domain.repository.SurahVersePreferencesRepository
@@ -93,10 +93,10 @@ class SurahVerseViewModelTest {
         val page = surahVerses.first().verse.page
         val surahVersePreferences = surahVersePreferencesFixture
         val informativeDisplayMode = SurahVerseViewModel.InformativeDisplayMode.ListMode(surahVerseFixture)
-        val surahVersePlayerData = SurahVersePlayerData(
+        val surahVersePlayerManifest = SurahVersePlayerManifest(
             reciter = surahVersePreferences.reciter!!,
             surahVerseAudios = listOf(surahVerseAudioFixture).associateBy { it.surah.number to it.verseNumber },
-            state = SurahVersePlayerData.State.Idle
+            state = SurahVersePlayerManifest.State.Idle
         )
 
         // Then
@@ -108,7 +108,7 @@ class SurahVerseViewModelTest {
         assert(viewModel.uiState.value.page == page)
         assert(viewModel.uiState.value.preferences == surahVersePreferences)
         assert(viewModel.uiState.value.informativeDisplayMode == informativeDisplayMode)
-        assert(viewModel.uiState.value.playerData == surahVersePlayerData)
+        assert(viewModel.uiState.value.playerManifest == surahVersePlayerManifest)
         assert(viewModel.uiState.value.audioDownloadProgress == null)
         assert(!viewModel.uiState.value.isLoading)
     }
@@ -322,7 +322,7 @@ class SurahVerseViewModelTest {
         advanceUntilIdle()
 
         // Then
-        assertEquals(expectedResult, results.last().playerData?.surahVerseAudios)
+        assertEquals(expectedResult, results.last().playerManifest?.surahVerseAudios)
         assertEquals(null, results.last().audioDownloadProgress)
     }
 
@@ -409,7 +409,7 @@ class SurahVerseViewModelTest {
         coEvery { surahVerseAudioRepository.getSurahVerseAudios(any(), any()) } returns surahVerseAudios
         coEvery { surahVerseRepository.getSurahVersesFromSurah(any(), any()) } returns surahVerses
 
-        val expectedResult = SurahVersePlayerData.State.Playing(surahVerseAudios.first())
+        val expectedResult = SurahVersePlayerManifest.State.Playing(surahVerseAudios.first())
 
         viewModel = SurahVerseViewModel(
             quranMode = quranModeFixture,
@@ -422,7 +422,7 @@ class SurahVerseViewModelTest {
 
         // When
         viewModel.onPlaySurahVerseAudio(surahVerses.first())
-        val result = viewModel.uiState.value.playerData
+        val result = viewModel.uiState.value.playerManifest
 
         // Then
         assert(result?.state == expectedResult)
@@ -432,13 +432,13 @@ class SurahVerseViewModelTest {
     fun onAudioChange_should_update_surah_verse_player_data_state() {
         // Given
         val surahVerseAudio = surahVerseAudioFixture
-        val expectedResult = SurahVersePlayerData.State.Playing(surahVerseAudio)
+        val expectedResult = SurahVersePlayerManifest.State.Playing(surahVerseAudio)
 
         coEvery { surahVerseAudioRepository.getSurahVerseAudios(any(), any()) } returns listOf(surahVerseAudio)
 
         // When
         viewModel.onAudioChange(1, 1)
-        val result = viewModel.uiState.value.playerData
+        val result = viewModel.uiState.value.playerManifest
 
         // Then
         assert(result?.state == expectedResult)

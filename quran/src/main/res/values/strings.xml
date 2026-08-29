@@ -18,4 +18,9 @@
     <string name="all_surahs">Toute les sourates</string>
     <string name="all_juz">Tous les Juz</string>
     <string name="all_hizb">Tous les Hizb</string>
+    <string name="display">Affichage</string>
+    <string name="text">Texte</string>
+    <string name="audio">Audio</string>
+    <string name="playback">Lecture</string>
+    <string name="automatic_scrolling">Défilement automatique</string>
 </resources>

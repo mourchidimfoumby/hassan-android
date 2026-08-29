@@ -1,13 +1,14 @@
 package com.mfoumby.hassan.quran.domain
 
 import com.mfoumby.hassan.common.domain.entity.Language
+import com.mfoumby.hassan.quran.domain.entity.Constants
 import com.mfoumby.hassan.quran.domain.entity.Hizb
 import com.mfoumby.hassan.quran.domain.entity.Juz
 import com.mfoumby.hassan.quran.domain.entity.Reciter
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseAudio
-import com.mfoumby.hassan.quran.domain.entity.SurahVersePlayerData
+import com.mfoumby.hassan.quran.domain.entity.SurahVersePlayerManifest
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseTranslation
 import com.mfoumby.hassan.quran.domain.entity.Verse
@@ -348,17 +349,18 @@ val surahVerseAudioFixture = SurahVerseAudio(
     audioUri = "https://example.com"
 )
 
-val surahVersePlayerDataFixture = SurahVersePlayerData(
+val surahVersePlayerManifestFixture = SurahVersePlayerManifest(
     reciter = reciterFixture,
     surahVerseAudios = mapOf((surahVerseFixture.surah.number to surahVerseFixture.verse.verseNumber) to surahVerseAudioFixture),
-    state = SurahVersePlayerData.State.Playing(surahVerseAudioFixture)
+    state = SurahVersePlayerManifest.State.Playing(surahVerseAudioFixture)
 )
 
-val surahVersePreferencesFixture = SurahVersePreferences(
-    displayTranslation = true,
-    translationLanguage = Language.ENGLISH,
-    reciter = reciterFixture,
+val surahVersePreferencesFixture = Constants.DEFAULT_PREFERENCES.copy(
     displayMode = SurahVersePreferences.DisplayMode.LIST,
+    translationLanguage = Language.ENGLISH,
+    displayTranslation = true,
+    reciter = reciterFixture,
+    audioAutomaticScrolling = true,
     surahBookmark = surahVerseFixture2,
     juzBookmark = surahVerseFixture2,
     hizbBookmark = surahVerseFixture2,
