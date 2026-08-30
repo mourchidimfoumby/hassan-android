@@ -44,6 +44,7 @@ import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.components.BackTopBar
 import com.mfoumby.hassan.quran.QuranMode
 import com.mfoumby.hassan.quran.R
+import com.mfoumby.hassan.quran.domain.entity.ArabicTextFont
 import com.mfoumby.hassan.quran.domain.entity.Constants
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
@@ -206,11 +207,15 @@ fun SurahVerseDestination(
             player = player,
             snackBarHostState = snackBarHostState,
             onBackClick = onBackClick,
+            onDisplayModeClick = viewModel::onDisplayModeChange,
+            onArabicTextFontChange = viewModel::onArabicTextFontChange,
+            onIncreaseArabicTextFontSizeClick = viewModel::onIncreaseArabicTextFontSize,
+            onDecreaseArabicTextFontSizeClick = viewModel::onDecreaseArabicTextFontSize,
+            onDisplayTajweedChange = viewModel::onDisplayTajweedChange,
             onTranslationLanguageClick = onTranslationLanguageClick,
             onDisplayTranslationChange = viewModel::onDisplayTranslationChange,
             onReciterClick = onReciterClick,
             onPlaySurahVerseAudioClick = viewModel::onPlaySurahVerseAudio,
-            onDisplayModeClick = viewModel::onDisplayModeChange,
             onPageChange = viewModel::onPageChange,
             onSaveBookmark = viewModel::onSaveBookmark
         )
@@ -233,11 +238,15 @@ private fun SurahVerseScreen(
     quranMode: QuranMode,
     snackBarHostState: SnackbarHostState,
     onBackClick: () -> Unit,
+    onDisplayModeClick: (SurahVerseViewModel.InformativeDisplayMode) -> Unit,
+    onArabicTextFontChange: (ArabicTextFont) -> Unit,
+    onIncreaseArabicTextFontSizeClick: () -> Unit,
+    onDecreaseArabicTextFontSizeClick: () -> Unit,
+    onDisplayTajweedChange: (Boolean) -> Unit,
     onTranslationLanguageClick: () -> Unit,
     onDisplayTranslationChange: (Boolean) -> Unit,
     onReciterClick: () -> Unit,
     onPlaySurahVerseAudioClick: (SurahVerse) -> Unit,
-    onDisplayModeClick: (SurahVerseViewModel.InformativeDisplayMode) -> Unit,
     onPageChange: (Int) -> Unit,
     onSaveBookmark: (SurahVerse) -> Unit
 ) {
@@ -350,10 +359,26 @@ private fun SurahVerseScreen(
         SurahVerseBottomSheet.SettingsBottomSheet -> {
             SurahVerseSettingsBottomSheet(
                 onDismissRequest = { activeBottomSheet = null },
+                displayMode = surahVersePreferences.displayMode,
+                arabicTextFont = surahVersePreferences.arabicTextFont,
+                arabicTextFontSize = surahVersePreferences.arabicTextFontSize,
+                displayTajweed = surahVersePreferences.displayTajweed,
                 translationLanguage = surahVersePreferences.translationLanguage,
                 displayTranslation = surahVersePreferences.displayTranslation,
                 reciter = surahVersePreferences.reciter,
-                displayMode = surahVersePreferences.displayMode,
+                onDisplayModeClick = { displayMode ->
+                    if (surahVersePreferences.displayMode != displayMode) {
+                        val surahVerse = retrieveLastSurahVerseRead(surahVerses, scrollValue, surahVersePreferences.displayMode)
+                        when (displayMode) {
+                            SurahVersePreferences.DisplayMode.LIST -> SurahVerseViewModel.InformativeDisplayMode.ListMode(surahVerse)
+                            SurahVersePreferences.DisplayMode.PAGE -> SurahVerseViewModel.InformativeDisplayMode.PageMode(surahVerse)
+                        }.let(onDisplayModeClick)
+                    }
+                },
+                onArabicTextFontChange = onArabicTextFontChange,
+                onIncreaseArabicTextFontSizeClick = onIncreaseArabicTextFontSizeClick,
+                onDecreaseArabicTextFontSizeClick = onDecreaseArabicTextFontSizeClick,
+                onDisplayTajweedChange = onDisplayTajweedChange,
                 onTranslationLanguageClick = {
                     activeBottomSheet = null
                     onTranslationLanguageClick()
@@ -363,15 +388,6 @@ private fun SurahVerseScreen(
                     activeBottomSheet = null
                     onReciterClick()
                 },
-                onDisplayModeClick = { displayMode ->
-                    if (surahVersePreferences.displayMode != displayMode) {
-                        val surahVerse = retrieveLastSurahVerseRead(surahVerses, scrollValue, surahVersePreferences.displayMode)
-                        when (displayMode) {
-                            SurahVersePreferences.DisplayMode.LIST -> SurahVerseViewModel.InformativeDisplayMode.ListMode(surahVerse)
-                            SurahVersePreferences.DisplayMode.PAGE -> SurahVerseViewModel.InformativeDisplayMode.PageMode(surahVerse)
-                        }.let(onDisplayModeClick)
-                    }
-                }
             )
         }
 
@@ -542,11 +558,15 @@ private fun SurahVerseScreenPreview() {
             player = null,
             snackBarHostState = SnackbarHostState(),
             onBackClick = {},
+            onDisplayModeClick = {},
+            onArabicTextFontChange = {},
+            onIncreaseArabicTextFontSizeClick = {},
+            onDecreaseArabicTextFontSizeClick = {},
+            onDisplayTajweedChange = {},
             onTranslationLanguageClick = {},
             onDisplayTranslationChange = {},
             onReciterClick = {},
             onPlaySurahVerseAudioClick = {},
-            onDisplayModeClick = {},
             onPageChange = {},
             onSaveBookmark = {}
         )

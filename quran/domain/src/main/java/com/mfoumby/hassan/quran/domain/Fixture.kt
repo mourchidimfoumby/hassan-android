@@ -1,6 +1,7 @@
 package com.mfoumby.hassan.quran.domain
 
 import com.mfoumby.hassan.common.domain.entity.Language
+import com.mfoumby.hassan.quran.domain.entity.Constants
 import com.mfoumby.hassan.quran.domain.entity.Hizb
 import com.mfoumby.hassan.quran.domain.entity.Juz
 import com.mfoumby.hassan.quran.domain.entity.Reciter
@@ -8,7 +9,6 @@ import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseAudio
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePlayerData
-import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseTranslation
 import com.mfoumby.hassan.quran.domain.entity.Verse
 
@@ -31,12 +31,12 @@ val surahFixture2 = Surah(
 )
 
 val surahFixture3 = Surah(
-    number = 112,
-    name = "الإخلاص",
-    transliteration = "Al-Ikhlas",
+    number = 109,
+    name = "الكافرون",
+    transliteration = "Al-Kafirun",
     type = "meccan",
-    totalVerses = 4,
-    translation = "The Sincerity"
+    totalVerses = 6,
+    translation = "The Disbelievers"
 )
 
 val surahFixtures = listOf(
@@ -155,33 +155,92 @@ val verseFixtures = listOf(
 val verseFixtures2 = listOf(
     Verse(
         verseNumber = 1,
-        surahNumber = 112,
-        text = "قُلۡ هُوَ ٱللَّهُ أَحَدٌ",
+        surahNumber = 113,
+        text = "قُلۡ أَعُوذُ بِرَبِّ ٱلۡفَلَقِ",
         page = 604,
         juz = 30,
         hizb = 60
     ),
     Verse(
         verseNumber = 2,
-        surahNumber = 112,
-        text = "ٱللَّهُ ٱلصَّمَدُ",
+        surahNumber = 113,
+        text = "مِن شَرِّ مَا خَلَقَ",
         page = 604,
         juz = 30,
         hizb = 60
     ),
     Verse(
         verseNumber = 3,
-        surahNumber = 112,
-        text = "لَمۡ يَلِدۡ وَلَمۡ يُولَدۡ",
+        surahNumber = 113,
+        text = "وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ",
         page = 604,
         juz = 30,
         hizb = 60
     ),
     Verse(
         verseNumber = 4,
-        surahNumber = 112,
-        text = "وَلَمۡ يَكُن لَّهُۥ كُفُوًا أَحَدُۢ",
+        surahNumber = 113,
+        text = "وَمِن شَرِّ ٱلنَّفَّـٰثَٰتِ فِي ٱلۡعُقَدِ",
         page = 604,
+        juz = 30,
+        hizb = 60
+    ),
+    Verse(
+        verseNumber = 5,
+        surahNumber = 113,
+        text = "وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+        page = 604,
+        juz = 30,
+        hizb = 60
+    )
+)
+
+val verseFixtures3 = listOf(
+    Verse(
+        verseNumber = 1,
+        surahNumber = 109,
+        text = "قُلۡ يَـٰٓأَيُّهَا ٱلۡكَٰفِرُونَ",
+        page = 603,
+        juz = 30,
+        hizb = 60
+    ),
+    Verse(
+        verseNumber = 2,
+        surahNumber = 109,
+        text = "لَآ أَعۡبُدُ مَا تَعۡبُدُونَ",
+        page = 603,
+        juz = 30,
+        hizb = 60
+    ),
+    Verse(
+        verseNumber = 3,
+        surahNumber = 109,
+        text = "وَلَآ أَنتُمۡ عَٰبِدُونَ مَآ أَعۡبُدُ",
+        page = 603,
+        juz = 30,
+        hizb = 60
+    ),
+    Verse(
+        verseNumber = 4,
+        surahNumber = 109,
+        text = "وَلَآ أَنَا۠ عَابِدٞ مَّا عَبَدتُّمۡ",
+        page = 603,
+        juz = 30,
+        hizb = 60
+    ),
+    Verse(
+        verseNumber = 5,
+        surahNumber = 109,
+        text = "وَلَآ أَنتُمۡ عَٰبِدُونَ مَآ أَعۡبُدُ",
+        page = 603,
+        juz = 30,
+        hizb = 60
+    ),
+    Verse(
+        verseNumber = 6,
+        surahNumber = 109,
+        text = "لَكُمۡ دِينُكُمۡ وَلِيَ دِينِ",
+        page = 603,
         juz = 30,
         hizb = 60
     )
@@ -204,7 +263,7 @@ val surahVerseFixtures = verseFixtures.map {
     )
 }
 
-val surahVerseFixtures2 = verseFixtures2.map {
+val surahVerseFixtures2 = verseFixtures3.map {
     SurahVerse(
         surah = surahFixture3,
         verse = it
@@ -354,12 +413,9 @@ val surahVersePlayerDataFixture = SurahVersePlayerData(
     state = SurahVersePlayerData.State.Playing(surahVerseAudioFixture)
 )
 
-val surahVersePreferencesFixture = SurahVersePreferences(
-    displayTranslation = true,
-    translationLanguage = Language.ENGLISH,
+val surahVersePreferencesFixture = Constants.DEFAULT_SURAH_VERSE_PREFERENCES.copy(
     reciter = reciterFixture,
-    displayMode = SurahVersePreferences.DisplayMode.LIST,
     surahBookmark = surahVerseFixture2,
     juzBookmark = surahVerseFixture2,
-    hizbBookmark = surahVerseFixture2,
+    hizbBookmark = surahVerseFixture2
 )

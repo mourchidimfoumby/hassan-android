@@ -15,6 +15,9 @@
     <string name="delete">Supprimer</string>
     <string name="list">Liste</string>
     <string name="page">Page</string>
+    <string name="uthmani" translatable="false">Uthmani</string>
+    <string name="font">Police</string>
+    <string name="font_size">Taille de police</string>
     <string name="delete_language_dialog_text">Voulez-vous supprimer cette langue?</string>
 
     <string name="unknown_error">Une erreur inconnue est survenue.</string>
@@ -23,4 +26,5 @@
     <string name="downloading">Téléchargement</string>
     <string name="none_reciter_selected_error">Veuillez séléctionner un récitateur pour écouter l\'audio.</string>
     <string name="download_translation_error">Une erreur est survenue durant le téléchargement de la traduction %s</string>
+    <string name="text">Texte</string>
 </resources>

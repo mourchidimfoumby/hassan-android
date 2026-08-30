@@ -8,30 +8,44 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mfoumby.hassan.common.domain.entity.Language
-import com.mfoumby.hassan.common.getRoundedFlagResId
-import com.mfoumby.hassan.common.getStringResId
+import com.mfoumby.hassan.common.resId
+import com.mfoumby.hassan.common.roundedFlagResId
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.components.SectionTitle
@@ -40,46 +54,360 @@ import com.mfoumby.hassan.common.ui.extension.mediumSpacing
 import com.mfoumby.hassan.common.ui.extension.smallSpacing
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.R
+import com.mfoumby.hassan.quran.domain.entity.ArabicTextFont
 import com.mfoumby.hassan.quran.domain.entity.Reciter
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
 import com.mfoumby.hassan.quran.domain.reciterFixture
+import com.mfoumby.hassan.quran.ui.resId
+import com.mfoumby.hassan.quran.ui.typography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SurahVerseSettingsBottomSheet(
     onDismissRequest: () -> Unit,
+    displayMode: SurahVersePreferences.DisplayMode,
+    displayTajweed: Boolean,
     displayTranslation: Boolean,
+    arabicTextFont: ArabicTextFont,
+    arabicTextFontSize: Int,
     translationLanguage: Language?,
     reciter: Reciter?,
-    displayMode: SurahVersePreferences.DisplayMode,
-    onTranslationLanguageClick: () -> Unit,
+    onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit,
+    onArabicTextFontChange: (ArabicTextFont) -> Unit,
+    onIncreaseArabicTextFontSizeClick: () -> Unit,
+    onDecreaseArabicTextFontSizeClick: () -> Unit,
+    onDisplayTajweedChange: (Boolean) -> Unit,
     onDisplayTranslationChange: (Boolean) -> Unit,
-    onReciterClick: () -> Unit,
-    onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit
+    onTranslationLanguageClick: () -> Unit,
+    onReciterClick: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
-        sheetState = sheetState
+        sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = true
+        )
     ) {
-        Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.mediumSpacing()
+        Content(
+            displayMode = displayMode,
+            displayTajweed = displayTajweed,
+            displayTranslation = displayTranslation,
+            arabicTextFont = arabicTextFont,
+            arabicTextFontSize = arabicTextFontSize,
+            translationLanguage = translationLanguage,
+            reciter = reciter,
+            onDisplayModeClick = onDisplayModeClick,
+            onArabicTextFontChange = onArabicTextFontChange,
+            onIncreaseArabicTextFontSizeClick = onIncreaseArabicTextFontSizeClick,
+            onDecreaseArabicTextFontSizeClick = onDecreaseArabicTextFontSizeClick,
+            onDisplayTajweedChange = onDisplayTajweedChange,
+            onDisplayTranslationChange = onDisplayTranslationChange,
+            onTranslationLanguageClick = onTranslationLanguageClick,
+            onReciterClick = onReciterClick
+        )
+    }
+}
+
+@Composable
+private fun Content(
+    displayMode: SurahVersePreferences.DisplayMode,
+    displayTajweed: Boolean,
+    displayTranslation: Boolean,
+    arabicTextFont: ArabicTextFont,
+    arabicTextFontSize: Int,
+    translationLanguage: Language?,
+    reciter: Reciter?,
+    onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit,
+    onArabicTextFontChange: (ArabicTextFont) -> Unit,
+    onIncreaseArabicTextFontSizeClick: () -> Unit,
+    onDecreaseArabicTextFontSizeClick: () -> Unit,
+    onDisplayTajweedChange: (Boolean) -> Unit,
+    onDisplayTranslationChange: (Boolean) -> Unit,
+    onTranslationLanguageClick: () -> Unit,
+    onReciterClick: () -> Unit
+) {
+    var currentTab by remember { mutableStateOf(Tabs.DISPLAY) }
+    val density = LocalDensity.current
+    val screenHeight = with(density) {
+        LocalWindowInfo.current.containerSize.height.toDp()
+    }
+
+    Column(
+        modifier = Modifier.height(screenHeight * 0.5f),
+        verticalArrangement = Arrangement.mediumSpacing()
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = MaterialTheme.padding.medium)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.mediumSpacing(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            TranslationSection(
+            Tabs.entries.forEach { tab ->
+                FilterChip(
+                    onClick = { currentTab = tab },
+                    label = {
+                        Text(
+                            text = stringResource(tab.resId),
+                            style = typography.bodyMedium
+                        )
+                    },
+                    selected = currentTab == tab
+                )
+            }
+        }
+
+        when (currentTab) {
+            Tabs.DISPLAY -> DisplayTab(
+                displayMode = displayMode,
+                onDisplayModeClick = onDisplayModeClick
+            )
+
+            Tabs.TEXT -> TextTab(
+                arabicTextFont = arabicTextFont,
+                arabicTextFontSize = arabicTextFontSize,
+                displayTajweed = displayTajweed,
+                onArabicTextFontChange = onArabicTextFontChange,
+                onIncreaseArabicTextFontSizeClick = onIncreaseArabicTextFontSizeClick,
+                onDecreaseArabicTextFontSizeClick = onDecreaseArabicTextFontSizeClick,
+                onDisplayTajweedChange = onDisplayTajweedChange,
                 translationLanguage = translationLanguage,
                 onTranslationLanguageClick = onTranslationLanguageClick,
                 displayTranslation = displayTranslation,
                 onDisplayTranslationChange = onDisplayTranslationChange
             )
-            ReciterSection(
+
+            Tabs.AUDIO -> AudioTab(
                 reciter = reciter,
                 onReciterClick = onReciterClick
             )
-            DisplaySection(
-                onDisplayModeClick = onDisplayModeClick,
-                displayMode = displayMode
+        }
+    }
+}
+
+@Composable
+private fun DisplayTab(
+    displayMode: SurahVersePreferences.DisplayMode,
+    onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit
+) {
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.mediumSpacing()
+    ) {
+        DisplaySection(
+            onDisplayModeClick = onDisplayModeClick,
+            displayMode = displayMode
+        )
+    }
+}
+
+@Composable
+private fun TextTab(
+    arabicTextFont: ArabicTextFont,
+    arabicTextFontSize: Int,
+    displayTajweed: Boolean,
+    onArabicTextFontChange: (ArabicTextFont) -> Unit,
+    onIncreaseArabicTextFontSizeClick: () -> Unit,
+    onDecreaseArabicTextFontSizeClick: () -> Unit,
+    onDisplayTajweedChange: (Boolean) -> Unit,
+    translationLanguage: Language?,
+    onTranslationLanguageClick: () -> Unit,
+    displayTranslation: Boolean,
+    onDisplayTranslationChange: (Boolean) -> Unit
+) {
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.mediumSpacing()
+    ) {
+        VerseSection(
+            arabicTextFont = arabicTextFont,
+            arabicTextFontSize = arabicTextFontSize,
+            displayTajweed = displayTajweed,
+            onArabicTextFontChange = onArabicTextFontChange,
+            onIncreaseArabicTextFontSizeClick = onIncreaseArabicTextFontSizeClick,
+            onDecreaseArabicTextFontSizeClick = onDecreaseArabicTextFontSizeClick,
+            onDisplayTajweedChange = onDisplayTajweedChange
+        )
+
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium)
+        )
+
+        TranslationSection(
+            translationLanguage = translationLanguage,
+            onTranslationLanguageClick = onTranslationLanguageClick,
+            displayTranslation = displayTranslation,
+            onDisplayTranslationChange = onDisplayTranslationChange
+        )
+    }
+}
+
+@Composable
+private fun AudioTab(
+    reciter: Reciter?,
+    onReciterClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.mediumSpacing()
+    ) {
+        ReciterSection(
+            reciter = reciter,
+            onReciterClick = onReciterClick
+        )
+    }
+}
+
+@Composable
+private fun DisplaySection(
+    displayMode: SurahVersePreferences.DisplayMode,
+    onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.smallSpacing()
+    ) {
+        SectionTitle(
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+            text = stringResource(R.string.display_mode)
+        )
+
+        Row(
+            modifier = Modifier.padding(MaterialTheme.padding.medium),
+            horizontalArrangement = Arrangement.mediumSpacing(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SelectableCell(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(onClick = { onDisplayModeClick(SurahVersePreferences.DisplayMode.LIST) }),
+                selected = displayMode == SurahVersePreferences.DisplayMode.LIST,
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_outline_list_bulleted),
+                        contentDescription = null
+                    )
+                },
+                text = {
+                    Text(text = stringResource(com.mfoumby.hassan.common.R.string.list))
+                }
+            )
+
+            SelectableCell(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(onClick = { onDisplayModeClick(SurahVersePreferences.DisplayMode.PAGE) }),
+                selected = displayMode == SurahVersePreferences.DisplayMode.PAGE,
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_outline_two_pager),
+                        contentDescription = null
+                    )
+                },
+                text = {
+                    Text(text = stringResource(com.mfoumby.hassan.common.R.string.page))
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun VerseSection(
+    arabicTextFont: ArabicTextFont,
+    arabicTextFontSize: Int,
+    displayTajweed: Boolean,
+    onArabicTextFontChange: (ArabicTextFont) -> Unit,
+    onIncreaseArabicTextFontSizeClick: () -> Unit,
+    onDecreaseArabicTextFontSizeClick: () -> Unit,
+    onDisplayTajweedChange: (Boolean) -> Unit,
+) {
+    Column(
+        modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+        verticalArrangement = Arrangement.mediumSpacing()
+    ) {
+        SectionTitle(text = stringResource(R.string.verse))
+
+        Column(
+            verticalArrangement = Arrangement.smallSpacing()
+        ) {
+            Text(
+                text = stringResource(com.mfoumby.hassan.common.R.string.font),
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.smallSpacing(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                items(ArabicTextFont.entries) {
+                    SelectableCell(
+                        modifier = Modifier.clickable(onClick = { onArabicTextFontChange(it) }),
+                        selected = arabicTextFont == it,
+                        icon = {
+                            Text(
+                                text = "بِسْمِ ٱللَّٰهِ",
+                                style = arabicTextFont.typography,
+                                fontSize = 20.sp
+                            )
+                        },
+                        text = {
+                            Text(
+                                text = stringResource(it.resId),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    )
+                }
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(com.mfoumby.hassan.common.R.string.font_size),
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.smallSpacing()
+            ) {
+                Icon(
+                    modifier = Modifier.clickable(onClick = onDecreaseArabicTextFontSizeClick),
+                    painter = painterResource(com.mfoumby.hassan.common.R.drawable.ic_outline_remove),
+                    contentDescription = "Decrease font size"
+                )
+
+                Text(
+                    text = arabicTextFontSize.toString(),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Icon(
+                    modifier = Modifier.clickable(onClick = onIncreaseArabicTextFontSizeClick),
+                    painter = painterResource(com.mfoumby.hassan.common.R.drawable.ic_outline_add),
+                    contentDescription = "Increase font size"
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.display_tajweed),
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Switch(
+                checked = displayTajweed,
+                onCheckedChange = onDisplayTajweedChange
             )
         }
     }
@@ -146,12 +474,12 @@ private fun TranslationSection(
                                 modifier = Modifier
                                     .size(dimensionResource(R.dimen.bottom_sheet_image_size))
                                     .clip(CircleShape),
-                                painter = painterResource(translationLanguage.getRoundedFlagResId()),
+                                painter = painterResource(translationLanguage.roundedFlagResId),
                                 contentDescription = null
                             )
 
                             Text(
-                                text = stringResource(translationLanguage.getStringResId()),
+                                text = stringResource(translationLanguage.resId),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -231,62 +559,10 @@ fun ReciterSection(
 }
 
 @Composable
-fun DisplaySection(
-    displayMode: SurahVersePreferences.DisplayMode,
-    onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit
-) {
-    Column(
-        verticalArrangement = Arrangement.smallSpacing()
-    ) {
-        SectionTitle(
-            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
-            text = stringResource(R.string.display_mode)
-        )
-
-        Row(
-            modifier = Modifier.padding(MaterialTheme.padding.medium),
-            horizontalArrangement = Arrangement.mediumSpacing(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            DisplayModeCell(
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable(onClick = { onDisplayModeClick(SurahVersePreferences.DisplayMode.LIST) }),
-                selected = displayMode == SurahVersePreferences.DisplayMode.LIST,
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_outline_list_bulleted),
-                        contentDescription = null
-                    )
-                },
-                text = {
-                    Text(text = stringResource(com.mfoumby.hassan.common.R.string.list))
-                }
-            )
-
-            DisplayModeCell(
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable(onClick = { onDisplayModeClick(SurahVersePreferences.DisplayMode.PAGE) }),
-                selected = displayMode == SurahVersePreferences.DisplayMode.PAGE,
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_outline_two_pager),
-                        contentDescription = null
-                    )
-                },
-                text = {
-                    Text(text = stringResource(com.mfoumby.hassan.common.R.string.page))
-                }
-            )
-        }
-    }
-}
-
-@Composable
-fun DisplayModeCell(
+private fun SelectableCell(
     modifier: Modifier = Modifier,
     selected: Boolean,
+    shape: Shape = MaterialTheme.shapes.medium,
     icon: @Composable () -> Unit,
     text: @Composable () -> Unit
 ) {
@@ -298,7 +574,7 @@ fun DisplayModeCell(
             .border(
                 width = borderWidth,
                 color = borderColor,
-                shape = MaterialTheme.shapes.medium
+                shape = shape
             )
             .padding(MaterialTheme.padding.medium),
         contentAlignment = Alignment.Center
@@ -313,20 +589,32 @@ fun DisplayModeCell(
     }
 }
 
+private enum class Tabs(val resId: Int) {
+    DISPLAY(R.string.display),
+    TEXT(com.mfoumby.hassan.common.R.string.text),
+    AUDIO(R.string.audio)
+}
+
 @PhonePreviews
 @Composable
 private fun SurahVerseSettingsBottomSheetPreview() {
     Previews.Preview {
-        SurahVerseSettingsBottomSheet(
-            onDismissRequest = {},
+        Content(
+            displayMode = SurahVersePreferences.DisplayMode.LIST,
+            displayTajweed = true,
             displayTranslation = true,
+            arabicTextFont = ArabicTextFont.UTHMANIC,
+            arabicTextFontSize = 16,
             translationLanguage = Language.ENGLISH,
             reciter = reciterFixture,
-            displayMode = SurahVersePreferences.DisplayMode.LIST,
+            onDisplayModeClick = {},
+            onArabicTextFontChange = {},
+            onIncreaseArabicTextFontSizeClick = {},
+            onDecreaseArabicTextFontSizeClick = {},
+            onDisplayTajweedChange = {},
             onTranslationLanguageClick = {},
             onDisplayTranslationChange = {},
             onReciterClick = {},
-            onDisplayModeClick = {}
         )
     }
 }
