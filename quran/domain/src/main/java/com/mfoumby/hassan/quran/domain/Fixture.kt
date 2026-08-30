@@ -414,7 +414,7 @@ val surahVersePlayerManifestFixture = SurahVersePlayerManifest(
     state = SurahVersePlayerManifest.State.Playing(surahVerseAudioFixture)
 )
 
-val surahVersePreferencesFixture = Constants.DEFAULT_PREFERENCES.copy(
+val surahVersePreferencesFixture = Constants.DEFAULT_SURAH_VERSE_PREFERENCES.copy(
     displayMode = SurahVersePreferences.DisplayMode.LIST,
     translationLanguage = Language.ENGLISH,
     displayTranslation = true,

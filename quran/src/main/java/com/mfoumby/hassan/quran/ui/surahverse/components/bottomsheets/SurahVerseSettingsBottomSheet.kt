@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -16,18 +17,25 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -75,8 +83,6 @@ fun SurahVerseSettingsBottomSheet(
     onReciterClick: () -> Unit,
     onAutomaticScrollingChange: (Boolean) -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
     SimpleBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = rememberModalBottomSheetState(
@@ -125,33 +131,139 @@ private fun SurahVerseSettingsBottomSheetContent(
     audioAutomaticScrolling: Boolean,
     onAutomaticScrollingChange: (Boolean) -> Unit
 ) {
+    var currentTab by remember { mutableStateOf(Tabs.DISPLAY) }
+    val screenHeight = LocalWindowInfo.current.containerDpSize.height
+
+    Column(
+        modifier = Modifier.height(screenHeight / 2),
+        verticalArrangement = Arrangement.mediumSpacing()
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = MaterialTheme.padding.medium)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.mediumSpacing(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Tabs.entries.forEach { tab ->
+                FilterChip(
+                    onClick = { currentTab = tab },
+                    label = {
+                        Text(
+                            text = stringResource(tab.resId),
+                            style = typography.bodyMedium
+                        )
+                    },
+                    selected = currentTab == tab
+                )
+            }
+        }
+
+        when (currentTab) {
+            Tabs.DISPLAY -> DisplayTab(
+                displayMode = displayMode,
+                onDisplayModeClick = onDisplayModeClick
+            )
+
+            Tabs.TEXT -> TextTab(
+                arabicTextFont = arabicTextFont,
+                arabicTextFontSize = arabicTextFontSize,
+                displayTajweed = displayTajweed,
+                onArabicTextFontChange = onArabicTextFontChange,
+                onIncreaseArabicTextFontSizeClick = onIncreaseArabicTextFontSizeClick,
+                onDecreaseArabicTextFontSizeClick = onDecreaseArabicTextFontSizeClick,
+                onDisplayTajweedChange = onDisplayTajweedChange,
+                translationLanguage = translationLanguage,
+                onTranslationLanguageClick = onTranslationLanguageClick,
+                displayTranslation = displayTranslation,
+                onDisplayTranslationChange = onDisplayTranslationChange
+            )
+
+            Tabs.AUDIO -> AudioTab(
+                reciter = reciter,
+                audioAutomaticScrolling = audioAutomaticScrolling,
+                onReciterClick = onReciterClick,
+                onAutomaticScrollingChange = onAutomaticScrollingChange
+            )
+        }
+    }
+}
+
+@Composable
+private fun DisplayTab(
+    displayMode: SurahVersePreferences.DisplayMode,
+    onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit
+) {
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.mediumSpacing()
     ) {
         DisplaySection(
-            displayMode = displayMode,
-            onDisplayModeClick = onDisplayModeClick
+            onDisplayModeClick = onDisplayModeClick,
+            displayMode = displayMode
         )
-        HorizontalDivider()
-        TextSection(
-            translationLanguage = translationLanguage,
-            displayTranslation = displayTranslation,
+    }
+}
+
+@Composable
+private fun TextTab(
+    arabicTextFont: ArabicTextFont,
+    arabicTextFontSize: Int,
+    displayTajweed: Boolean,
+    onArabicTextFontChange: (ArabicTextFont) -> Unit,
+    onIncreaseArabicTextFontSizeClick: () -> Unit,
+    onDecreaseArabicTextFontSizeClick: () -> Unit,
+    onDisplayTajweedChange: (Boolean) -> Unit,
+    translationLanguage: Language?,
+    onTranslationLanguageClick: () -> Unit,
+    displayTranslation: Boolean,
+    onDisplayTranslationChange: (Boolean) -> Unit
+) {
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.mediumSpacing()
+    ) {
+        VerseSection(
             arabicTextFont = arabicTextFont,
             arabicTextFontSize = arabicTextFontSize,
             displayTajweed = displayTajweed,
-            onTranslationLanguageClick = onTranslationLanguageClick,
-            onDisplayTranslationChange = onDisplayTranslationChange,
             onArabicTextFontChange = onArabicTextFontChange,
             onIncreaseArabicTextFontSizeClick = onIncreaseArabicTextFontSizeClick,
             onDecreaseArabicTextFontSizeClick = onDecreaseArabicTextFontSizeClick,
             onDisplayTajweedChange = onDisplayTajweedChange
         )
-        HorizontalDivider()
-        AudioSection(
+
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium)
+        )
+
+        TranslationSection(
+            translationLanguage = translationLanguage,
+            onTranslationLanguageClick = onTranslationLanguageClick,
+            displayTranslation = displayTranslation,
+            onDisplayTranslationChange = onDisplayTranslationChange
+        )
+    }
+}
+
+@Composable
+private fun AudioTab(
+    reciter: Reciter?,
+    audioAutomaticScrolling: Boolean,
+    onReciterClick: () -> Unit,
+    onAutomaticScrollingChange: (Boolean) -> Unit
+) {
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.mediumSpacing()
+    ) {
+        ReciterSection(
             reciter = reciter,
+            onReciterClick = onReciterClick
+        )
+
+        PlaybackSection(
             audioAutomaticScrolling = audioAutomaticScrolling,
-            onReciterClick = onReciterClick,
             onAutomaticScrollingChange = onAutomaticScrollingChange
         )
     }
@@ -209,128 +321,7 @@ fun DisplaySection(
 }
 
 @Composable
-private fun TextSection(
-    translationLanguage: Language?,
-    displayTranslation: Boolean,
-    arabicTextFont: ArabicTextFont,
-    arabicTextFontSize: Int,
-    displayTajweed: Boolean,
-    onTranslationLanguageClick: () -> Unit,
-    onDisplayTranslationChange: (Boolean) -> Unit,
-    onArabicTextFontChange: (ArabicTextFont) -> Unit,
-    onIncreaseArabicTextFontSizeClick: () -> Unit,
-    onDecreaseArabicTextFontSizeClick: () -> Unit,
-    onDisplayTajweedChange: (Boolean) -> Unit,
-) {
-    Column(
-        verticalArrangement = Arrangement.mediumSpacing()
-    ) {
-       TranslationSectionPart(
-           translationLanguage = translationLanguage,
-           displayTranslation = displayTranslation,
-           onTranslationLanguageClick = onTranslationLanguageClick,
-           onDisplayTranslationChange = onDisplayTranslationChange
-       )
-
-        VerseSectionPart(
-            arabicTextFont = arabicTextFont,
-            arabicTextFontSize = arabicTextFontSize,
-            displayTajweed = displayTajweed,
-            onArabicTextFontChange = onArabicTextFontChange,
-            onIncreaseArabicTextFontSizeClick = onIncreaseArabicTextFontSizeClick,
-            onDecreaseArabicTextFontSizeClick = onDecreaseArabicTextFontSizeClick,
-            onDisplayTajweedChange = onDisplayTajweedChange
-        )
-    }
-}
-
-@Composable
-private fun TranslationSectionPart(
-    translationLanguage: Language?,
-    displayTranslation: Boolean,
-    onTranslationLanguageClick: () -> Unit,
-    onDisplayTranslationChange: (Boolean) -> Unit
-) {
-    Column(
-        verticalArrangement = Arrangement.smallSpacing()
-    ) {
-        SectionTitle(
-            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
-            text = stringResource(com.mfoumby.hassan.common.R.string.translation)
-        )
-
-        Row(
-            modifier = Modifier
-                .clickable(onClick = onTranslationLanguageClick)
-                .fillMaxWidth()
-                .padding(
-                    horizontal = MaterialTheme.padding.medium,
-                    vertical = MaterialTheme.padding.smallMedium
-                ),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.smallSpacing()
-            ) {
-                Text(
-                    text = stringResource(com.mfoumby.hassan.common.R.string.select_translation),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                translationLanguage?.let {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.smallSpacing()
-                    ) {
-                        Image(
-                            modifier = Modifier
-                                .size(dimensionResource(R.dimen.bottom_sheet_image_size))
-                                .clip(CircleShape),
-                            painter = painterResource(translationLanguage.roundedFlagResId),
-                            contentDescription = null
-                        )
-
-                        Text(
-                            text = stringResource(translationLanguage.resId),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
-
-            Icon(
-                painter = painterResource(com.mfoumby.hassan.common.R.drawable.ic_outline_keyboard_arrow_right),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = MaterialTheme.padding.medium)
-                .alpha(if (translationLanguage == null) 0.5f else 1f),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                modifier = Modifier.weight(1f),
-                text = stringResource(com.mfoumby.hassan.common.R.string.display_translation),
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            SimpleSwitch(
-                checked = if (translationLanguage != null) displayTranslation else false,
-                onCheckedChange = onDisplayTranslationChange,
-                enabled = translationLanguage != null
-            )
-        }
-    }
-}
-
-@Composable
-private fun VerseSectionPart(
+private fun VerseSection(
     arabicTextFont: ArabicTextFont,
     arabicTextFontSize: Int,
     displayTajweed: Boolean,
@@ -433,96 +424,181 @@ private fun VerseSectionPart(
 }
 
 @Composable
-fun AudioSection(
-    reciter: Reciter?,
-    audioAutomaticScrolling: Boolean,
-    onReciterClick: () -> Unit,
-    onAutomaticScrollingChange: (Boolean) -> Unit
+private fun TranslationSection(
+    translationLanguage: Language?,
+    displayTranslation: Boolean,
+    onTranslationLanguageClick: () -> Unit,
+    onDisplayTranslationChange: (Boolean) -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.mediumSpacing()
+        verticalArrangement = Arrangement.smallSpacing()
     ) {
-        Column(
-            verticalArrangement = Arrangement.smallSpacing()
+        SectionTitle(
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+            text = stringResource(com.mfoumby.hassan.common.R.string.translation)
+        )
+
+        Row(
+            modifier = Modifier
+                .clickable(onClick = onTranslationLanguageClick)
+                .fillMaxWidth()
+                .padding(
+                    horizontal = MaterialTheme.padding.medium,
+                    vertical = MaterialTheme.padding.smallMedium
+                ),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            SectionTitle(
-                modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
-                text = stringResource(R.string.reciter)
-            )
-
-            Row(
-                modifier = Modifier
-                    .clickable(onClick = onReciterClick)
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = MaterialTheme.padding.medium,
-                        vertical = MaterialTheme.padding.smallMedium
-                    ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.smallSpacing()
-                ) {
-                    Text(
-                        text = stringResource(R.string.select_reciter),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-
-                    reciter?.let {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.smallSpacing()
-                        ) {
-                            SimpleAsyncImage(
-                                modifier = Modifier
-                                    .size(dimensionResource(R.dimen.bottom_sheet_image_size))
-                                    .clip(CircleShape),
-                                model = reciter.imageUrl,
-                            )
-
-                            Text(
-                                text = reciter.name,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-
-                Icon(
-                    painter = painterResource(com.mfoumby.hassan.common.R.drawable.ic_outline_keyboard_arrow_right),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-
-        Column(
-            verticalArrangement = Arrangement.smallSpacing()
-        ) {
-            SectionTitle(
-                modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
-                text = stringResource(R.string.playback)
-            )
-
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = MaterialTheme.padding.medium)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.smallSpacing()
             ) {
                 Text(
-                    modifier = Modifier.weight(1f),
-                    text = stringResource(R.string.automatic_scrolling),
+                    text = stringResource(com.mfoumby.hassan.common.R.string.select_translation),
                     style = MaterialTheme.typography.bodyMedium
                 )
 
-                SimpleSwitch(
-                    checked = audioAutomaticScrolling,
-                    onCheckedChange = onAutomaticScrollingChange
-                )
+                translationLanguage?.let {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.smallSpacing()
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .size(dimensionResource(R.dimen.bottom_sheet_image_size))
+                                .clip(CircleShape),
+                            painter = painterResource(translationLanguage.roundedFlagResId),
+                            contentDescription = null
+                        )
+
+                        Text(
+                            text = stringResource(translationLanguage.resId),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             }
+
+            Icon(
+                painter = painterResource(com.mfoumby.hassan.common.R.drawable.ic_outline_keyboard_arrow_right),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = MaterialTheme.padding.medium)
+                .alpha(if (translationLanguage == null) 0.5f else 1f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(com.mfoumby.hassan.common.R.string.display_translation),
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            SimpleSwitch(
+                checked = if (translationLanguage != null) displayTranslation else false,
+                onCheckedChange = onDisplayTranslationChange,
+                enabled = translationLanguage != null
+            )
+        }
+    }
+}
+
+@Composable
+private fun ReciterSection(
+    reciter: Reciter?,
+    onReciterClick: () -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.smallSpacing()
+    ) {
+        SectionTitle(
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+            text = stringResource(R.string.reciter)
+        )
+
+        Row(
+            modifier = Modifier
+                .clickable(onClick = onReciterClick)
+                .fillMaxWidth()
+                .padding(
+                    horizontal = MaterialTheme.padding.medium,
+                    vertical = MaterialTheme.padding.smallMedium
+                ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.smallSpacing()
+            ) {
+                Text(
+                    text = stringResource(R.string.select_reciter),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                reciter?.let {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.smallSpacing()
+                    ) {
+                        SimpleAsyncImage(
+                            modifier = Modifier
+                                .size(dimensionResource(R.dimen.bottom_sheet_image_size))
+                                .clip(CircleShape),
+                            model = reciter.imageUrl,
+                        )
+
+                        Text(
+                            text = reciter.name,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+
+            Icon(
+                painter = painterResource(com.mfoumby.hassan.common.R.drawable.ic_outline_keyboard_arrow_right),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun PlaybackSection(
+    audioAutomaticScrolling: Boolean,
+    onAutomaticScrollingChange: (Boolean) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.smallSpacing()
+    ) {
+        SectionTitle(
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+            text = stringResource(R.string.playback)
+        )
+
+        Row(
+            modifier = Modifier
+                .padding(horizontal = MaterialTheme.padding.medium)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.automatic_scrolling),
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            SimpleSwitch(
+                checked = audioAutomaticScrolling,
+                onCheckedChange = onAutomaticScrollingChange
+            )
         }
     }
 }
@@ -556,6 +632,12 @@ private fun SelectableCell(
             text()
         }
     }
+}
+
+private enum class Tabs(val resId: Int) {
+    DISPLAY(R.string.display),
+    TEXT(com.mfoumby.hassan.common.R.string.text),
+    AUDIO(R.string.audio)
 }
 
 @PhonePreviews
