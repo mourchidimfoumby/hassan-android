@@ -29,6 +29,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mfoumby.hassan.common.domain.entity.Language
+import com.mfoumby.hassan.common.extension.mediumSpacing
+import com.mfoumby.hassan.common.extension.smallSpacing
 import com.mfoumby.hassan.common.getRoundedFlagResId
 import com.mfoumby.hassan.common.getStringResId
 import com.mfoumby.hassan.common.ui.PhonePreviews
@@ -37,8 +39,6 @@ import com.mfoumby.hassan.common.ui.components.SectionTitle
 import com.mfoumby.hassan.common.ui.components.SimpleAsyncImage
 import com.mfoumby.hassan.common.ui.components.SimpleBottomSheet
 import com.mfoumby.hassan.common.ui.components.SimpleSwitch
-import com.mfoumby.hassan.common.extension.mediumSpacing
-import com.mfoumby.hassan.common.extension.smallSpacing
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.entity.Reciter
@@ -52,11 +52,13 @@ fun SurahVerseSettingsBottomSheet(
     displayMode: SurahVersePreferences.DisplayMode,
     translationLanguage: Language?,
     displayTranslation: Boolean,
+    displayTransliteration: Boolean,
     reciter: Reciter?,
     audioAutomaticScrolling: Boolean,
     onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit,
     onTranslationLanguageClick: () -> Unit,
     onDisplayTranslationChange: (Boolean) -> Unit,
+    onDisplayTransliterationChange: (Boolean) -> Unit,
     onReciterClick: () -> Unit,
     onAutomaticScrollingChange: (Boolean) -> Unit
 ) {
@@ -70,11 +72,13 @@ fun SurahVerseSettingsBottomSheet(
             displayMode = displayMode,
             translationLanguage = translationLanguage,
             displayTranslation = displayTranslation,
+            displayTransliteration = displayTransliteration,
             reciter = reciter,
             audioAutomaticScrolling = audioAutomaticScrolling,
             onDisplayModeClick = onDisplayModeClick,
             onTranslationLanguageClick = onTranslationLanguageClick,
             onDisplayTranslationChange = onDisplayTranslationChange,
+            onDisplayTransliterationChange = onDisplayTransliterationChange,
             onReciterClick = onReciterClick,
             onAutomaticScrollingChange = onAutomaticScrollingChange
         )
@@ -86,10 +90,12 @@ private fun SurahVerseSettingsBottomSheetContent(
     displayMode: SurahVersePreferences.DisplayMode,
     translationLanguage: Language?,
     displayTranslation: Boolean,
+    displayTransliteration: Boolean,
     reciter: Reciter?,
     onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit,
     onTranslationLanguageClick: () -> Unit,
     onDisplayTranslationChange: (Boolean) -> Unit,
+    onDisplayTransliterationChange: (Boolean) -> Unit,
     onReciterClick: () -> Unit,
     audioAutomaticScrolling: Boolean,
     onAutomaticScrollingChange: (Boolean) -> Unit
@@ -105,9 +111,11 @@ private fun SurahVerseSettingsBottomSheetContent(
         HorizontalDivider()
         TextSection(
             translationLanguage = translationLanguage,
-            onTranslationLanguageClick = onTranslationLanguageClick,
             displayTranslation = displayTranslation,
-            onDisplayTranslationChange = onDisplayTranslationChange
+            displayTransliteration = displayTransliteration,
+            onTranslationLanguageClick = onTranslationLanguageClick,
+            onDisplayTranslationChange = onDisplayTranslationChange,
+            onDisplayTransliterationChange = onDisplayTransliterationChange
         )
         HorizontalDivider()
         AudioSection(
@@ -173,16 +181,14 @@ fun DisplaySection(
 @Composable
 private fun TextSection(
     translationLanguage: Language?,
-    onTranslationLanguageClick: () -> Unit,
     displayTranslation: Boolean,
-    onDisplayTranslationChange: (Boolean) -> Unit
+    displayTransliteration: Boolean,
+    onTranslationLanguageClick: () -> Unit,
+    onDisplayTranslationChange: (Boolean) -> Unit,
+    onDisplayTransliterationChange: (Boolean) -> Unit
 ) {
-    Column(
-        verticalArrangement = Arrangement.mediumSpacing()
-    ) {
-        Column(
-            verticalArrangement = Arrangement.smallSpacing()
-        ) {
+    Column(verticalArrangement = Arrangement.mediumSpacing()) {
+        Column(verticalArrangement = Arrangement.smallSpacing()) {
             SectionTitle(
                 modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                 text = stringResource(com.mfoumby.hassan.common.R.string.translation)
@@ -253,6 +259,31 @@ private fun TextSection(
                     checked = if (translationLanguage != null) displayTranslation else false,
                     onCheckedChange = onDisplayTranslationChange,
                     enabled = translationLanguage != null
+                )
+            }
+        }
+
+        Column(verticalArrangement = Arrangement.smallSpacing()) {
+            SectionTitle(
+                modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+                text = stringResource(R.string.transliteration)
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = MaterialTheme.padding.medium),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = stringResource(R.string.display_transliteration),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                SimpleSwitch(
+                    checked = displayTransliteration,
+                    onCheckedChange = onDisplayTransliterationChange
                 )
             }
         }
@@ -398,8 +429,10 @@ private fun SurahVerseSettingsBottomSheetContentPreview() {
             translationLanguage = Language.ENGLISH,
             reciter = reciterFixture,
             audioAutomaticScrolling = true,
+            displayTransliteration = true,
             onTranslationLanguageClick = {},
             onDisplayTranslationChange = {},
+            onDisplayTransliterationChange = {},
             onReciterClick = {},
             onDisplayModeClick = {},
             onAutomaticScrollingChange = {}

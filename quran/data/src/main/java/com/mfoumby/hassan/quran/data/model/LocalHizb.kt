@@ -21,6 +21,7 @@ import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_TABLE_NAME
             V.${VerseField.Local.VERSE_NUMBER} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_NUMBER},
             V.${VerseField.Local.VERSE_SURAH_NUMBER} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_SURAH_NUMBER},
             V.${VerseField.Local.VERSE_TEXT} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_TEXT},
+            V.${VerseField.Local.VERSE_TRANSLITERATION} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_TRANSLITERATION},
             V.${VerseField.Local.VERSE_PAGE} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_PAGE},
             V.${VerseField.Local.VERSE_JUZ} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_JUZ},
             V.${VerseField.Local.VERSE_HIZB} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_HIZB},
