@@ -209,6 +209,7 @@ fun SurahVerseDestination(
             onBackClick = onBackClick,
             onTranslationLanguageClick = onTranslationLanguageClick,
             onDisplayTranslationChange = viewModel::onDisplayTranslationChange,
+            onDisplayTransliterationChange = viewModel::onDisplayTransliterationChange,
             onReciterClick = onReciterClick,
             onAutomaticScrollingChange = viewModel::onAutomaticScrollingChange,
             onPlaySurahVerseAudioClick = viewModel::onPlaySurahVerseAudio,
@@ -238,6 +239,7 @@ private fun SurahVerseScreen(
     onBackClick: () -> Unit,
     onTranslationLanguageClick: () -> Unit,
     onDisplayTranslationChange: (Boolean) -> Unit,
+    onDisplayTransliterationChange: (Boolean) -> Unit,
     onReciterClick: () -> Unit,
     onAutomaticScrollingChange: (Boolean) -> Unit,
     onPlaySurahVerseAudioClick: (SurahVerse) -> Unit,
@@ -358,6 +360,7 @@ private fun SurahVerseScreen(
                 displayMode = surahVersePreferences.displayMode,
                 translationLanguage = surahVersePreferences.translationLanguage,
                 displayTranslation = surahVersePreferences.displayTranslation,
+                displayTransliteration = surahVersePreferences.displayTransliteration,
                 reciter = surahVersePreferences.reciter,
                 audioAutomaticScrolling = surahVersePreferences.audioAutomaticScrolling,
                 onDisplayModeClick = { displayMode ->
@@ -374,6 +377,7 @@ private fun SurahVerseScreen(
                     onTranslationLanguageClick()
                 },
                 onDisplayTranslationChange = onDisplayTranslationChange,
+                onDisplayTransliterationChange = onDisplayTransliterationChange,
                 onReciterClick = {
                     activeBottomSheet = null
                     onReciterClick()
@@ -556,6 +560,7 @@ private fun SurahVerseScreenPreview() {
             onDisplayModeClick = {},
             onTranslationLanguageClick = {},
             onDisplayTranslationChange = {},
+            onDisplayTransliterationChange = {},
             onReciterClick = {},
             onAutomaticScrollingChange = {},
             onPlaySurahVerseAudioClick = {},

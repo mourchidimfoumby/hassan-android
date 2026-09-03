@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.mfoumby.hassan.common.domain.NumberFormatUtils
+import com.mfoumby.hassan.common.extension.smallMediumSpacing
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.components.SimpleLazyColumn
@@ -90,6 +91,7 @@ fun SurahVerseList(
             SurahVerseCell(
                 surahVerse = surahVerse,
                 surahVerseTranslation = surahVerseTranslations.getOrNull(index),
+                displayTransliteration = surahVersePreferences.displayTransliteration,
                 displayTranslation = surahVersePreferences.displayTranslation,
                 tracked = currentAudioTrack?.matchTo(surahVerse) == true,
                 onClick = { onSurahVerseClick(surahVerse) }
@@ -102,6 +104,7 @@ fun SurahVerseList(
 private fun SurahVerseCell(
     surahVerse: SurahVerse,
     surahVerseTranslation: SurahVerseTranslation?,
+    displayTransliteration: Boolean,
     displayTranslation: Boolean,
     tracked: Boolean,
     onClick: () -> Unit
@@ -114,13 +117,20 @@ private fun SurahVerseCell(
             .clickable(onClick = onClick)
             .background(backgroundColor)
             .padding(MaterialTheme.padding.medium),
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.smallMedium)
+        verticalArrangement = Arrangement.smallMediumSpacing()
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = surahVerse.verse.text + " " + NumberFormatUtils.toArabic(surahVerse.verse.verseNumber),
             style = MaterialTheme.typography.bodyUthmanic
         )
+
+        if (displayTransliteration) {
+            Text(
+                text = surahVerse.verse.transliteration,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
 
         if (displayTranslation) {
             surahVerseTranslation?.let {

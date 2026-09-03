@@ -9,6 +9,7 @@ object Constants {
     val DEFAULT_PREFERENCES = SurahVersePreferences(
         displayMode = SurahVersePreferences.DisplayMode.LIST,
         translationLanguage = null,
+        displayTransliteration = true,
         displayTranslation = true,
         reciter = null,
         audioAutomaticScrolling = true,

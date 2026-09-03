@@ -114,6 +114,13 @@ class SurahVerseViewModel(
         }
     }
 
+    fun onDisplayTransliterationChange(displayTransliteration: Boolean) {
+        val preferences = uiState.value.preferences ?: return
+        viewModelScope.launch {
+            surahVersePreferencesRepository.setSurahVersePreferences(preferences.copy(displayTransliteration = displayTransliteration))
+        }
+    }
+
     fun onAutomaticScrollingChange(audioAutomaticScrolling: Boolean) {
         val preferences = uiState.value.preferences ?: return
         viewModelScope.launch {

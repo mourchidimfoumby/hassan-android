@@ -23,4 +23,6 @@
     <string name="audio">Audio</string>
     <string name="playback">Playback</string>
     <string name="automatic_scrolling">Automatic scrolling</string>
+    <string name="transliteration">Transliteration</string>
+    <string name="display_transliteration">Display transliteration</string>
 </resources>

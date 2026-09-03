@@ -3,6 +3,7 @@ package com.mfoumby.hassan.quran.data.model
 data class LocalSurahVersePreferences(
     val displayMode: String,
     val translationLanguage: String?,
+    val displayTransliteration: Boolean,
     val displayTranslation: Boolean,
     val reciter: String?,
     val audioAutomaticScrolling: Boolean,
