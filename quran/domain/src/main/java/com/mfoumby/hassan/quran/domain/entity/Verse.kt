@@ -5,6 +5,6 @@ data class Verse(
     val surahNumber: Int,
     val text: String,
     val page: Int,
-    val juz: Int,
-    val hizb: Int
+    val juzNumber: Int,
+    val hizbNumber: Int
 )

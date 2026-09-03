@@ -1,9 +1,8 @@
-package com.mfoumby.hassan.quran.ui.reciters
+package com.mfoumby.hassan.quran.ui.surahverse.reciters
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +25,7 @@ import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.components.BackTopBar
 import com.mfoumby.hassan.common.ui.components.SimpleAsyncImage
+import com.mfoumby.hassan.common.ui.components.SimpleLazyColumn
 import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.entity.Reciter
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
@@ -66,8 +66,9 @@ private fun RecitersScreen(
             )
         }
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier.padding(innerPadding)
+        SimpleLazyColumn(
+            modifier = Modifier.padding(innerPadding),
+            itemCount = reciters.size
         ) {
             items(reciters) { reciter ->
                 ReciterItem(

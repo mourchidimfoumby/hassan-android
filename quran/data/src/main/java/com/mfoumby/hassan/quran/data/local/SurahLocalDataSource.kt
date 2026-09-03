@@ -21,6 +21,10 @@ class SurahLocalDataSource(private val surahDao: SurahDao) {
         surahDao.getSurahCount()
     }
 
+    suspend fun searchSurah(name: String): List<Surah> = withContext(dispatcher) {
+        surahDao.searchSurah(name).map { it.toSurah() }
+    }
+
     suspend fun upsertSurahs(surahs: List<Surah>) {
         withContext(dispatcher) {
             surahDao.upsertSurahs(surahs.map { it.toLocal() })

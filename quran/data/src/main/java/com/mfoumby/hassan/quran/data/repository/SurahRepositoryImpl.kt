@@ -21,6 +21,8 @@ class SurahRepositoryImpl(
 
     override suspend fun getSurahCount(): Int = surahLocalDataSource.getSurahCount()
 
+    override suspend fun searchSurah(name: String): List<Surah> = surahLocalDataSource.searchSurah(name)
+
     override suspend fun downloadSurahs(language: Language) {
         val surahs = surahRemoteDataSource.getSurahs(language)
         surahLocalDataSource.upsertSurahs(surahs)

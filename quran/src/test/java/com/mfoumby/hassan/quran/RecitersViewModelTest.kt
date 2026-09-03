@@ -4,7 +4,7 @@ import com.mfoumby.hassan.quran.domain.reciterFixtures
 import com.mfoumby.hassan.quran.domain.repository.ReciterRepository
 import com.mfoumby.hassan.quran.domain.repository.SurahVersePreferencesRepository
 import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
-import com.mfoumby.hassan.quran.ui.reciters.RecitersViewModel
+import com.mfoumby.hassan.quran.ui.surahverse.reciters.RecitersViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -25,10 +25,11 @@ import com.mfoumby.hassan.common.R
 import com.mfoumby.hassan.common.domain.entity.Language
 import com.mfoumby.hassan.common.domain.entity.TranslationLanguage
 import com.mfoumby.hassan.common.domain.entity.TranslationLanguage.TranslationLanguageState
+import com.mfoumby.hassan.common.extension.mediumSpacing
+import com.mfoumby.hassan.common.extension.smallSpacing
 import com.mfoumby.hassan.common.getRoundedFlagResId
 import com.mfoumby.hassan.common.getStringResId
-import com.mfoumby.hassan.common.ui.extension.mediumSpacing
-import com.mfoumby.hassan.common.ui.extension.smallSpacing
+import com.mfoumby.hassan.common.ui.components.SimpleLazyColumn
 import com.mfoumby.hassan.common.ui.theme.padding
 
 @Composable
@@ -40,9 +41,11 @@ fun TranslationLanguageListComponent(
     onDeleteTranslationLanguageClick: (TranslationLanguage) -> Unit,
     onCancelTranslationLanguageDownloadClick: (TranslationLanguage) -> Unit
 ) {
-    LazyColumn(modifier = modifier) {
-        items(translationLanguages.size) { index ->
-            val translationLanguage = translationLanguages[index]
+    SimpleLazyColumn(
+        modifier = modifier,
+        itemCount = translationLanguages.size
+    ) {
+        items(translationLanguages) { translationLanguage ->
             TranslationLanguageItem(
                 translationLanguage = translationLanguage,
                 selected = translationLanguage.language == selectedLanguage,
