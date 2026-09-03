@@ -4,6 +4,7 @@ import com.mfoumby.hassan.common.domain.entity.Language
 import com.mfoumby.hassan.quran.domain.entity.Constants
 import com.mfoumby.hassan.quran.domain.entity.Hizb
 import com.mfoumby.hassan.quran.domain.entity.Juz
+import com.mfoumby.hassan.quran.domain.entity.QuranSearchResult
 import com.mfoumby.hassan.quran.domain.entity.Reciter
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
@@ -81,8 +82,8 @@ val verseFixture = Verse(
     verseNumber = 1,
     text = "بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ",
     page = 1,
-    juz = 1,
-    hizb = 1
+    juzNumber = 1,
+    hizbNumber = 1
 )
 
 val verseFixture2 = Verse(
@@ -90,8 +91,8 @@ val verseFixture2 = Verse(
     verseNumber = 255,
     text = "ٱللَّهُ لَآ إِلَـٰهَ إِلَّا هُوَ ٱلْحَىُّ ٱلْقَيُّومُ ۚ لَا تَأْخُذُهُۥ سِنَةٌۭ وَلَا نَوْمٌۭ ۚ لَّهُۥ مَا فِى ٱلسَّمَـٰوَٰتِ وَمَا فِى ٱلْأَرْضِ ۗ مَن ذَا ٱلَّذِى يَشْفَعُ عِندَهُۥٓ إِلَّا بِإِذْنِهِۦ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَىْءٍۢ مِّنْ عِلْمِهِۦٓ إِلَّا بِمَا شَآءَ ۚ وَسِعَ كُرْسِيُّهُ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ ۖ وَلَا يَـُٔودُهُۥ حِفْظُهُمَا ۚ وَهُوَ ٱلْعَلِىُّ ٱلْعَظِيمُ",
     page = 42,
-    juz = 3,
-    hizb = 5
+    juzNumber = 3,
+    hizbNumber = 5
 )
 
 val verseFixtures = listOf(
@@ -100,56 +101,56 @@ val verseFixtures = listOf(
         surahNumber = 1,
         text = "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
         page = 1,
-        juz = 1,
-        hizb = 1
+        juzNumber = 1,
+        hizbNumber = 1
     ),
     Verse(
         verseNumber = 2,
         surahNumber = 1,
         text = "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ",
         page = 1,
-        juz = 1,
-        hizb = 1
+        juzNumber = 1,
+        hizbNumber = 1
     ),
     Verse(
         verseNumber = 3,
         surahNumber = 1,
         text = "ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
         page = 1,
-        juz = 1,
-        hizb = 1
+        juzNumber = 1,
+        hizbNumber = 1
     ),
     Verse(
         verseNumber = 4,
         surahNumber = 1,
         text = "مَـٰلِكِ يَوْمِ ٱلدِّينِ",
         page = 1,
-        juz = 1,
-        hizb = 1
+        juzNumber = 1,
+        hizbNumber = 1
     ),
     Verse(
         verseNumber = 5,
         surahNumber = 1,
         text = "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
         page = 1,
-        juz = 1,
-        hizb = 1
+        juzNumber = 1,
+        hizbNumber = 1
     ),
     Verse(
         verseNumber = 6,
         surahNumber = 1,
         text = "ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ",
         page = 1,
-        juz = 1,
-        hizb = 1
+        juzNumber = 1,
+        hizbNumber = 1
     ),
     Verse(
         verseNumber = 7,
         surahNumber = 1,
         text = "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ",
         page = 1,
-        juz = 1,
-        hizb = 1
+        juzNumber = 1,
+        hizbNumber = 1
     )
 )
 
@@ -159,32 +160,32 @@ val verseFixtures2 = listOf(
         surahNumber = 112,
         text = "قُلۡ هُوَ ٱللَّهُ أَحَدٌ",
         page = 604,
-        juz = 30,
-        hizb = 60
+        juzNumber = 30,
+        hizbNumber = 60
     ),
     Verse(
         verseNumber = 2,
         surahNumber = 112,
         text = "ٱللَّهُ ٱلصَّمَدُ",
         page = 604,
-        juz = 30,
-        hizb = 60
+        juzNumber = 30,
+        hizbNumber = 60
     ),
     Verse(
         verseNumber = 3,
         surahNumber = 112,
         text = "لَمۡ يَلِدۡ وَلَمۡ يُولَدۡ",
         page = 604,
-        juz = 30,
-        hizb = 60
+        juzNumber = 30,
+        hizbNumber = 60
     ),
     Verse(
         verseNumber = 4,
         surahNumber = 112,
         text = "وَلَمۡ يَكُن لَّهُۥ كُفُوًا أَحَدُۢ",
         page = 604,
-        juz = 30,
-        hizb = 60
+        juzNumber = 30,
+        hizbNumber = 60
     )
 )
 
@@ -213,25 +214,25 @@ val surahVerseFixtures2 = verseFixtures2.map {
 }
 
 val juzFixture = Juz(
-    number = surahVerseFixture.verse.juz,
+    number = surahVerseFixture.verse.juzNumber,
     firstSurahVerse = surahVerseFixture
 )
 
 val juzFixtures = surahVerseFixtures.map {
     Juz(
-        number = it.verse.juz,
+        number = it.verse.juzNumber,
         firstSurahVerse = it
     )
 }
 
 val hizbFixture = Hizb(
-    number = surahVerseFixture.verse.hizb,
+    number = surahVerseFixture.verse.hizbNumber,
     firstSurahVerse = surahVerseFixture
 )
 
 val hizbFixtures = surahVerseFixtures.map {
     Hizb(
-        number = it.verse.hizb,
+        number = it.verse.hizbNumber,
         firstSurahVerse = it
     )
 }
@@ -364,4 +365,8 @@ val surahVersePreferencesFixture = Constants.DEFAULT_PREFERENCES.copy(
     surahBookmark = surahVerseFixture2,
     juzBookmark = surahVerseFixture2,
     hizbBookmark = surahVerseFixture2,
+)
+
+val quranSearchResultFixtures = listOf(
+    QuranSearchResult.SurahResult(surahs = listOf(surahFixture, surahFixture2))
 )

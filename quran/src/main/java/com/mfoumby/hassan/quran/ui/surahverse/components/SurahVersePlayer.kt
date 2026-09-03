@@ -22,7 +22,7 @@ import androidx.media3.ui.compose.material3.buttons.PreviousButton
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.components.DefaultPlayerSlider
-import com.mfoumby.hassan.common.ui.extension.smallSpacing
+import com.mfoumby.hassan.common.extension.smallSpacing
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.entity.Reciter

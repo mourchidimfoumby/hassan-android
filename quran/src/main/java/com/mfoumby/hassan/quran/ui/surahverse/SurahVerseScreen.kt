@@ -444,8 +444,8 @@ private fun SurahVerseListMode(
             modifier = Modifier.fillMaxSize(),
             surahVerses = when (quranMode) {
                 is QuranMode.SurahMode -> surahVerses.filter { it.surah.number == page.fromIndex() }
-                is QuranMode.JuzMode -> surahVerses.filter { it.verse.juz == page.fromIndex() }
-                is QuranMode.HizbMode -> surahVerses.filter { it.verse.hizb == page.fromIndex() }
+                is QuranMode.JuzMode -> surahVerses.filter { it.verse.juzNumber == page.fromIndex() }
+                is QuranMode.HizbMode -> surahVerses.filter { it.verse.hizbNumber == page.fromIndex() }
             },
             surahVerseTranslations = surahVerseTranslations,
             surahVersePreferences = surahVersePreferences,
@@ -542,8 +542,8 @@ private fun SurahVerseScreenPreview() {
             surah = surahVerseFixtures2.first().surah,
             surahVerses = surahVerseFixtures2,
             surahVerseTranslations = surahVerseTranslationFixtures,
-            juz = surahVerseFixtures2.first().verse.juz,
-            hizb = surahVerseFixtures2.first().verse.hizb,
+            juz = surahVerseFixtures2.first().verse.juzNumber,
+            hizb = surahVerseFixtures2.first().verse.hizbNumber,
             page = surahVerseFixtures2.first().verse.page,
             surahVersePreferences = surahVersePreferencesFixture,
             informativeDisplayMode = SurahVerseViewModel.InformativeDisplayMode.ListMode(surahVerseFixtures.first()),

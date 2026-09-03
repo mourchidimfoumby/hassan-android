@@ -9,8 +9,8 @@ fun RemoteVerse.toVerse() = Verse(
     surahNumber = surahNumber,
     text = text,
     page = page,
-    juz = juz,
-    hizb = hizb
+    juzNumber = juz,
+    hizbNumber = hizb
 )
 
 fun LocalVerse.toVerse() = Verse(
@@ -18,8 +18,8 @@ fun LocalVerse.toVerse() = Verse(
     surahNumber = surahNumber,
     text = text,
     page = page,
-    juz = juz,
-    hizb = hizb
+    juzNumber = juz,
+    hizbNumber = hizb
 )
 
 fun Verse.toLocal() = LocalVerse(
@@ -27,6 +27,6 @@ fun Verse.toLocal() = LocalVerse(
     surahNumber = surahNumber,
     text = text,
     page = page,
-    juz = juz,
-    hizb = hizb
+    juz = juzNumber,
+    hizb = hizbNumber
 )

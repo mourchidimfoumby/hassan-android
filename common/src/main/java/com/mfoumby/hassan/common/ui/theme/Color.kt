@@ -2,6 +2,9 @@ package com.mfoumby.hassan.common.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.ListItemColors
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -68,4 +71,11 @@ val ColorScheme.topAppBarColor: TopAppBarColors
     get() = TopAppBarDefaults.topAppBarColors(
         containerColor = surface,
         scrolledContainerColor = surface
+    )
+
+val ColorScheme.transparentListItemColor: ListItemColors
+    @Composable
+    get() = ListItemDefaults.colors(
+        containerColor = Color.Transparent,
+        leadingIconColor = MaterialTheme.colorScheme.onSurface
     )

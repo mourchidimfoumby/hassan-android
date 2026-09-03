@@ -82,8 +82,8 @@ class SurahVerseViewModel(
                 is InformativeDisplayMode.ListMode -> {
                     when (quranMode) {
                         is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurah(informativeDisplayMode.surahVerse.surah.number)
-                        is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuz(informativeDisplayMode.surahVerse.verse.juz)
-                        is QuranMode.HizbMode -> surahVerseRepository.getSurahVersesFromHizb(informativeDisplayMode.surahVerse.verse.hizb)
+                        is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuz(informativeDisplayMode.surahVerse.verse.juzNumber)
+                        is QuranMode.HizbMode -> surahVerseRepository.getSurahVersesFromHizb(informativeDisplayMode.surahVerse.verse.hizbNumber)
                     }
                 }
 
@@ -95,8 +95,8 @@ class SurahVerseViewModel(
                     surah = informativeDisplayMode.surahVerse.surah,
                     surahVerses = surahVerses,
                     page = informativeDisplayMode.surahVerse.verse.page,
-                    juz = informativeDisplayMode.surahVerse.verse.juz,
-                    hizb = informativeDisplayMode.surahVerse.verse.hizb,
+                    juz = informativeDisplayMode.surahVerse.verse.juzNumber,
+                    hizb = informativeDisplayMode.surahVerse.verse.hizbNumber,
                     informativeDisplayMode = informativeDisplayMode
                 )
             }
@@ -263,8 +263,8 @@ class SurahVerseViewModel(
             it.copy(
                 surah = fistVerse.surah,
                 surahVerses = surahVerses,
-                juz = fistVerse.verse.juz,
-                hizb = fistVerse.verse.hizb,
+                juz = fistVerse.verse.juzNumber,
+                hizb = fistVerse.verse.hizbNumber,
                 page = fistVerse.verse.page
             )
         }
@@ -373,9 +373,9 @@ class SurahVerseViewModel(
     }
 
     private fun getJuz(targetSurahVerse: SurahVerse?, surahVerses: List<SurahVerse>): Int? {
-        return targetSurahVerse?.verse?.juz ?: run {
+        return targetSurahVerse?.verse?.juzNumber ?: run {
             when (quranMode) {
-                is QuranMode.SurahMode -> surahVerses.firstOrNull()?.verse?.juz
+                is QuranMode.SurahMode -> surahVerses.firstOrNull()?.verse?.juzNumber
                 is QuranMode.JuzMode -> quranMode.juzNumber
                 is QuranMode.HizbMode -> QuranUtils.calculateJuz(quranMode.hizbNumber)
             }
@@ -383,9 +383,9 @@ class SurahVerseViewModel(
     }
 
     private fun getHizb(targetSurahVerse: SurahVerse?, surahVerses: List<SurahVerse>): Int? {
-        return targetSurahVerse?.verse?.hizb ?: run {
+        return targetSurahVerse?.verse?.hizbNumber ?: run {
             when (quranMode) {
-                is QuranMode.SurahMode -> surahVerses.firstOrNull()?.verse?.hizb
+                is QuranMode.SurahMode -> surahVerses.firstOrNull()?.verse?.hizbNumber
                 is QuranMode.JuzMode -> QuranUtils.calculateHizb(quranMode.juzNumber)
                 is QuranMode.HizbMode -> quranMode.hizbNumber
             }
@@ -448,8 +448,8 @@ class SurahVerseViewModel(
             .distinctUntilChangedBy { surahVerses ->
                 when (quranMode) {
                     is QuranMode.SurahMode -> surahVerses.first().surah
-                    is QuranMode.JuzMode -> surahVerses.first().verse.juz
-                    is QuranMode.HizbMode -> surahVerses.first().verse.hizb
+                    is QuranMode.JuzMode -> surahVerses.first().verse.juzNumber
+                    is QuranMode.HizbMode -> surahVerses.first().verse.hizbNumber
                 }
             }
 

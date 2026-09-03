@@ -37,8 +37,8 @@ import com.mfoumby.hassan.common.ui.components.SectionTitle
 import com.mfoumby.hassan.common.ui.components.SimpleAsyncImage
 import com.mfoumby.hassan.common.ui.components.SimpleBottomSheet
 import com.mfoumby.hassan.common.ui.components.SimpleSwitch
-import com.mfoumby.hassan.common.ui.extension.mediumSpacing
-import com.mfoumby.hassan.common.ui.extension.smallSpacing
+import com.mfoumby.hassan.common.extension.mediumSpacing
+import com.mfoumby.hassan.common.extension.smallSpacing
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.entity.Reciter

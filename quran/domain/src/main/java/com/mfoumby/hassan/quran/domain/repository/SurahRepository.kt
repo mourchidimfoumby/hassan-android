@@ -11,5 +11,7 @@ interface SurahRepository {
 
     suspend fun getSurahCount(): Int
 
+    suspend fun searchSurah(name: String): List<Surah>
+
     suspend fun downloadSurahs(language: Language)
 }

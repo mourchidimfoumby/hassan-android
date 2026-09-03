@@ -5,20 +5,21 @@ import androidx.room.Query
 import androidx.room.Upsert
 import com.mfoumby.hassan.quran.data.field.SurahField.Local.SURAH_NUMBER
 import com.mfoumby.hassan.quran.data.field.SurahField.Local.SURAH_TABLE_NAME
+import com.mfoumby.hassan.quran.data.field.SurahField.Local.SURAH_TRANSLITERATION
 import com.mfoumby.hassan.quran.data.model.LocalSurah
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SurahDao {
     @Query("""
-        SELECT * FROM 
-        $SURAH_TABLE_NAME 
+        SELECT * 
+        FROM $SURAH_TABLE_NAME 
         ORDER BY $SURAH_NUMBER
     """)
     fun getSurahs(): Flow<List<LocalSurah>>
 
     @Query("""
-        SELECT * 
+        SELECT *   
         FROM $SURAH_TABLE_NAME 
         WHERE $SURAH_NUMBER = :surahNumber
     """)
@@ -26,6 +27,14 @@ interface SurahDao {
 
     @Query("SELECT COUNT(*) FROM $SURAH_TABLE_NAME")
     suspend fun getSurahCount(): Int
+
+    @Query("""
+        SELECT * 
+        FROM $SURAH_TABLE_NAME 
+        WHERE LOWER($SURAH_TRANSLITERATION) LIKE '%' || LOWER(:name) || '%'
+        ORDER BY $SURAH_NUMBER
+    """)
+    suspend fun searchSurah(name: String): List<LocalSurah>
 
     @Upsert
     suspend fun upsertSurahs(surahs: List<LocalSurah>)
