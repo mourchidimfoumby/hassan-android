@@ -14,6 +14,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.theme.bodyUthmanic
+import com.mfoumby.hassan.quran.domain.verseFixture2
 
 @Composable
 fun TajweedText(
@@ -41,7 +42,7 @@ fun TajweedText(
 private fun TajweedTextPreview() {
     Previews.Preview {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            TajweedText(text = "بَلَآءٌ مِّن رَّبِّكُمْ")
+            TajweedText(text = verseFixture2.text)
         }
     }
 }

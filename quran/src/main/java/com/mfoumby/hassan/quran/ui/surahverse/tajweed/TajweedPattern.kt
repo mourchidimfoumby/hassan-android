@@ -1,7 +1,9 @@
 package com.mfoumby.hassan.quran.ui.surahverse.tajweed
 
 object TajweedPattern {
+    private val alif = 'ا'
     private val nuun = 'ن'
+    private val space = "\\s"
     private val harakaat = listOf('َ', 'ِ', 'ُ')
     private val tanween = listOf('ً', 'ٍ', 'ٌ', 'ٞ')
     private val shaddah = 'ّ'
@@ -9,23 +11,17 @@ object TajweedPattern {
     private val subscriptAlif = 'ٖ'
     private val invertedDamma = 'ٗ'
     private val sakin = listOf('ۡ', 'ْ')
-    private val ignoreCharBetweenIdghaam = listOf("\u06d6", "\u06E2", "\\s")
-    private val hurufIdghaamWithGhunnah = listOf('ي', 'و', 'م', 'ن')
-    private val hurufIdghaamWithoutGhunnah = listOf('ر', 'ل')
-//    private val hurufIdghaamMutajaanisayn = listOf(
-//        'د' to 'ت',
-//        'ت' to 'ط',
-//        'ذ' to 'ظ',
-//        'ث' to 'ذ',
-//        'ب' to 'م'
-//    )
-//    private val hurufIdghaamMutaqaaribayn = listOf(
-//        'ل' to 'ر',
-//        'ق' to 'ك'
-//    )
     private val hurufIzhaar = listOf(
         'ء', 'ه', 'ع', 'ح', 'غ', 'خ'
     )
+    private val hurufIkhfaa = listOf(
+        'ت', 'ث', 'ج', 'د', 'ذ', 'ز',
+        'س', 'ش', 'ص', 'ض', 'ط', 'ظ',
+        'ف', 'ق', 'ك', 'ک'
+    )
+    private val ignoreCharBetweenIdghaam = listOf("\u06d6", "\u06E2", space)
+    private val hurufIdghaamWithGhunnah = listOf('ي', 'و', 'م', 'ن')
+    private val hurufIdghaamWithoutGhunnah = listOf('ر', 'ل')
     private val allHuruf = listOf(
         'ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ',
         'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض',
@@ -39,7 +35,7 @@ object TajweedPattern {
         append('[')
         for (c in sakin) append(c)
         append(']')
-        append("\\s")
+        append(space)
         append("[^")
         for (c in hurufIzhaar) append(c)
         append(']')
@@ -99,8 +95,16 @@ object TajweedPattern {
         append(shaddah)
         append('?')
         append(harakatPattern)
-        append('ا')
+        append(alif)
         append('?')
+    }
+
+    val ikhfaaPattern = buildString {
+        append(nuun)
+        append('[')
+        for (c in hurufIkhfaa) append(c)
+        append(']')
+        append(harakatPattern)
     }
 
     val idghaamWithGhunnahNunSakinahPattern = buildString {
@@ -123,59 +127,8 @@ object TajweedPattern {
         append(']')
         append('[')
         append('ى')
-        append('ا')
+        append(alif)
         append(']')
         append('?')
     } + commonIdghaamWithoutGhunnahPattern
-
-//    val idghaamMutamaathilaynPattern = buildString {
-//        allHuruf.forEachIndexed { index, letter ->
-//            append('(')
-//            append(letter)
-//            append('[')
-//            for (c in sakin) append(c)
-//            append("\\s")
-//            append(']')
-//            append(letter)
-//            append(shaddah)
-//            append('?')
-//            append(harakaat)
-//            append(')')
-//            if (index < allHuruf.lastIndex) append('|')
-//        }
-//    }
-//
-//    val idghaamMutajaanisaynPattern = buildString {
-//        hurufIdghaamMutajaanisayn.forEachIndexed { index, pair ->
-//            append('(')
-//            append(pair.first)
-//            append('[')
-//            for (c in sakin) append(c)
-//            append("\\s")
-//            append("]?")
-//            append(pair.second)
-//            append(shaddah)
-//            append('?')
-//            append(harakaat)
-//            append(')')
-//            if (index < hurufIdghaamMutajaanisayn.lastIndex) append('|')
-//        }
-//    }
-//
-//    val idghaamMutaqaaribaynPattern = buildString {
-//        hurufIdghaamMutaqaaribayn.forEachIndexed { index, pair ->
-//            append('(')
-//            append(pair.first)
-//            append('[')
-//            for (c in sakin) append(c)
-//            append("\\s")
-//            append(']')
-//            append(pair.second)
-//            append(shaddah)
-//            append('?')
-//            append(harakaat)
-//            append(')')
-//            if (index < hurufIdghaamMutaqaaribayn.lastIndex) append('|')
-//        }
-//    }
 }
