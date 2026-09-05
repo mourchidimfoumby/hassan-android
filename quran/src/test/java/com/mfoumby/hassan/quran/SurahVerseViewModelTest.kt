@@ -15,7 +15,7 @@ import com.mfoumby.hassan.quran.domain.surahVerseAudioFixture
 import com.mfoumby.hassan.quran.domain.surahVerseFixture
 import com.mfoumby.hassan.quran.domain.surahVerseFixture2
 import com.mfoumby.hassan.quran.domain.surahVerseFixtures
-import com.mfoumby.hassan.quran.domain.surahVerseFixtures2
+import com.mfoumby.hassan.quran.domain.surahVerseFixtures3
 import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
 import com.mfoumby.hassan.quran.domain.surahVerseTranslationFixtures
 import com.mfoumby.hassan.quran.ui.surahverse.SurahVerseViewModel
@@ -207,7 +207,7 @@ class SurahVerseViewModelTest {
     @Test
     fun downloadAudio_should_download_all_not_downloaded_surah_verse_audio() = runTest {
         // Given
-        val surahVerses = (surahVerseFixtures + surahVerseFixtures2).associateBy { it.surah }
+        val surahVerses = (surahVerseFixtures + surahVerseFixtures3).associateBy { it.surah }
         val first = surahVerses.entries.first()
         val last = surahVerses.entries.last()
 
@@ -239,7 +239,7 @@ class SurahVerseViewModelTest {
     @Test
     fun downloadAudio_should_not_download_already_downloaded_surah_verse_audio() {
         // Given
-        val surahVerses = (surahVerseFixtures + surahVerseFixtures2).associateBy { it.surah }
+        val surahVerses = (surahVerseFixtures + surahVerseFixtures3).associateBy { it.surah }
         val first = surahVerses.entries.first()
         val last = surahVerses.entries.last()
 

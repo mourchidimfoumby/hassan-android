@@ -53,7 +53,7 @@ import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseTranslation
 import com.mfoumby.hassan.quran.domain.surahFixture
 import com.mfoumby.hassan.quran.domain.surahVerseFixtures
-import com.mfoumby.hassan.quran.domain.surahVerseFixtures2
+import com.mfoumby.hassan.quran.domain.surahVerseFixtures3
 import com.mfoumby.hassan.quran.domain.surahVersePlayerManifestFixture
 import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
 import com.mfoumby.hassan.quran.domain.surahVerseTranslationFixtures
@@ -207,13 +207,14 @@ fun SurahVerseDestination(
             currentTrack = uiState.currentAudioTrack,
             snackBarHostState = snackBarHostState,
             onBackClick = onBackClick,
+            onDisplayModeClick = viewModel::onDisplayModeChange,
             onTranslationLanguageClick = onTranslationLanguageClick,
             onDisplayTranslationChange = viewModel::onDisplayTranslationChange,
             onDisplayTransliterationChange = viewModel::onDisplayTransliterationChange,
+            onDisplayTajweedChange = viewModel::onDisplayTajweedChange,
             onReciterClick = onReciterClick,
             onAutomaticScrollingChange = viewModel::onAutomaticScrollingChange,
             onPlaySurahVerseAudioClick = viewModel::onPlaySurahVerseAudio,
-            onDisplayModeClick = viewModel::onDisplayModeChange,
             onPageChange = viewModel::onPageChange,
             onSaveBookmark = viewModel::onSaveBookmark
         )
@@ -237,13 +238,14 @@ private fun SurahVerseScreen(
     quranMode: QuranMode,
     snackBarHostState: SnackbarHostState,
     onBackClick: () -> Unit,
+    onDisplayModeClick: (SurahVerseViewModel.InformativeDisplayMode) -> Unit,
+    onDisplayTajweedChange: (Boolean) -> Unit,
     onTranslationLanguageClick: () -> Unit,
     onDisplayTranslationChange: (Boolean) -> Unit,
     onDisplayTransliterationChange: (Boolean) -> Unit,
     onReciterClick: () -> Unit,
     onAutomaticScrollingChange: (Boolean) -> Unit,
     onPlaySurahVerseAudioClick: (SurahVerse) -> Unit,
-    onDisplayModeClick: (SurahVerseViewModel.InformativeDisplayMode) -> Unit,
     onPageChange: (Int) -> Unit,
     onSaveBookmark: (SurahVerse) -> Unit
 ) {
@@ -358,6 +360,7 @@ private fun SurahVerseScreen(
             SurahVerseSettingsBottomSheet(
                 onDismissRequest = { activeBottomSheet = null },
                 displayMode = surahVersePreferences.displayMode,
+                displayTajweed = surahVersePreferences.displayTajweed,
                 translationLanguage = surahVersePreferences.translationLanguage,
                 displayTranslation = surahVersePreferences.displayTranslation,
                 displayTransliteration = surahVersePreferences.displayTransliteration,
@@ -372,6 +375,7 @@ private fun SurahVerseScreen(
                         }.let(onDisplayModeClick)
                     }
                 },
+                onDisplayTajweedChange = onDisplayTajweedChange,
                 onTranslationLanguageClick = {
                     activeBottomSheet = null
                     onTranslationLanguageClick()
@@ -543,12 +547,12 @@ data class ScrollValue(
 private fun SurahVerseScreenPreview() {
     Previews.Preview {
         SurahVerseScreen(
-            surah = surahVerseFixtures2.first().surah,
-            surahVerses = surahVerseFixtures2,
+            surah = surahVerseFixtures3.first().surah,
+            surahVerses = surahVerseFixtures3,
             surahVerseTranslations = surahVerseTranslationFixtures,
-            juz = surahVerseFixtures2.first().verse.juzNumber,
-            hizb = surahVerseFixtures2.first().verse.hizbNumber,
-            page = surahVerseFixtures2.first().verse.page,
+            juz = surahVerseFixtures3.first().verse.juzNumber,
+            hizb = surahVerseFixtures3.first().verse.hizbNumber,
+            page = surahVerseFixtures3.first().verse.page,
             surahVersePreferences = surahVersePreferencesFixture,
             informativeDisplayMode = SurahVerseViewModel.InformativeDisplayMode.ListMode(surahVerseFixtures.first()),
             quranMode = QuranMode.SurahMode(surahFixture.number, null),
@@ -558,6 +562,7 @@ private fun SurahVerseScreenPreview() {
             snackBarHostState = SnackbarHostState(),
             onBackClick = {},
             onDisplayModeClick = {},
+            onDisplayTajweedChange = {},
             onTranslationLanguageClick = {},
             onDisplayTranslationChange = {},
             onDisplayTransliterationChange = {},

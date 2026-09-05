@@ -31,6 +31,7 @@ import com.mfoumby.hassan.quran.domain.surahVerseFixtures
 import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
 import com.mfoumby.hassan.quran.domain.surahVerseTranslationFixtures
 import com.mfoumby.hassan.quran.ui.surahverse.ScrollValue
+import com.mfoumby.hassan.quran.ui.surahverse.tajweed.TajweedText
 import kotlin.math.max
 
 @Composable
@@ -71,6 +72,15 @@ fun SurahVerseList(
         }
     }
 
+    LaunchedEffect(currentAudioTrack) {
+        if (audioAutomaticScrolling) {
+            currentAudioTrack?.let {
+                val index = max(surahVerses.indexOfFirst(currentAudioTrack::matchTo), 0)
+                listState.animateScrollToItem(index)
+            }
+        }
+    }
+
     SimpleLazyColumn(
         modifier = modifier,
         state = listState,
@@ -93,6 +103,7 @@ fun SurahVerseList(
                 surahVerseTranslation = surahVerseTranslations.getOrNull(index),
                 displayTransliteration = surahVersePreferences.displayTransliteration,
                 displayTranslation = surahVersePreferences.displayTranslation,
+                displayTajweed = surahVersePreferences.displayTajweed,
                 tracked = currentAudioTrack?.matchTo(surahVerse) == true,
                 onClick = { onSurahVerseClick(surahVerse) }
             )
@@ -107,6 +118,7 @@ private fun SurahVerseCell(
     displayTransliteration: Boolean,
     displayTranslation: Boolean,
     tracked: Boolean,
+    displayTajweed: Boolean,
     onClick: () -> Unit
 ) {
     val backgroundColor = if (tracked) MaterialTheme.colorScheme.surfaceContainer else MaterialTheme.colorScheme.surface
@@ -119,11 +131,27 @@ private fun SurahVerseCell(
             .padding(MaterialTheme.padding.medium),
         verticalArrangement = Arrangement.smallMediumSpacing()
     ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = surahVerse.verse.text + " " + NumberFormatUtils.toArabic(surahVerse.verse.verseNumber),
-            style = MaterialTheme.typography.bodyUthmanic
-        )
+        val text = surahVerse.verse.text + " " + NumberFormatUtils.toArabic(surahVerse.verse.verseNumber)
+
+        if (displayTajweed) {
+            TajweedText(
+                modifier = Modifier.fillMaxWidth(),
+                text = text
+            )
+        } else {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = surahVerse.verse.text + " " + NumberFormatUtils.toArabic(surahVerse.verse.verseNumber),
+                style = MaterialTheme.typography.bodyUthmanic,
+            )
+        }
+
+        if (displayTransliteration) {
+            Text(
+                text = surahVerse.verse.transliteration,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
 
         if (displayTransliteration) {
             Text(

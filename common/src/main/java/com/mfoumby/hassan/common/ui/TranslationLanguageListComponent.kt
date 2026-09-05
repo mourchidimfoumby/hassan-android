@@ -27,8 +27,8 @@ import com.mfoumby.hassan.common.domain.entity.TranslationLanguage
 import com.mfoumby.hassan.common.domain.entity.TranslationLanguage.TranslationLanguageState
 import com.mfoumby.hassan.common.extension.mediumSpacing
 import com.mfoumby.hassan.common.extension.smallSpacing
-import com.mfoumby.hassan.common.getRoundedFlagResId
-import com.mfoumby.hassan.common.getStringResId
+import com.mfoumby.hassan.common.resId
+import com.mfoumby.hassan.common.roundedFlagResId
 import com.mfoumby.hassan.common.ui.components.SimpleLazyColumn
 import com.mfoumby.hassan.common.ui.theme.padding
 
@@ -79,14 +79,14 @@ private fun TranslationLanguageItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(translationLanguage.language.getRoundedFlagResId()),
+                painter = painterResource(translationLanguage.language.roundedFlagResId),
                 contentDescription = null,
                 modifier = Modifier.size(dimensionResource(R.dimen.flag_size))
             )
 
             Text(
                 modifier = Modifier.weight(1f),
-                text = stringResource(translationLanguage.language.getStringResId())
+                text = stringResource(translationLanguage.language.resId)
             )
 
             when (translationLanguage.state) {

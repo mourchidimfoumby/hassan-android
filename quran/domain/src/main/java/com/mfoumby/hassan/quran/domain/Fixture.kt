@@ -33,12 +33,12 @@ val surahFixture2 = Surah(
 )
 
 val surahFixture3 = Surah(
-    number = 112,
-    name = "الإخلاص",
-    transliteration = "Al-Ikhlas",
+    number = 113,
+    name = "الفلق",
+    transliteration = "Al-Falaq",
     type = "meccan",
-    totalVerses = 4,
-    translation = "The Sincerity"
+    totalVerses = 5,
+    translation = "The Daybreak"
 )
 
 val surahFixtures = listOf(
@@ -163,39 +163,48 @@ val verseFixtures = listOf(
     )
 )
 
-val verseFixtures2 = listOf(
+val verseFixtures3 = listOf(
     Verse(
         verseNumber = 1,
-        surahNumber = 112,
-        text = "قُلۡ هُوَ ٱللَّهُ أَحَدٌ",
-        transliteration = "Qul huwa Allahu ahadun",
+        surahNumber = 113,
+        text = "قُلۡ أَعُوذُ بِرَبِّ ٱلۡفَلَقِ",
+        transliteration = "Qul aAAoothu birabbi alfalaqi",
         page = 604,
         juzNumber = 30,
         hizbNumber = 60
     ),
     Verse(
         verseNumber = 2,
-        surahNumber = 112,
-        text = "ٱللَّهُ ٱلصَّمَدُ",
-        transliteration = "Allahu alssamadu",
+        surahNumber = 113,
+        text = "مِن شَرِّ مَا خَلَقَ",
+        transliteration = "Min sharri ma khalaqa",
         page = 604,
         juzNumber = 30,
         hizbNumber = 60
     ),
     Verse(
         verseNumber = 3,
-        surahNumber = 112,
-        text = "لَمۡ يَلِدۡ وَلَمۡ يُولَدۡ",
-        transliteration = "Lam yalid walam yooladu",
+        surahNumber = 113,
+        text = "وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ",
+        transliteration = "Wamin sharri ghasiqin itha waqaba",
         page = 604,
         juzNumber = 30,
         hizbNumber = 60
     ),
     Verse(
         verseNumber = 4,
-        surahNumber = 112,
-        text = "وَلَمۡ يَكُن لَّهُۥ كُفُوًا أَحَدُۢ",
-        transliteration = "Walam yakun lahu kufuwan ahadun",
+        surahNumber = 113,
+        text = "وَمِن شَرِّ ٱلنَّفَّـٰثَٰتِ فِي ٱلۡعُقَدِ",
+        transliteration = "Wamin sharri alnnaffathati fee alAAuqadi",
+        page = 604,
+        juzNumber = 30,
+        hizbNumber = 60
+    ),
+    Verse(
+        verseNumber = 5,
+        surahNumber = 113,
+        text = "وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+        transliteration = "Wamin sharri hasidin itha hasada",
         page = 604,
         juzNumber = 30,
         hizbNumber = 60
@@ -219,7 +228,7 @@ val surahVerseFixtures = verseFixtures.map {
     )
 }
 
-val surahVerseFixtures2 = verseFixtures2.map {
+val surahVerseFixtures3 = verseFixtures3.map {
     SurahVerse(
         surah = surahFixture3,
         verse = it
@@ -369,7 +378,7 @@ val surahVersePlayerManifestFixture = SurahVersePlayerManifest(
     state = SurahVersePlayerManifest.State.Playing(surahVerseAudioFixture)
 )
 
-val surahVersePreferencesFixture = Constants.DEFAULT_PREFERENCES.copy(
+val surahVersePreferencesFixture = Constants.DEFAULT_SURAH_VERSE_PREFERENCES.copy(
     displayMode = SurahVersePreferences.DisplayMode.LIST,
     translationLanguage = Language.ENGLISH,
     displayTranslation = true,
@@ -377,7 +386,7 @@ val surahVersePreferencesFixture = Constants.DEFAULT_PREFERENCES.copy(
     audioAutomaticScrolling = true,
     surahBookmark = surahVerseFixture2,
     juzBookmark = surahVerseFixture2,
-    hizbBookmark = surahVerseFixture2,
+    hizbBookmark = surahVerseFixture2
 )
 
 val quranSearchResultFixtures = listOf(

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.mfoumby.hassan.common.data.e
-import com.mfoumby.hassan.quran.domain.entity.Constants.DEFAULT_PREFERENCES
+import com.mfoumby.hassan.quran.domain.entity.Constants.DEFAULT_SURAH_VERSE_PREFERENCES
 import com.mfoumby.hassan.quran.domain.repository.SurahVersePreferencesRepository
 import org.koin.java.KoinJavaComponent.inject
 
@@ -14,7 +14,7 @@ class InitSurahVersePreferencesWorker(context: Context, params: WorkerParameters
     override suspend fun doWork(): Result {
         return try {
             if (surahVersePreferencesRepository.getSurahVersePreferences() == null) {
-                surahVersePreferencesRepository.setSurahVersePreferences(DEFAULT_PREFERENCES)
+                surahVersePreferencesRepository.setSurahVersePreferences(DEFAULT_SURAH_VERSE_PREFERENCES)
             }
             Result.success()
         } catch (e: Exception) {

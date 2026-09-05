@@ -18,7 +18,7 @@ import com.mfoumby.hassan.quran.data.model.LocalVerse
         LocalSurahVerseTranslation::class
     ],
     views = [LocalJuz::class, LocalHizb::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class LocalDatabase: RoomDatabase() {

@@ -107,6 +107,13 @@ class SurahVerseViewModel(
         }
     }
 
+    fun onDisplayTajweedChange(displayTajweed: Boolean) {
+        val preferences = uiState.value.preferences ?: return
+        viewModelScope.launch {
+            surahVersePreferencesRepository.setSurahVersePreferences(preferences.copy(displayTajweed = displayTajweed))
+        }
+    }
+
     fun onDisplayTranslationChange(displayTranslation: Boolean) {
         val preferences = uiState.value.preferences ?: return
         viewModelScope.launch {

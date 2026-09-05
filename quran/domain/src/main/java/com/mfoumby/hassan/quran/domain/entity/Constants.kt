@@ -6,11 +6,12 @@ object Constants {
     const val TOTAL_QURAN_PAGES = 604
     const val TOTAL_QURAN_JUZ = 30
     const val TOTAL_QURAN_HIZB = 60
-    val DEFAULT_PREFERENCES = SurahVersePreferences(
+    val DEFAULT_SURAH_VERSE_PREFERENCES = SurahVersePreferences(
         displayMode = SurahVersePreferences.DisplayMode.LIST,
+        displayTajweed = false,
         translationLanguage = null,
-        displayTransliteration = true,
         displayTranslation = true,
+        displayTransliteration = false,
         reciter = null,
         audioAutomaticScrolling = true,
         surahBookmark = null,

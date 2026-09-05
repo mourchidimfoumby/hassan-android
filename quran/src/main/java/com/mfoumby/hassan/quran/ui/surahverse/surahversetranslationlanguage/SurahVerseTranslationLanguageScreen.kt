@@ -20,7 +20,7 @@ import com.mfoumby.hassan.common.R
 import com.mfoumby.hassan.common.domain.entity.Language
 import com.mfoumby.hassan.common.domain.entity.TranslationLanguage
 import com.mfoumby.hassan.common.domain.entity.TranslationLanguage.TranslationLanguageState
-import com.mfoumby.hassan.common.getStringResId
+import com.mfoumby.hassan.common.resId
 import com.mfoumby.hassan.common.snackbarLauncher
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
@@ -43,7 +43,7 @@ fun SurahVerseTranslationLanguageDestination(
         viewModel.event.collect { event ->
             when (event) {
                 is SurahVerseTranslationLanguageViewModel.SurahVerseTranslationUiEvent.SurahVerseTranslationDownloadError -> {
-                    val language = resources.getString(event.translationLanguage.language.getStringResId())
+                    val language = resources.getString(event.translationLanguage.language.resId)
                     showSnackbar(resources.getString(R.string.download_translation_error, language))
                 }
             }
