@@ -257,10 +257,8 @@ fun DisplayModeSection(
             text = stringResource(R.string.display_mode)
         )
 
-        Row(
-            modifier = Modifier.padding(MaterialTheme.padding.medium),
-            horizontalArrangement = Arrangement.mediumSpacing(),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            verticalArrangement = Arrangement.smallSpacing()
         ) {
             SelectableCell(
                 modifier = Modifier
@@ -280,19 +278,21 @@ fun DisplayModeSection(
 
             SelectableCell(
                 modifier = Modifier
-                    .weight(1f)
-                    .clickable(onClick = { onDisplayModeClick(SurahVersePreferences.DisplayMode.PAGE) }),
-                selected = displayMode == SurahVersePreferences.DisplayMode.PAGE,
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_outline_two_pager),
-                        contentDescription = null
-                    )
-                },
-                text = {
-                    Text(text = stringResource(com.mfoumby.hassan.common.R.string.page))
-                }
-            )
+                    .padding(horizontal = MaterialTheme.padding.medium)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = stringResource(R.string.automatic_scrolling),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                SimpleSwitch(
+                    checked = audioAutomaticScrolling,
+                    onCheckedChange = onAutomaticScrollingChange
+                )
+            }
         }
     }
 }

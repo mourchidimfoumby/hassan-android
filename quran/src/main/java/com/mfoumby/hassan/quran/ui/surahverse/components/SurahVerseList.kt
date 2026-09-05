@@ -62,6 +62,15 @@ fun SurahVerseList(
             listState.animateScrollToItem(index)
         }
     }
+    
+    LaunchedEffect(currentAudioTrack) {
+        if (audioAutomaticScrolling) {
+            currentAudioTrack?.let {
+                val index = max(surahVerses.indexOfFirst(currentAudioTrack::matchTo), 0)
+                listState.animateScrollToItem(index)
+            }
+        }
+    }
 
     LaunchedEffect(currentAudioTrack) {
         if (audioAutomaticScrolling) {
@@ -134,6 +143,13 @@ private fun SurahVerseCell(
                 modifier = Modifier.fillMaxWidth(),
                 text = surahVerse.verse.text + " " + NumberFormatUtils.toArabic(surahVerse.verse.verseNumber),
                 style = MaterialTheme.typography.bodyUthmanic,
+            )
+        }
+
+        if (displayTransliteration) {
+            Text(
+                text = surahVerse.verse.transliteration,
+                color = MaterialTheme.colorScheme.primary
             )
         }
 
