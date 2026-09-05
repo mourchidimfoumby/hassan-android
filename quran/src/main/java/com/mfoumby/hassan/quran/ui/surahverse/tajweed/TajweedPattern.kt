@@ -28,6 +28,11 @@ object TajweedPattern {
         'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل',
         'م', 'ن', 'ه', 'و', 'ي'
     )
+    private val stops = listOf(
+        "مـ", "قلى", '\u06da', '\u06dc',
+        '\u06d9', '\u066a', '\u0615'
+    )
+    private val hurufQalqalah = listOf('ق', 'ط', 'ب', 'ج', 'د')
 
     private val nuunSakin = buildString {
         append('(')
@@ -98,6 +103,50 @@ object TajweedPattern {
         append(alif)
         append('?')
     }
+    private val qalqalahAtMiddlePattern = buildString {
+        append("[")
+        for (c in hurufQalqalah ) append(c)
+        append(']')
+        append('[')
+        for (c in sakin) append(c)
+        append(space)
+        append("]")
+    }
+
+    private val qalqalahAtEndPattern = buildString {
+        append("[")
+        for (c in hurufQalqalah) append(c)
+        append(']')
+
+        append(shaddah)
+        append('?')
+
+        append("[")
+        for (c in harakaat) append(c)
+        for (c in tanween) append(c)
+        append("].?$")
+    }
+
+    private val qalqalahAtStopPattern = buildString {
+        append("[")
+        for (c in hurufQalqalah) append(c)
+        append(']')
+
+        append(shaddah)
+        append('?')
+
+        append('[')
+        for (c in harakaat) append(c)
+        for (c in tanween) append(c)
+        append("]")
+
+        append('\u2009')
+        append('?')
+
+        append('(')
+        append(stops.joinToString("|"))
+        append(')')
+    }
 
     val ikhfaaPattern = buildString {
         append(nuun)
@@ -131,4 +180,12 @@ object TajweedPattern {
         append(']')
         append('?')
     } + commonIdghaamWithoutGhunnahPattern
+
+    val qalqalahPattern = buildString {
+        append(qalqalahAtMiddlePattern)
+        append('|')
+        append(qalqalahAtEndPattern)
+        append('|')
+        append(qalqalahAtStopPattern)
+    }
 }
