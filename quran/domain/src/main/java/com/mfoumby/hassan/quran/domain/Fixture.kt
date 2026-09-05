@@ -32,12 +32,12 @@ val surahFixture2 = Surah(
 )
 
 val surahFixture3 = Surah(
-    number = 109,
-    name = "الكافرون",
-    transliteration = "Al-Kafirun",
+    number = 112,
+    name = "الإخلاص",
+    transliteration = "Al-Ikhlas",
     type = "meccan",
-    totalVerses = 6,
-    translation = "The Disbelievers"
+    totalVerses = 4,
+    translation = "The Daybreak"
 )
 
 val surahFixtures = listOf(
@@ -153,7 +153,7 @@ val verseFixtures = listOf(
     )
 )
 
-val verseFixtures2 = listOf(
+val verseFixtures3 = listOf(
     Verse(
         verseNumber = 1,
         surahNumber = 113,
@@ -196,57 +196,6 @@ val verseFixtures2 = listOf(
     )
 )
 
-val verseFixtures3 = listOf(
-    Verse(
-        verseNumber = 1,
-        surahNumber = 109,
-        text = "قُلۡ يَـٰٓأَيُّهَا ٱلۡكَٰفِرُونَ",
-        page = 603,
-        juz = 30,
-        hizb = 60
-    ),
-    Verse(
-        verseNumber = 2,
-        surahNumber = 109,
-        text = "لَآ أَعۡبُدُ مَا تَعۡبُدُونَ",
-        page = 603,
-        juz = 30,
-        hizb = 60
-    ),
-    Verse(
-        verseNumber = 3,
-        surahNumber = 109,
-        text = "وَلَآ أَنتُمۡ عَٰبِدُونَ مَآ أَعۡبُدُ",
-        page = 603,
-        juz = 30,
-        hizb = 60
-    ),
-    Verse(
-        verseNumber = 4,
-        surahNumber = 109,
-        text = "وَلَآ أَنَا۠ عَابِدٞ مَّا عَبَدتُّمۡ",
-        page = 603,
-        juz = 30,
-        hizb = 60
-    ),
-    Verse(
-        verseNumber = 5,
-        surahNumber = 109,
-        text = "وَلَآ أَنتُمۡ عَٰبِدُونَ مَآ أَعۡبُدُ",
-        page = 603,
-        juz = 30,
-        hizb = 60
-    ),
-    Verse(
-        verseNumber = 6,
-        surahNumber = 109,
-        text = "لَكُمۡ دِينُكُمۡ وَلِيَ دِينِ",
-        page = 603,
-        juz = 30,
-        hizb = 60
-    )
-)
-
 val surahVerseFixture = SurahVerse(
     surah = surahFixture,
     verse = verseFixture
@@ -264,7 +213,7 @@ val surahVerseFixtures = verseFixtures.map {
     )
 }
 
-val surahVerseFixtures2 = verseFixtures3.map {
+val surahVerseFixtures3 = verseFixtures3.map {
     SurahVerse(
         surah = surahFixture3,
         verse = it

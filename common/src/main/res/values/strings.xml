@@ -15,9 +15,6 @@
     <string name="delete">Supprimer</string>
     <string name="list">Liste</string>
     <string name="page">Page</string>
-    <string name="uthmani" translatable="false">Uthmani</string>
-    <string name="font">Police</string>
-    <string name="font_size">Taille de police</string>
     <string name="delete_language_dialog_text">Voulez-vous supprimer cette langue?</string>
 
     <string name="unknown_error">Une erreur inconnue est survenue.</string>

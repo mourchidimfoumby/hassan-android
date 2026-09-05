@@ -5,8 +5,6 @@ import com.mfoumby.hassan.common.domain.entity.Language
 data class SurahVersePreferences(
     val displayMode: DisplayMode,
     val displayTajweed: Boolean,
-    val arabicTextFont: ArabicTextFont,
-    val arabicTextFontSize: Int,
     val translationLanguage: Language?,
     val displayTranslation: Boolean,
     val reciter: Reciter?,

@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -40,7 +38,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mfoumby.hassan.common.domain.entity.Language
 import com.mfoumby.hassan.common.resId
 import com.mfoumby.hassan.common.roundedFlagResId
@@ -54,12 +51,9 @@ import com.mfoumby.hassan.common.ui.extension.mediumSpacing
 import com.mfoumby.hassan.common.ui.extension.smallSpacing
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.R
-import com.mfoumby.hassan.quran.domain.entity.ArabicTextFont
 import com.mfoumby.hassan.quran.domain.entity.Reciter
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
 import com.mfoumby.hassan.quran.domain.reciterFixture
-import com.mfoumby.hassan.quran.ui.resId
-import com.mfoumby.hassan.quran.ui.typography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,17 +61,12 @@ fun SurahVerseSettingsBottomSheet(
     onDismissRequest: () -> Unit,
     displayMode: SurahVersePreferences.DisplayMode,
     displayTajweed: Boolean,
-    arabicTextFont: ArabicTextFont,
-    arabicTextFontSize: Int,
     translationLanguage: Language?,
     displayTranslation: Boolean,
     reciter: Reciter?,
     audioAutomaticScrolling: Boolean,
     onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit,
     onTranslationLanguageClick: () -> Unit,
-    onArabicTextFontChange: (ArabicTextFont) -> Unit,
-    onIncreaseArabicTextFontSizeClick: () -> Unit,
-    onDecreaseArabicTextFontSizeClick: () -> Unit,
     onDisplayTajweedChange: (Boolean) -> Unit,
     onDisplayTranslationChange: (Boolean) -> Unit,
     onReciterClick: () -> Unit,
@@ -94,16 +83,11 @@ fun SurahVerseSettingsBottomSheet(
             displayTajweed = displayTajweed,
             translationLanguage = translationLanguage,
             displayTranslation = displayTranslation,
-            arabicTextFont = arabicTextFont,
-            arabicTextFontSize = arabicTextFontSize,
             reciter = reciter,
             audioAutomaticScrolling = audioAutomaticScrolling,
             onDisplayModeClick = onDisplayModeClick,
             onTranslationLanguageClick = onTranslationLanguageClick,
             onDisplayTranslationChange = onDisplayTranslationChange,
-            onArabicTextFontChange = onArabicTextFontChange,
-            onIncreaseArabicTextFontSizeClick = onIncreaseArabicTextFontSizeClick,
-            onDecreaseArabicTextFontSizeClick = onDecreaseArabicTextFontSizeClick,
             onDisplayTajweedChange = onDisplayTajweedChange,
             onReciterClick = onReciterClick,
             onAutomaticScrollingChange = onAutomaticScrollingChange
@@ -117,15 +101,10 @@ private fun SurahVerseSettingsBottomSheetContent(
     displayTajweed: Boolean,
     translationLanguage: Language?,
     displayTranslation: Boolean,
-    arabicTextFont: ArabicTextFont,
-    arabicTextFontSize: Int,
     reciter: Reciter?,
     onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit,
     onTranslationLanguageClick: () -> Unit,
     onDisplayTranslationChange: (Boolean) -> Unit,
-    onArabicTextFontChange: (ArabicTextFont) -> Unit,
-    onIncreaseArabicTextFontSizeClick: () -> Unit,
-    onDecreaseArabicTextFontSizeClick: () -> Unit,
     onDisplayTajweedChange: (Boolean) -> Unit,
     onReciterClick: () -> Unit,
     audioAutomaticScrolling: Boolean,
@@ -166,12 +145,7 @@ private fun SurahVerseSettingsBottomSheetContent(
             )
 
             Tabs.TEXT -> TextTab(
-                arabicTextFont = arabicTextFont,
-                arabicTextFontSize = arabicTextFontSize,
                 displayTajweed = displayTajweed,
-                onArabicTextFontChange = onArabicTextFontChange,
-                onIncreaseArabicTextFontSizeClick = onIncreaseArabicTextFontSizeClick,
-                onDecreaseArabicTextFontSizeClick = onDecreaseArabicTextFontSizeClick,
                 onDisplayTajweedChange = onDisplayTajweedChange,
                 translationLanguage = translationLanguage,
                 onTranslationLanguageClick = onTranslationLanguageClick,
@@ -198,7 +172,7 @@ private fun DisplayTab(
         modifier = Modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.mediumSpacing()
     ) {
-        DisplaySection(
+        DisplayModeSection(
             onDisplayModeClick = onDisplayModeClick,
             displayMode = displayMode
         )
@@ -207,12 +181,7 @@ private fun DisplayTab(
 
 @Composable
 private fun TextTab(
-    arabicTextFont: ArabicTextFont,
-    arabicTextFontSize: Int,
     displayTajweed: Boolean,
-    onArabicTextFontChange: (ArabicTextFont) -> Unit,
-    onIncreaseArabicTextFontSizeClick: () -> Unit,
-    onDecreaseArabicTextFontSizeClick: () -> Unit,
     onDisplayTajweedChange: (Boolean) -> Unit,
     translationLanguage: Language?,
     onTranslationLanguageClick: () -> Unit,
@@ -224,12 +193,7 @@ private fun TextTab(
         verticalArrangement = Arrangement.mediumSpacing()
     ) {
         VerseSection(
-            arabicTextFont = arabicTextFont,
-            arabicTextFontSize = arabicTextFontSize,
             displayTajweed = displayTajweed,
-            onArabicTextFontChange = onArabicTextFontChange,
-            onIncreaseArabicTextFontSizeClick = onIncreaseArabicTextFontSizeClick,
-            onDecreaseArabicTextFontSizeClick = onDecreaseArabicTextFontSizeClick,
             onDisplayTajweedChange = onDisplayTajweedChange
         )
 
@@ -270,7 +234,7 @@ private fun AudioTab(
 }
 
 @Composable
-fun DisplaySection(
+fun DisplayModeSection(
     displayMode: SurahVersePreferences.DisplayMode,
     onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit
 ) {
@@ -322,12 +286,7 @@ fun DisplaySection(
 
 @Composable
 private fun VerseSection(
-    arabicTextFont: ArabicTextFont,
-    arabicTextFontSize: Int,
     displayTajweed: Boolean,
-    onArabicTextFontChange: (ArabicTextFont) -> Unit,
-    onIncreaseArabicTextFontSizeClick: () -> Unit,
-    onDecreaseArabicTextFontSizeClick: () -> Unit,
     onDisplayTajweedChange: (Boolean) -> Unit,
 ) {
     Column(
@@ -335,75 +294,6 @@ private fun VerseSection(
         verticalArrangement = Arrangement.mediumSpacing()
     ) {
         SectionTitle(text = stringResource(R.string.verse))
-
-        Column(
-            verticalArrangement = Arrangement.smallSpacing()
-        ) {
-            Text(
-                text = stringResource(com.mfoumby.hassan.common.R.string.font),
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.smallSpacing(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                items(ArabicTextFont.entries) {
-                    SelectableCell(
-                        modifier = Modifier.clickable(onClick = { onArabicTextFontChange(it) }),
-                        selected = arabicTextFont == it,
-                        icon = {
-                            Text(
-                                text = "بِسْمِ ٱللَّٰهِ",
-                                style = arabicTextFont.typography,
-                                fontSize = 20.sp
-                            )
-                        },
-                        text = {
-                            Text(
-                                text = stringResource(it.resId),
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-                    )
-                }
-            }
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                modifier = Modifier.weight(1f),
-                text = stringResource(com.mfoumby.hassan.common.R.string.font_size),
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.smallSpacing()
-            ) {
-                Icon(
-                    modifier = Modifier.clickable(onClick = onDecreaseArabicTextFontSizeClick),
-                    painter = painterResource(com.mfoumby.hassan.common.R.drawable.ic_outline_remove),
-                    contentDescription = "Decrease font size"
-                )
-
-                Text(
-                    text = arabicTextFontSize.toString(),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Icon(
-                    modifier = Modifier.clickable(onClick = onIncreaseArabicTextFontSizeClick),
-                    painter = painterResource(com.mfoumby.hassan.common.R.drawable.ic_outline_add),
-                    contentDescription = "Increase font size"
-                )
-            }
-        }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -648,15 +538,10 @@ private fun SurahVerseSettingsBottomSheetContentPreview() {
             displayMode = SurahVersePreferences.DisplayMode.LIST,
             displayTajweed = true,
             displayTranslation = true,
-            arabicTextFont = ArabicTextFont.UTHMANIC,
-            arabicTextFontSize = 16,
             translationLanguage = Language.ENGLISH,
             reciter = reciterFixture,
             audioAutomaticScrolling = true,
             onDisplayModeClick = {},
-            onArabicTextFontChange = {},
-            onIncreaseArabicTextFontSizeClick = {},
-            onDecreaseArabicTextFontSizeClick = {},
             onDisplayTajweedChange = {},
             onTranslationLanguageClick = {},
             onDisplayTranslationChange = {},

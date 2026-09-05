@@ -5,8 +5,6 @@ data class LocalSurahVersePreferences(
     val displayTajweed: Boolean,
     val translationLanguage: String?,
     val displayTranslation: Boolean,
-    val arabicTextFont: String,
-    val arabicTextFontSize: Int,
     val reciter: String?,
     val audioAutomaticScrolling: Boolean,
     val surahBookmark: String?,

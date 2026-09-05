@@ -9,7 +9,6 @@ import com.mfoumby.hassan.common.domain.entity.Progress
 import com.mfoumby.hassan.common.domain.extension.asIndex
 import com.mfoumby.hassan.quran.QuranMode
 import com.mfoumby.hassan.quran.domain.QuranUtils
-import com.mfoumby.hassan.quran.domain.entity.ArabicTextFont
 import com.mfoumby.hassan.quran.domain.entity.Reciter
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
@@ -105,29 +104,6 @@ class SurahVerseViewModel(
             surahVersePreferencesRepository.setSurahVersePreferences(
                 preferences.copy(displayMode = informativeDisplayMode.toDisplayMode())
             )
-        }
-    }
-
-    fun onArabicTextFontChange(arabicTextFont: ArabicTextFont) {
-        val preferences = uiState.value.preferences ?: return
-        viewModelScope.launch {
-            surahVersePreferencesRepository.setSurahVersePreferences(preferences.copy(arabicTextFont = arabicTextFont))
-        }
-    }
-
-    fun onIncreaseArabicTextFontSize() {
-        val preferences = uiState.value.preferences ?: return
-        val fontSize = preferences.arabicTextFontSize + 1
-        viewModelScope.launch {
-            surahVersePreferencesRepository.setSurahVersePreferences(preferences.copy(arabicTextFontSize = fontSize))
-        }
-    }
-
-    fun onDecreaseArabicTextFontSize() {
-        val preferences = uiState.value.preferences ?: return
-        val fontSize = (preferences.arabicTextFontSize - 1).takeIf { it >= 1 } ?: return
-        viewModelScope.launch {
-            surahVersePreferencesRepository.setSurahVersePreferences(preferences.copy(arabicTextFontSize = fontSize))
         }
     }
 

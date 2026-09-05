@@ -10,8 +10,6 @@ object Constants {
         displayMode = SurahVersePreferences.DisplayMode.LIST,
         displayTajweed = false,
         displayTranslation = true,
-        arabicTextFont = ArabicTextFont.UTHMANIC,
-        arabicTextFontSize = 34,
         translationLanguage = null,
         reciter = null,
         audioAutomaticScrolling = true,

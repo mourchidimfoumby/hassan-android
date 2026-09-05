@@ -29,7 +29,7 @@ import com.mfoumby.hassan.common.ui.extension.mediumSpacing
 import com.mfoumby.hassan.common.ui.theme.bodyUthmanic
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
-import com.mfoumby.hassan.quran.domain.surahVerseFixtures2
+import com.mfoumby.hassan.quran.domain.surahVerseFixtures3
 import com.mfoumby.hassan.quran.ui.surahverse.ScrollValue
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -144,7 +144,7 @@ fun SurahVerseText(
 private fun SurahVersePagePreview() {
     Previews.Preview {
         SurahVersePage(
-            surahVerses = surahVerseFixtures2,
+            surahVerses = surahVerseFixtures3,
             surahVerseToScroll = null,
             onSurahVerseClick = {},
             onScrollValueChange = {}

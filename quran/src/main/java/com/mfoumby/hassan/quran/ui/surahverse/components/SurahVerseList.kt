@@ -17,13 +17,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
 import com.mfoumby.hassan.common.domain.NumberFormatUtils
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.components.VerticalScrollBarIndicator
+import com.mfoumby.hassan.common.ui.theme.bodyUthmanic
 import com.mfoumby.hassan.common.ui.theme.padding
-import com.mfoumby.hassan.quran.domain.entity.ArabicTextFont
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseAudio
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
@@ -34,7 +33,6 @@ import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
 import com.mfoumby.hassan.quran.domain.surahVerseTranslationFixtures
 import com.mfoumby.hassan.quran.ui.surahverse.ScrollValue
 import com.mfoumby.hassan.quran.ui.surahverse.tajweed.TajweedText
-import com.mfoumby.hassan.quran.ui.typography
 import kotlin.math.max
 
 @Composable
@@ -93,8 +91,6 @@ fun SurahVerseList(
                 SurahVerseCell(
                     surahVerse = surahVerse,
                     surahVerseTranslation = surahVerseTranslations.getOrNull(index),
-                    arabicTextFont = surahVersePreferences.arabicTextFont,
-                    arabicTextFontSize = surahVersePreferences.arabicTextFontSize,
                     displayTranslation = surahVersePreferences.displayTranslation,
                     tracked = currentAudioTrack?.matchTo(surahVerse) == true,
                     displayTajweed = surahVersePreferences.displayTajweed,
@@ -115,8 +111,6 @@ fun SurahVerseList(
 private fun SurahVerseCell(
     surahVerse: SurahVerse,
     surahVerseTranslation: SurahVerseTranslation?,
-    arabicTextFont: ArabicTextFont,
-    arabicTextFontSize: Int,
     displayTranslation: Boolean,
     tracked: Boolean,
     displayTajweed: Boolean,
@@ -132,19 +126,18 @@ private fun SurahVerseCell(
             .padding(MaterialTheme.padding.medium),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.smallMedium)
     ) {
+        val text = surahVerse.verse.text + " " + NumberFormatUtils.toArabic(surahVerse.verse.verseNumber)
+
         if (displayTajweed) {
             TajweedText(
                 modifier = Modifier.fillMaxWidth(),
-                text = surahVerse.verse.text + " " + NumberFormatUtils.toArabic(surahVerse.verse.verseNumber),
-                style = arabicTextFont.typography,
-                fontSize = arabicTextFontSize.sp
+                text = text
             )
         } else {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = surahVerse.verse.text + " " + NumberFormatUtils.toArabic(surahVerse.verse.verseNumber),
-                style = arabicTextFont.typography,
-                fontSize = arabicTextFontSize.sp
+                style = MaterialTheme.typography.bodyUthmanic,
             )
         }
 

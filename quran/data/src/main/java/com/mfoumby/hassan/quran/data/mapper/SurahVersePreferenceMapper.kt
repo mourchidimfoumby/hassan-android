@@ -5,7 +5,6 @@ import com.mfoumby.hassan.common.domain.entity.Language
 import com.mfoumby.hassan.quran.data.model.LocalReciter
 import com.mfoumby.hassan.quran.data.model.LocalSurahVerse
 import com.mfoumby.hassan.quran.data.model.LocalSurahVersePreferences
-import com.mfoumby.hassan.quran.domain.entity.ArabicTextFont
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
 
 private val gson = Gson()
@@ -13,8 +12,6 @@ private val gson = Gson()
 fun LocalSurahVersePreferences.toSurahVersePreferences() = SurahVersePreferences(
     displayMode = SurahVersePreferences.DisplayMode.valueOf(displayMode),
     displayTajweed = displayTajweed,
-    arabicTextFont = ArabicTextFont.valueOf(arabicTextFont),
-    arabicTextFontSize = arabicTextFontSize,
     translationLanguage = translationLanguage?.let(Language::valueOf),
     displayTranslation = displayTranslation,
     reciter = gson.fromJson(reciter, LocalReciter::class.java)?.toReciter(),
@@ -27,8 +24,6 @@ fun LocalSurahVersePreferences.toSurahVersePreferences() = SurahVersePreferences
 fun SurahVersePreferences.toLocalSurahVersePreferences() = LocalSurahVersePreferences(
     displayMode = displayMode.name,
     displayTajweed = displayTajweed,
-    arabicTextFont = arabicTextFont.name,
-    arabicTextFontSize = arabicTextFontSize,
     translationLanguage = translationLanguage?.name,
     displayTranslation = displayTranslation,
     reciter = reciter?.let { gson.toJson(it.toLocal()) },
