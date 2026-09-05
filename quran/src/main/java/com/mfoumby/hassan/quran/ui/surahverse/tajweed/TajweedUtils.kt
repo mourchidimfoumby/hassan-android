@@ -7,6 +7,7 @@ object TajweedUtils {
         TajweedPattern.idghaamWithGhunnahNunSakinahPattern.toRegex() to Tajweed.TajweedType.IDGHAAM_WITH_GHUNNAH_NUN_SAKINAH,
         TajweedPattern.idghaamWithoutGhunnahNunSakinahPattern.toRegex() to Tajweed.TajweedType.IDGHAAM_WITHOUT_GHUNNAH_NUN_SAKINAH,
         TajweedPattern.idghaamWithoutGhunnahTanweenPattern.toRegex() to Tajweed.TajweedType.IDGHAAM_WITHOUT_GHUNNAH_TANWEEN,
+        TajweedPattern.qalqalahPattern.toRegex() to Tajweed.TajweedType.QALQALAH
     )
 
     fun getTajweed(verse: String): List<Tajweed> {
