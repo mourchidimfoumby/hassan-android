@@ -1,4 +1,4 @@
-package com.mfoumby.hassan.common.ui.extension
+package com.mfoumby.hassan.common.extension
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.MaterialTheme

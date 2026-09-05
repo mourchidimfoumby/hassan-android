@@ -17,7 +17,7 @@ import com.mfoumby.hassan.common.ui.BottomSheetItemValue
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.components.SimpleBottomSheet
-import com.mfoumby.hassan.common.ui.extension.mediumSpacing
+import com.mfoumby.hassan.common.extension.mediumSpacing
 import com.mfoumby.hassan.quran.R
 
 @OptIn(ExperimentalMaterial3Api::class)

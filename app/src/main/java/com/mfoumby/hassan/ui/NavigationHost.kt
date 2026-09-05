@@ -13,13 +13,15 @@ import com.mfoumby.hassan.common.Route
 import com.mfoumby.hassan.quran.ui.QuranBaseRoute
 import com.mfoumby.hassan.quran.ui.navigateToQuran
 import com.mfoumby.hassan.quran.ui.quranSection
-import com.mfoumby.hassan.quran.ui.reciters.navigateToReciters
-import com.mfoumby.hassan.quran.ui.reciters.recitersScreen
+import com.mfoumby.hassan.quran.ui.quransearch.navigateToQuranSearch
+import com.mfoumby.hassan.quran.ui.quransearch.quranSearchScreen
 import com.mfoumby.hassan.quran.ui.surahverse.hizbSurahVerseScreen
 import com.mfoumby.hassan.quran.ui.surahverse.juzSurahVerseScreen
 import com.mfoumby.hassan.quran.ui.surahverse.navigateToHizbSurahVerse
 import com.mfoumby.hassan.quran.ui.surahverse.navigateToJuzSurahVerse
 import com.mfoumby.hassan.quran.ui.surahverse.navigateToSurahVerse
+import com.mfoumby.hassan.quran.ui.surahverse.reciters.navigateToReciters
+import com.mfoumby.hassan.quran.ui.surahverse.reciters.recitersScreen
 import com.mfoumby.hassan.quran.ui.surahverse.surahVerseScreen
 import com.mfoumby.hassan.quran.ui.surahverse.surahversetranslationlanguage.navigateToSurahVerseTranslationLanguage
 import com.mfoumby.hassan.quran.ui.surahverse.surahversetranslationlanguage.surahVerseTranslationLanguageScreen
@@ -77,7 +79,8 @@ fun NavigationHost(
             onHizbClick = navController::navigateToHizbSurahVerse,
             onSurahBookmarkClick = navController::navigateToSurahVerse,
             onJuzBookmarkClick = navController::navigateToJuzSurahVerse,
-            onHizbBookmarkClick = navController::navigateToHizbSurahVerse
+            onHizbBookmarkClick = navController::navigateToHizbSurahVerse,
+            onQuranSearchClick = navController::navigateToQuranSearch
         ) {
             surahVerseScreen(
                 onBackClick = navController::popBackStack,
@@ -100,6 +103,11 @@ fun NavigationHost(
             surahVerseTranslationLanguageScreen(onBackClick = navController::popBackStack)
 
             recitersScreen(onBackClick = navController::popBackStack)
+
+            quranSearchScreen(
+                onBackClick = navController::popBackStack,
+                onSurahClick = navController::navigateToSurahVerse
+            )
         }
     }
 }

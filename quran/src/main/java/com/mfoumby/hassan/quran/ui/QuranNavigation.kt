@@ -30,6 +30,7 @@ fun NavGraphBuilder.quranSection(
     onSurahBookmarkClick: (SurahNumber, VerseNumber?) -> Unit,
     onJuzBookmarkClick: (JuzNumber, SurahNumber, VerseNumber?) -> Unit,
     onHizbBookmarkClick: (HizbNumber, SurahNumber, VerseNumber?) -> Unit,
+    onQuranSearchClick: () -> Unit,
     quranDestinations: NavGraphBuilder.() -> Unit
 ) {
     navigation<QuranBaseRoute>(startDestination = QuranRoute) {
@@ -41,7 +42,8 @@ fun NavGraphBuilder.quranSection(
                 onHizbClick = onHizbClick,
                 onSurahBookmarkClick = onSurahBookmarkClick,
                 onJuzBookmarkClick = onJuzBookmarkClick,
-                onHizbBookmarkClick = onHizbBookmarkClick
+                onHizbBookmarkClick = onHizbBookmarkClick,
+                onSearchClick = onQuranSearchClick
             )
         }
         quranDestinations()

@@ -20,7 +20,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -32,13 +31,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mfoumby.hassan.common.domain.entity.Language
+import com.mfoumby.hassan.common.extension.mediumSpacing
+import com.mfoumby.hassan.common.extension.smallSpacing
 import com.mfoumby.hassan.common.resId
 import com.mfoumby.hassan.common.roundedFlagResId
 import com.mfoumby.hassan.common.ui.PhonePreviews
@@ -47,8 +47,6 @@ import com.mfoumby.hassan.common.ui.components.SectionTitle
 import com.mfoumby.hassan.common.ui.components.SimpleAsyncImage
 import com.mfoumby.hassan.common.ui.components.SimpleBottomSheet
 import com.mfoumby.hassan.common.ui.components.SimpleSwitch
-import com.mfoumby.hassan.common.ui.extension.mediumSpacing
-import com.mfoumby.hassan.common.ui.extension.smallSpacing
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.entity.Reciter
@@ -63,12 +61,14 @@ fun SurahVerseSettingsBottomSheet(
     displayTajweed: Boolean,
     translationLanguage: Language?,
     displayTranslation: Boolean,
+    displayTransliteration: Boolean,
     reciter: Reciter?,
     audioAutomaticScrolling: Boolean,
     onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit,
     onTranslationLanguageClick: () -> Unit,
-    onDisplayTajweedChange: (Boolean) -> Unit,
     onDisplayTranslationChange: (Boolean) -> Unit,
+    onDisplayTransliterationChange: (Boolean) -> Unit,
+    onDisplayTajweedChange: (Boolean) -> Unit,
     onReciterClick: () -> Unit,
     onAutomaticScrollingChange: (Boolean) -> Unit
 ) {
@@ -83,11 +83,13 @@ fun SurahVerseSettingsBottomSheet(
             displayTajweed = displayTajweed,
             translationLanguage = translationLanguage,
             displayTranslation = displayTranslation,
+            displayTransliteration = displayTransliteration,
             reciter = reciter,
             audioAutomaticScrolling = audioAutomaticScrolling,
             onDisplayModeClick = onDisplayModeClick,
             onTranslationLanguageClick = onTranslationLanguageClick,
             onDisplayTranslationChange = onDisplayTranslationChange,
+            onDisplayTransliterationChange = onDisplayTransliterationChange,
             onDisplayTajweedChange = onDisplayTajweedChange,
             onReciterClick = onReciterClick,
             onAutomaticScrollingChange = onAutomaticScrollingChange
@@ -101,10 +103,12 @@ private fun SurahVerseSettingsBottomSheetContent(
     displayTajweed: Boolean,
     translationLanguage: Language?,
     displayTranslation: Boolean,
+    displayTransliteration: Boolean,
     reciter: Reciter?,
     onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit,
     onTranslationLanguageClick: () -> Unit,
     onDisplayTranslationChange: (Boolean) -> Unit,
+    onDisplayTransliterationChange: (Boolean) -> Unit,
     onDisplayTajweedChange: (Boolean) -> Unit,
     onReciterClick: () -> Unit,
     audioAutomaticScrolling: Boolean,
@@ -141,16 +145,15 @@ private fun SurahVerseSettingsBottomSheetContent(
         when (currentTab) {
             Tabs.DISPLAY -> DisplayTab(
                 displayMode = displayMode,
-                onDisplayModeClick = onDisplayModeClick
-            )
-
-            Tabs.TEXT -> TextTab(
                 displayTajweed = displayTajweed,
-                onDisplayTajweedChange = onDisplayTajweedChange,
                 translationLanguage = translationLanguage,
-                onTranslationLanguageClick = onTranslationLanguageClick,
                 displayTranslation = displayTranslation,
-                onDisplayTranslationChange = onDisplayTranslationChange
+                displayTransliteration = displayTransliteration,
+                onDisplayModeClick = onDisplayModeClick,
+                onDisplayTajweedChange = onDisplayTajweedChange,
+                onTranslationLanguageClick = onTranslationLanguageClick,
+                onDisplayTranslationChange = onDisplayTranslationChange,
+                onDisplayTransliterationChange = onDisplayTransliterationChange
             )
 
             Tabs.AUDIO -> AudioTab(
@@ -166,7 +169,15 @@ private fun SurahVerseSettingsBottomSheetContent(
 @Composable
 private fun DisplayTab(
     displayMode: SurahVersePreferences.DisplayMode,
-    onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit
+    displayTajweed: Boolean,
+    translationLanguage: Language?,
+    displayTranslation: Boolean,
+    displayTransliteration: Boolean,
+    onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit,
+    onDisplayTajweedChange: (Boolean) -> Unit,
+    onTranslationLanguageClick: () -> Unit,
+    onDisplayTranslationChange: (Boolean) -> Unit,
+    onDisplayTransliterationChange: (Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -176,22 +187,11 @@ private fun DisplayTab(
             onDisplayModeClick = onDisplayModeClick,
             displayMode = displayMode
         )
-    }
-}
 
-@Composable
-private fun TextTab(
-    displayTajweed: Boolean,
-    onDisplayTajweedChange: (Boolean) -> Unit,
-    translationLanguage: Language?,
-    onTranslationLanguageClick: () -> Unit,
-    displayTranslation: Boolean,
-    onDisplayTranslationChange: (Boolean) -> Unit
-) {
-    Column(
-        modifier = Modifier.verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.mediumSpacing()
-    ) {
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium)
+        )
+
         VerseSection(
             displayTajweed = displayTajweed,
             onDisplayTajweedChange = onDisplayTajweedChange
@@ -206,6 +206,15 @@ private fun TextTab(
             onTranslationLanguageClick = onTranslationLanguageClick,
             displayTranslation = displayTranslation,
             onDisplayTranslationChange = onDisplayTranslationChange
+        )
+
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium)
+        )
+
+        TransliterationSection(
+            displayTransliteration = displayTransliteration,
+            onDisplayTransliterationChange = onDisplayTransliterationChange
         )
     }
 }
@@ -224,6 +233,10 @@ private fun AudioTab(
         ReciterSection(
             reciter = reciter,
             onReciterClick = onReciterClick
+        )
+
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium)
         )
 
         PlaybackSection(
@@ -291,7 +304,7 @@ private fun VerseSection(
 ) {
     Column(
         modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
-        verticalArrangement = Arrangement.mediumSpacing()
+        verticalArrangement = Arrangement.smallSpacing()
     ) {
         SectionTitle(text = stringResource(R.string.verse))
 
@@ -305,7 +318,7 @@ private fun VerseSection(
                 style = MaterialTheme.typography.bodyMedium
             )
 
-            Switch(
+            SimpleSwitch(
                 checked = displayTajweed,
                 onCheckedChange = onDisplayTajweedChange
             )
@@ -399,6 +412,35 @@ private fun TranslationSection(
 }
 
 @Composable
+private fun TransliterationSection(
+    displayTransliteration: Boolean,
+    onDisplayTransliterationChange: (Boolean) -> Unit
+) {
+    Column(
+        modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+        verticalArrangement = Arrangement.smallSpacing()
+    ) {
+        SectionTitle(text = stringResource(R.string.transliteration))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.display_transliteration),
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            SimpleSwitch(
+                checked = displayTransliteration,
+                onCheckedChange = onDisplayTransliterationChange
+            )
+        }
+    }
+}
+
+@Composable
 private fun ReciterSection(
     reciter: Reciter?,
     onReciterClick: () -> Unit
@@ -466,17 +508,13 @@ private fun PlaybackSection(
     onAutomaticScrollingChange: (Boolean) -> Unit
 ) {
     Column(
+        modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
         verticalArrangement = Arrangement.smallSpacing()
     ) {
-        SectionTitle(
-            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
-            text = stringResource(R.string.playback)
-        )
+        SectionTitle(text = stringResource(R.string.playback))
 
         Row(
-            modifier = Modifier
-                .padding(horizontal = MaterialTheme.padding.medium)
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -497,7 +535,6 @@ private fun PlaybackSection(
 private fun SelectableCell(
     modifier: Modifier = Modifier,
     selected: Boolean,
-    shape: Shape = MaterialTheme.shapes.medium,
     icon: @Composable () -> Unit,
     text: @Composable () -> Unit
 ) {
@@ -509,7 +546,7 @@ private fun SelectableCell(
             .border(
                 width = borderWidth,
                 color = borderColor,
-                shape = shape
+                shape = MaterialTheme.shapes.medium
             )
             .padding(MaterialTheme.padding.medium),
         contentAlignment = Alignment.Center
@@ -526,7 +563,6 @@ private fun SelectableCell(
 
 private enum class Tabs(val resId: Int) {
     DISPLAY(R.string.display),
-    TEXT(com.mfoumby.hassan.common.R.string.text),
     AUDIO(R.string.audio)
 }
 
@@ -537,14 +573,16 @@ private fun SurahVerseSettingsBottomSheetContentPreview() {
         SurahVerseSettingsBottomSheetContent(
             displayMode = SurahVersePreferences.DisplayMode.LIST,
             displayTajweed = true,
-            displayTranslation = true,
             translationLanguage = Language.ENGLISH,
+            displayTranslation = true,
+            displayTransliteration = true,
             reciter = reciterFixture,
             audioAutomaticScrolling = true,
             onDisplayModeClick = {},
             onDisplayTajweedChange = {},
             onTranslationLanguageClick = {},
             onDisplayTranslationChange = {},
+            onDisplayTransliterationChange = {},
             onReciterClick = {},
             onAutomaticScrollingChange = {}
         )

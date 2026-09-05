@@ -11,9 +11,10 @@ private val gson = Gson()
 
 fun LocalSurahVersePreferences.toSurahVersePreferences() = SurahVersePreferences(
     displayMode = SurahVersePreferences.DisplayMode.valueOf(displayMode),
-    displayTajweed = displayTajweed,
     translationLanguage = translationLanguage?.let(Language::valueOf),
+    displayTransliteration = displayTransliteration,
     displayTranslation = displayTranslation,
+    displayTajweed = displayTajweed,
     reciter = gson.fromJson(reciter, LocalReciter::class.java)?.toReciter(),
     audioAutomaticScrolling = audioAutomaticScrolling,
     surahBookmark = gson.fromJson(surahBookmark, LocalSurahVerse::class.java)?.toSurahVerse(),
@@ -23,9 +24,10 @@ fun LocalSurahVersePreferences.toSurahVersePreferences() = SurahVersePreferences
 
 fun SurahVersePreferences.toLocalSurahVersePreferences() = LocalSurahVersePreferences(
     displayMode = displayMode.name,
-    displayTajweed = displayTajweed,
     translationLanguage = translationLanguage?.name,
+    displayTransliteration = displayTransliteration,
     displayTranslation = displayTranslation,
+    displayTajweed = displayTajweed,
     reciter = reciter?.let { gson.toJson(it.toLocal()) },
     audioAutomaticScrolling = audioAutomaticScrolling,
     surahBookmark = surahBookmark?.let { gson.toJson(it.toLocal()) },

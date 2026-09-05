@@ -10,6 +10,7 @@ import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_PAGE
 import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_SURAH_NUMBER
 import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_TABLE_NAME
 import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_TEXT
+import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_TRANSLITERATION
 
 @Entity(
     tableName = VERSE_TABLE_NAME,
@@ -21,11 +22,13 @@ import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_TEXT
 )
 data class LocalVerse(
     @ColumnInfo(name = VERSE_NUMBER)
-    val number: Int,
+    val verseNumber: Int,
     @ColumnInfo(name = VERSE_SURAH_NUMBER)
     val surahNumber: Int,
     @ColumnInfo(name = VERSE_TEXT)
     val text: String,
+    @ColumnInfo(name = VERSE_TRANSLITERATION)
+    val transliteration: String,
     @ColumnInfo(name = VERSE_PAGE)
     val page: Int,
     @ColumnInfo(name = VERSE_JUZ)

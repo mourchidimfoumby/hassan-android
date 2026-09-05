@@ -1,4 +1,4 @@
-package com.mfoumby.hassan.quran.ui.reciters
+package com.mfoumby.hassan.quran.ui.surahverse.reciters
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

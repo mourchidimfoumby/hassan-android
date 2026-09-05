@@ -14,6 +14,9 @@ data class RemoteVerse(
     @get:PropertyName(VerseField.Remote.VERSE_TEXT)
     @set:PropertyName(VerseField.Remote.VERSE_TEXT)
     var text: String = "",
+    @get:PropertyName(VerseField.Remote.VERSE_TRANSLITERATION)
+    @set:PropertyName(VerseField.Remote.VERSE_TRANSLITERATION)
+    var transliteration: String = "",
     @get:PropertyName(VerseField.Remote.VERSE_PAGE)
     @set:PropertyName(VerseField.Remote.VERSE_PAGE)
     var page: Int = 0,

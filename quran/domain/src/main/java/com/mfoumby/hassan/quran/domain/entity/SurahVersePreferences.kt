@@ -6,6 +6,7 @@ data class SurahVersePreferences(
     val displayMode: DisplayMode,
     val displayTajweed: Boolean,
     val translationLanguage: Language?,
+    val displayTransliteration: Boolean,
     val displayTranslation: Boolean,
     val reciter: Reciter?,
     val audioAutomaticScrolling: Boolean,

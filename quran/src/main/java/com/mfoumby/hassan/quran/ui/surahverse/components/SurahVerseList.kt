@@ -3,11 +3,10 @@ package com.mfoumby.hassan.quran.ui.surahverse.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -15,12 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mfoumby.hassan.common.domain.NumberFormatUtils
+import com.mfoumby.hassan.common.extension.smallMediumSpacing
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
-import com.mfoumby.hassan.common.ui.components.VerticalScrollBarIndicator
+import com.mfoumby.hassan.common.ui.components.SimpleLazyColumn
 import com.mfoumby.hassan.common.ui.theme.bodyUthmanic
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
@@ -73,37 +72,33 @@ fun SurahVerseList(
         }
     }
 
-    Box(modifier = modifier) {
-        LazyColumn(state = listState) {
-            items(surahVerses.size) { index ->
-                val surahVerse = surahVerses[index]
-                if (surahVerse.verse.verseNumber == 1) {
-                    SurahHeader(surah = surahVerse.surah)
-                }
-
-                if (
-                    surahVerse.surah.number != 1 ||
-                    surahVerse.verse.verseNumber != 1
-                ) {
-                    HorizontalDivider()
-                }
-
-                SurahVerseCell(
-                    surahVerse = surahVerse,
-                    surahVerseTranslation = surahVerseTranslations.getOrNull(index),
-                    displayTranslation = surahVersePreferences.displayTranslation,
-                    tracked = currentAudioTrack?.matchTo(surahVerse) == true,
-                    displayTajweed = surahVersePreferences.displayTajweed,
-                    onClick = { onSurahVerseClick(surahVerse) }
-                )
+    SimpleLazyColumn(
+        modifier = modifier,
+        state = listState,
+        itemCount = surahVerses.size
+    ) {
+        itemsIndexed(surahVerses) { index, surahVerse ->
+            if (surahVerse.verse.verseNumber == 1) {
+                SurahHeader(surah = surahVerse.surah)
             }
-        }
 
-        VerticalScrollBarIndicator(
-            modifier = Modifier.align(Alignment.CenterEnd),
-            state = listState,
-            itemCount = surahVerses.size
-        )
+            if (
+                surahVerse.surah.number != 1 ||
+                surahVerse.verse.verseNumber != 1
+            ) {
+                HorizontalDivider()
+            }
+
+            SurahVerseCell(
+                surahVerse = surahVerse,
+                surahVerseTranslation = surahVerseTranslations.getOrNull(index),
+                displayTransliteration = surahVersePreferences.displayTransliteration,
+                displayTranslation = surahVersePreferences.displayTranslation,
+                displayTajweed = surahVersePreferences.displayTajweed,
+                tracked = currentAudioTrack?.matchTo(surahVerse) == true,
+                onClick = { onSurahVerseClick(surahVerse) }
+            )
+        }
     }
 }
 
@@ -111,6 +106,7 @@ fun SurahVerseList(
 private fun SurahVerseCell(
     surahVerse: SurahVerse,
     surahVerseTranslation: SurahVerseTranslation?,
+    displayTransliteration: Boolean,
     displayTranslation: Boolean,
     tracked: Boolean,
     displayTajweed: Boolean,
@@ -124,7 +120,7 @@ private fun SurahVerseCell(
             .clickable(onClick = onClick)
             .background(backgroundColor)
             .padding(MaterialTheme.padding.medium),
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.smallMedium)
+        verticalArrangement = Arrangement.smallMediumSpacing()
     ) {
         val text = surahVerse.verse.text + " " + NumberFormatUtils.toArabic(surahVerse.verse.verseNumber)
 
@@ -138,6 +134,13 @@ private fun SurahVerseCell(
                 modifier = Modifier.fillMaxWidth(),
                 text = surahVerse.verse.text + " " + NumberFormatUtils.toArabic(surahVerse.verse.verseNumber),
                 style = MaterialTheme.typography.bodyUthmanic,
+            )
+        }
+
+        if (displayTransliteration) {
+            Text(
+                text = surahVerse.verse.transliteration,
+                color = MaterialTheme.colorScheme.primary
             )
         }
 

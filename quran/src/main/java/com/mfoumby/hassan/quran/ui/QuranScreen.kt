@@ -2,11 +2,11 @@ package com.mfoumby.hassan.quran.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -15,8 +15,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
@@ -29,20 +30,19 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.mfoumby.hassan.common.domain.extension.asIndex
+import com.mfoumby.hassan.common.extension.smallSpacing
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.components.SectionTitle
+import com.mfoumby.hassan.common.ui.components.SimpleLazyColumn
 import com.mfoumby.hassan.common.ui.components.TitleTopBar
-import com.mfoumby.hassan.common.ui.components.VerticalScrollBarIndicator
-import com.mfoumby.hassan.common.ui.extension.smallSpacing
 import com.mfoumby.hassan.common.ui.theme.padding
+import com.mfoumby.hassan.common.ui.theme.transparentListItemColor
 import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.HizbNumber
 import com.mfoumby.hassan.quran.domain.JuzNumber
@@ -70,6 +70,7 @@ fun QuranDestination(
     onSurahBookmarkClick: (SurahNumber, VerseNumber?) -> Unit,
     onJuzBookmarkClick: (JuzNumber, SurahNumber, VerseNumber?) -> Unit,
     onHizbBookmarkClick: (HizbNumber, SurahNumber, VerseNumber?) -> Unit,
+    onSearchClick: () -> Unit,
     viewModel: QuranViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -86,7 +87,8 @@ fun QuranDestination(
             onHizbClick = onHizbClick,
             onSurahBookmarkClick = onSurahBookmarkClick,
             onJuzBookmarkClick = onJuzBookmarkClick,
-            onHizbBookmarkClick = onHizbBookmarkClick
+            onHizbBookmarkClick = onHizbBookmarkClick,
+            onSearchClick = onSearchClick
         )
     }
 }
@@ -104,7 +106,8 @@ private fun QuranScreen(
     onHizbClick: (HizbNumber, SurahNumber) -> Unit,
     onSurahBookmarkClick: (SurahNumber, VerseNumber?) -> Unit,
     onJuzBookmarkClick: (JuzNumber, SurahNumber, VerseNumber?) -> Unit,
-    onHizbBookmarkClick: (HizbNumber, SurahNumber, VerseNumber?) -> Unit
+    onHizbBookmarkClick: (HizbNumber, SurahNumber, VerseNumber?) -> Unit,
+    onSearchClick: () -> Unit
 ) {
     val pagerState = rememberPagerState(
         initialPage = QuranTab.SURAH.ordinal,
@@ -121,7 +124,15 @@ private fun QuranScreen(
         topBar = {
             TitleTopBar(
                 title = stringResource(R.string.quran),
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                actions = {
+                    IconButton(onClick = onSearchClick) {
+                        Icon(
+                            painter = painterResource(com.mfoumby.hassan.common.R.drawable.ic_outline_search),
+                            contentDescription = stringResource(com.mfoumby.hassan.common.R.string.search)
+                        )
+                    }
+                }
             )
         },
         bottomBar = bottomBar
@@ -190,137 +201,127 @@ private fun PagerSection(
     onHizbBookmarkClick: (HizbNumber, SurahNumber, VerseNumber?) -> Unit
 ) {
     HorizontalPager(state = pagerState) { page ->
-        val tab = QuranTab.entries[page]
-        val surahVerseBookmark = when (tab) {
+        val quranTab = QuranTab.entries[page]
+        val surahVerseBookmark = when (quranTab) {
             QuranTab.SURAH -> surahVersePreferences.surahBookmark
             QuranTab.JUZ -> surahVersePreferences.juzBookmark
             QuranTab.HIZB -> surahVersePreferences.hizbBookmark
         }
-        val listState = rememberLazyListState()
+        val itemCount = when (quranTab) {
+            QuranTab.SURAH -> surahs.size
+            QuranTab.JUZ -> allJuz.size
+            QuranTab.HIZB -> allHizb.size
+        }
 
-        Box {
-            LazyColumn(state = listState) {
-                surahVerseBookmark?.let {
-                    item {
-                        Column(
-                            modifier = Modifier
-                                .padding(top = MaterialTheme.padding.medium)
-                                .padding(horizontal = MaterialTheme.padding.medium),
-                            verticalArrangement = Arrangement.smallSpacing()
-                        ) {
-                            SectionTitle(text = stringResource(R.string.last_read))
-
-                            SurahVerseBookmarkCard(
-                                surahVerse = surahVerseBookmark,
-                                quranTab = tab,
-                                onClick = {
-                                    when (tab) {
-                                        QuranTab.SURAH -> onSurahBookmarkClick(
-                                            surahVerseBookmark.surah.number,
-                                            surahVerseBookmark.verse.verseNumber
-                                        )
-
-                                        QuranTab.JUZ -> onJuzBookmarkClick(
-                                            surahVerseBookmark.verse.juz,
-                                            surahVerseBookmark.surah.number,
-                                            surahVerseBookmark.verse.verseNumber
-                                        )
-
-                                        QuranTab.HIZB -> onHizbBookmarkClick(
-                                            surahVerseBookmark.verse.hizb,
-                                            surahVerseBookmark.surah.number,
-                                            surahVerseBookmark.verse.verseNumber
-                                        )
-                                    }
-                                }
-                            )
-                        }
-                    }
-                }
-
+        SimpleLazyColumn(itemCount = itemCount) {
+            surahVerseBookmark?.let {
                 item {
-                    SectionTitle(
-                        modifier = Modifier.padding(
-                            top = MaterialTheme.padding.medium,
-                            start = MaterialTheme.padding.medium,
-                            end = MaterialTheme.padding.medium,
-                            bottom = MaterialTheme.padding.small
-                        ),
-                        text = when (tab) {
-                            QuranTab.SURAH -> stringResource(R.string.all_surahs)
-                            QuranTab.JUZ -> stringResource(R.string.all_juz)
-                            QuranTab.HIZB -> stringResource(R.string.all_hizb)
-                        },
+                    BookmarkSection(
+                        modifier = Modifier
+                            .padding(top = MaterialTheme.padding.medium)
+                            .padding(horizontal = MaterialTheme.padding.medium),
+                        quranTab = quranTab,
+                        surahVerseBookmark = it,
+                        onSurahBookmarkClick = onSurahBookmarkClick,
+                        onJuzBookmarkClick = onJuzBookmarkClick,
+                        onHizbBookmarkClick = onHizbBookmarkClick
                     )
-                }
-
-                when (tab) {
-                    QuranTab.SURAH -> {
-                        items(surahs.size) { index ->
-                            val surah = surahs[index]
-                            QuranListItem(
-                                number = surah.number,
-                                headline = surah.transliteration,
-                                leading = surah.translation,
-                                displayDivider = index != surahs.size.asIndex(),
-                                onClick = { onSurahClick(surah.number) }
-                            )
-                        }
-                    }
-
-                    QuranTab.JUZ -> {
-                        items(allJuz.size) { index ->
-                            val juz = allJuz[index]
-                            QuranListItem(
-                                number = juz.number,
-                                headline = "${stringResource(R.string.juz)} ${juz.number}",
-                                leading = "${juz.firstSurahVerse.surah.transliteration} - ${
-                                    stringResource(
-                                        R.string.verse
-                                    )
-                                } ${juz.firstSurahVerse.verse.verseNumber}",
-                                displayDivider = index != allJuz.size.asIndex(),
-                                onClick = {
-                                    onJuzClick(
-                                        juz.number,
-                                        juz.firstSurahVerse.surah.number
-                                    )
-                                }
-                            )
-                        }
-                    }
-
-                    QuranTab.HIZB -> {
-                        items(allHizb.size) { index ->
-                            val hizb = allHizb[index]
-                            QuranListItem(
-                                number = hizb.number,
-                                headline = "${stringResource(R.string.hizb)} ${hizb.number}",
-                                leading = "${hizb.firstSurahVerse.surah.transliteration} - ${
-                                    stringResource(
-                                        R.string.verse
-                                    )
-                                } ${hizb.firstSurahVerse.verse.verseNumber}",
-                                displayDivider = index != allHizb.size.asIndex(),
-                                onClick = {
-                                    onHizbClick(
-                                        hizb.number,
-                                        hizb.firstSurahVerse.surah.number
-                                    )
-                                }
-                            )
-                        }
-                    }
                 }
             }
 
-            VerticalScrollBarIndicator(
-                modifier = Modifier.align(Alignment.CenterEnd),
-                state = listState,
-                itemCount = when (tab) {
-                    QuranTab.SURAH -> surahs.size
-                    QuranTab.JUZ -> allJuz.size
-                    QuranTab.HIZB -> allHizb.size
+            item {
+                SectionTitle(
+                    modifier = Modifier.padding(
+                        top = MaterialTheme.padding.medium,
+                        start = MaterialTheme.padding.medium,
+                        end = MaterialTheme.padding.medium,
+                        bottom = MaterialTheme.padding.small
+                    ),
+                    text = when (quranTab) {
+                        QuranTab.SURAH -> stringResource(R.string.all_surahs)
+                        QuranTab.JUZ -> stringResource(R.string.all_juz)
+                        QuranTab.HIZB -> stringResource(R.string.all_hizb)
+                    },
+                )
+            }
+
+            when (quranTab) {
+                QuranTab.SURAH -> {
+                    quranListItem(surahs) { surah ->
+                        SurahListItem(
+                            surah = surah,
+                            modifier = Modifier.clickable(onClick = { onSurahClick(surah.number) }),
+                        )
+                    }
+                }
+
+                QuranTab.JUZ -> {
+                    quranListItem(allJuz) { juz ->
+                        JuzListItem(
+                            surahVerse = juz.firstSurahVerse,
+                            modifier = Modifier.clickable(onClick = { onJuzClick(juz.number, juz.firstSurahVerse.surah.number) })
+                        )
+                    }
+                }
+
+                QuranTab.HIZB -> {
+                    quranListItem(allHizb) { hizb ->
+                        HizbListItem(
+                            surahVerse = hizb.firstSurahVerse,
+                            modifier = Modifier.clickable(onClick = { onHizbClick(hizb.number, hizb.firstSurahVerse.surah.number) }),
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BookmarkSection(
+    modifier: Modifier = Modifier,
+    quranTab: QuranTab,
+    surahVerseBookmark: SurahVerse,
+    onSurahBookmarkClick: (SurahNumber, VerseNumber?) -> Unit,
+    onJuzBookmarkClick: (JuzNumber, SurahNumber, VerseNumber?) -> Unit,
+    onHizbBookmarkClick: (HizbNumber, SurahNumber, VerseNumber?) -> Unit
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.smallSpacing()
+    ) {
+        SectionTitle(text = stringResource(R.string.last_read))
+
+        when (quranTab) {
+            QuranTab.SURAH -> SurahBookmarkCard(
+                surahVerse = surahVerseBookmark,
+                onClick = {
+                    onSurahBookmarkClick(
+                        surahVerseBookmark.surah.number,
+                        surahVerseBookmark.verse.verseNumber
+                    )
+                }
+            )
+
+            QuranTab.JUZ -> JuzBookmarkCard(
+                surahVerse = surahVerseBookmark,
+                onClick = {
+                    onJuzBookmarkClick(
+                        surahVerseBookmark.verse.juzNumber,
+                        surahVerseBookmark.surah.number,
+                        surahVerseBookmark.verse.verseNumber
+                    )
+                }
+            )
+
+            QuranTab.HIZB -> HizbBookmarkCard(
+                surahVerse = surahVerseBookmark,
+                onClick = {
+                    onHizbBookmarkClick(
+                        surahVerseBookmark.verse.hizbNumber,
+                        surahVerseBookmark.surah.number,
+                        surahVerseBookmark.verse.verseNumber
+                    )
                 }
             )
         }
@@ -328,17 +329,61 @@ private fun PagerSection(
 }
 
 @Composable
-private fun SurahVerseBookmarkCard(
+fun SurahListItem(
+    surah: Surah,
+    modifier: Modifier = Modifier,
+    colors: ListItemColors = MaterialTheme.colorScheme.transparentListItemColor
+) {
+    ListItem(
+        modifier = modifier,
+        headlineContent = { Text(surah.transliteration) },
+        leadingContent = { Text(surah.number.toString()) },
+        supportingContent = { Text(surah.translation) },
+        trailingContent = {
+            Icon(
+                painter = painterResource(SurahMetadata.getSurahImageResId(surah.number)),
+                contentDescription = null
+            )
+        },
+        colors = colors
+    )
+}
+
+@Composable
+private fun JuzListItem(
     surahVerse: SurahVerse,
-    quranTab: QuranTab,
+    modifier: Modifier = Modifier,
+    leadingContent: @Composable (() -> Unit)? = { Text(surahVerse.verse.juzNumber.toString()) }
+) {
+    ListItem(
+        modifier = modifier,
+        headlineContent = { Text("${stringResource(R.string.juz)} ${surahVerse.verse.juzNumber}") },
+        leadingContent = leadingContent,
+        supportingContent = { Text("${surahVerse.surah.transliteration} - ${stringResource(R.string.verse)} ${surahVerse.verse.verseNumber}") },
+        colors = MaterialTheme.colorScheme.transparentListItemColor
+    )
+}
+
+@Composable
+private fun HizbListItem(
+    surahVerse: SurahVerse,
+    modifier: Modifier = Modifier,
+    leadingContent: @Composable (() -> Unit)? = { Text(surahVerse.verse.hizbNumber.toString()) }
+) {
+    ListItem(
+        modifier = modifier,
+        headlineContent = { Text("${stringResource(R.string.hizb)} ${surahVerse.verse.hizbNumber}") },
+        leadingContent = leadingContent,
+        supportingContent = { Text("${surahVerse.surah.transliteration} - ${stringResource(R.string.verse)} ${surahVerse.verse.verseNumber}") },
+        colors = MaterialTheme.colorScheme.transparentListItemColor
+    )
+}
+
+@Composable
+private fun SurahBookmarkCard(
+    surahVerse: SurahVerse,
     onClick: () -> Unit
 ) {
-    val title = when (quranTab) {
-        QuranTab.SURAH -> surahVerse.surah.transliteration
-        QuranTab.JUZ -> "${stringResource(R.string.juz)} ${surahVerse.verse.juz}"
-        QuranTab.HIZB -> "${stringResource(R.string.hizb)} ${surahVerse.verse.hizb}"
-    }
-
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(
@@ -346,39 +391,67 @@ private fun SurahVerseBookmarkCard(
         )
     ) {
         ListItem(
-            leadingContent = {
+            headlineContent = { Text(surahVerse.surah.transliteration) },
+            supportingContent = {
+                Text("${stringResource(R.string.verse)} ${surahVerse.verse.verseNumber}")
+            },
+            trailingContent = {
                 Icon(
                     painter = painterResource(SurahMetadata.getSurahImageResId(surahVerse.surah.number)),
                     contentDescription = null
                 )
             },
-            headlineContent = { Text(text = title) },
-            supportingContent = { Text(text = "${stringResource(R.string.verse)} ${surahVerse.verse.verseNumber}") },
-            colors = ListItemDefaults.colors(
-                containerColor = Color.Transparent,
-                leadingIconColor = MaterialTheme.colorScheme.onSurface
-            )
+            colors = MaterialTheme.colorScheme.transparentListItemColor
         )
     }
 }
 
 @Composable
-private fun QuranListItem(
-    number: Int,
-    headline: String,
-    leading: String,
-    displayDivider: Boolean,
+private fun JuzBookmarkCard(
+    surahVerse: SurahVerse,
     onClick: () -> Unit
 ) {
-    ListItem(
-        modifier = Modifier.clickable(onClick = onClick),
-        headlineContent = { Text(headline) },
-        leadingContent = { Text(number.toString()) },
-        supportingContent = { Text(leading) }
-    )
+    Card(
+        onClick = onClick,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        )
+    ) {
+        JuzListItem(
+            surahVerse = surahVerse,
+            leadingContent = null
+        )
+    }
+}
 
-    if (displayDivider) {
-        HorizontalDivider()
+@Composable
+private fun HizbBookmarkCard(
+    surahVerse: SurahVerse,
+    onClick: () -> Unit
+) {
+    Card(
+        onClick = onClick,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        )
+    ) {
+        HizbListItem(
+            surahVerse = surahVerse,
+            leadingContent = null
+        )
+    }
+}
+
+private inline fun <T> LazyListScope.quranListItem(
+    items: List<T>,
+    crossinline itemContent: @Composable (LazyItemScope.(T) -> Unit)
+) {
+    itemsIndexed(items) { index, item ->
+        itemContent(item)
+
+        if (index != items.size.asIndex()) {
+            HorizontalDivider()
+        }
     }
 }
 
@@ -401,19 +474,45 @@ private fun QuranScreenPreview() {
             onHizbClick = {_, _ -> },
             onSurahBookmarkClick = { _, _ -> },
             onJuzBookmarkClick = { _, _, _ -> },
-            onHizbBookmarkClick = { _, _, _ -> }
+            onHizbBookmarkClick = { _, _, _ -> },
+            onSearchClick = {}
         )
     }
 }
 
 @PhonePreviews
 @Composable
-private fun SurahVerseBookmarkCardPreview() {
+private fun SurahBookmarkCardPreview() {
     Previews.Preview {
         Column {
-            SurahVerseBookmarkCard(
+            SurahBookmarkCard(
                 surahVerse = surahVerseFixture,
-                quranTab = QuranTab.SURAH,
+                onClick = {}
+            )
+        }
+    }
+}
+
+@PhonePreviews
+@Composable
+private fun JuzBookmarkCardPreview() {
+    Previews.Preview {
+        Column {
+            JuzBookmarkCard(
+                surahVerse = surahVerseFixture,
+                onClick = {}
+            )
+        }
+    }
+}
+
+@PhonePreviews
+@Composable
+private fun HizbBookmarkCardPreview() {
+    Previews.Preview {
+        Column {
+            HizbBookmarkCard(
+                surahVerse = surahVerseFixture,
                 onClick = {}
             )
         }

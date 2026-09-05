@@ -20,7 +20,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.components.SimpleDialog
-import com.mfoumby.hassan.common.ui.extension.mediumSpacing
+import com.mfoumby.hassan.common.extension.mediumSpacing
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.entity.Reciter

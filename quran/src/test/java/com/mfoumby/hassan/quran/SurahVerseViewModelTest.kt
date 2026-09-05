@@ -88,8 +88,8 @@ class SurahVerseViewModelTest {
         val surah = surahFixture
         val surahVerses = listOf(surahVerseFixture)
         val surahVerseTranslations = surahVerseTranslationFixtures
-        val juz = surahVerses.first().verse.juz
-        val hizb = surahVerses.first().verse.hizb
+        val juz = surahVerses.first().verse.juzNumber
+        val hizb = surahVerses.first().verse.hizbNumber
         val page = surahVerses.first().verse.page
         val surahVersePreferences = surahVersePreferencesFixture
         val informativeDisplayMode = SurahVerseViewModel.InformativeDisplayMode.ListMode(surahVerseFixture)
@@ -140,8 +140,8 @@ class SurahVerseViewModelTest {
         // Then
         assert(uiState.surah == surahVerse.surah)
         assert(uiState.surahVerses == listOf(surahVerse))
-        assert(uiState.juz == surahVerse.verse.juz)
-        assert(uiState.hizb == surahVerse.verse.hizb)
+        assert(uiState.juz == surahVerse.verse.juzNumber)
+        assert(uiState.hizb == surahVerse.verse.hizbNumber)
         assert(uiState.page == surahVerse.verse.page)
     }
 

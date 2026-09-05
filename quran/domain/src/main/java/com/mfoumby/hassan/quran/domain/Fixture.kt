@@ -4,6 +4,7 @@ import com.mfoumby.hassan.common.domain.entity.Language
 import com.mfoumby.hassan.quran.domain.entity.Constants
 import com.mfoumby.hassan.quran.domain.entity.Hizb
 import com.mfoumby.hassan.quran.domain.entity.Juz
+import com.mfoumby.hassan.quran.domain.entity.QuranSearchResult
 import com.mfoumby.hassan.quran.domain.entity.Reciter
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
@@ -32,11 +33,11 @@ val surahFixture2 = Surah(
 )
 
 val surahFixture3 = Surah(
-    number = 112,
-    name = "الإخلاص",
-    transliteration = "Al-Ikhlas",
+    number = 113,
+    name = "الفلق",
+    transliteration = "Al-Falaq",
     type = "meccan",
-    totalVerses = 4,
+    totalVerses = 5,
     translation = "The Daybreak"
 )
 
@@ -80,18 +81,20 @@ val verseFixture = Verse(
     surahNumber = 1,
     verseNumber = 1,
     text = "بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ",
+    transliteration = "Bismi Allahi alrrahmani alrraheemi",
     page = 1,
-    juz = 1,
-    hizb = 1
+    juzNumber = 1,
+    hizbNumber = 1
 )
 
 val verseFixture2 = Verse(
     surahNumber = 2,
     verseNumber = 255,
     text = "ٱللَّهُ لَآ إِلَـٰهَ إِلَّا هُوَ ٱلْحَىُّ ٱلْقَيُّومُ ۚ لَا تَأْخُذُهُۥ سِنَةٌۭ وَلَا نَوْمٌۭ ۚ لَّهُۥ مَا فِى ٱلسَّمَـٰوَٰتِ وَمَا فِى ٱلْأَرْضِ ۗ مَن ذَا ٱلَّذِى يَشْفَعُ عِندَهُۥٓ إِلَّا بِإِذْنِهِۦ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَىْءٍۢ مِّنْ عِلْمِهِۦٓ إِلَّا بِمَا شَآءَ ۚ وَسِعَ كُرْسِيُّهُ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ ۖ وَلَا يَـُٔودُهُۥ حِفْظُهُمَا ۚ وَهُوَ ٱلْعَلِىُّ ٱلْعَظِيمُ",
+    transliteration = "Allahu la ilaha illa huwa alhayyu alqayyoomu la takhuthuhu sinatun wala nawmun lahu ma fee alssamawati wama fee alardi man tha allathee yashfaAAu AAindahu illa biithnihi yaAAlamu ma bayna aydeehim wama khalfahum wala yuheetoona bishayin min AAilmihi illa bima shaa wasiAAa kursiyyuhu alssamawati waalarda wala yaooduhu hifthuhuma wahuwa alAAaliyyu alAAatheemu",
     page = 42,
-    juz = 3,
-    hizb = 5
+    juzNumber = 3,
+    hizbNumber = 5
 )
 
 val verseFixtures = listOf(
@@ -99,57 +102,64 @@ val verseFixtures = listOf(
         verseNumber = 1,
         surahNumber = 1,
         text = "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
+        transliteration = "Bismi Allahi alrrahmani alrraheemi",
         page = 1,
-        juz = 1,
-        hizb = 1
+        juzNumber = 1,
+        hizbNumber = 1
     ),
     Verse(
         verseNumber = 2,
         surahNumber = 1,
         text = "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ",
+        transliteration = "Alhamdu lillahi rabbi alAAalameena",
         page = 1,
-        juz = 1,
-        hizb = 1
+        juzNumber = 1,
+        hizbNumber = 1
     ),
     Verse(
         verseNumber = 3,
         surahNumber = 1,
         text = "ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
+        transliteration = "Alrrahmani alrraheemi",
         page = 1,
-        juz = 1,
-        hizb = 1
+        juzNumber = 1,
+        hizbNumber = 1
     ),
     Verse(
         verseNumber = 4,
         surahNumber = 1,
         text = "مَـٰلِكِ يَوْمِ ٱلدِّينِ",
+        transliteration = "Maliki yawmi alddeeni",
         page = 1,
-        juz = 1,
-        hizb = 1
+        juzNumber = 1,
+        hizbNumber = 1
     ),
     Verse(
         verseNumber = 5,
         surahNumber = 1,
         text = "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+        transliteration = "Iyyaka naAAbudu waiyyaka nastaAAeenu",
         page = 1,
-        juz = 1,
-        hizb = 1
+        juzNumber = 1,
+        hizbNumber = 1
     ),
     Verse(
         verseNumber = 6,
         surahNumber = 1,
         text = "ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ",
+        transliteration = "Ihdina alssirata almustaqeema",
         page = 1,
-        juz = 1,
-        hizb = 1
+        juzNumber = 1,
+        hizbNumber = 1
     ),
     Verse(
         verseNumber = 7,
         surahNumber = 1,
         text = "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ",
+        transliteration = "Sirata allatheena anAAamta AAalayhim ghayri almaghdoobi AAalayhim wala alddalleena",
         page = 1,
-        juz = 1,
-        hizb = 1
+        juzNumber = 1,
+        hizbNumber = 1
     )
 )
 
@@ -158,41 +168,46 @@ val verseFixtures3 = listOf(
         verseNumber = 1,
         surahNumber = 113,
         text = "قُلۡ أَعُوذُ بِرَبِّ ٱلۡفَلَقِ",
+        transliteration = "Qul aAAoothu birabbi alfalaqi",
         page = 604,
-        juz = 30,
-        hizb = 60
+        juzNumber = 30,
+        hizbNumber = 60
     ),
     Verse(
         verseNumber = 2,
         surahNumber = 113,
         text = "مِن شَرِّ مَا خَلَقَ",
+        transliteration = "Min sharri ma khalaqa",
         page = 604,
-        juz = 30,
-        hizb = 60
+        juzNumber = 30,
+        hizbNumber = 60
     ),
     Verse(
         verseNumber = 3,
         surahNumber = 113,
         text = "وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ",
+        transliteration = "Wamin sharri ghasiqin itha waqaba",
         page = 604,
-        juz = 30,
-        hizb = 60
+        juzNumber = 30,
+        hizbNumber = 60
     ),
     Verse(
         verseNumber = 4,
         surahNumber = 113,
         text = "وَمِن شَرِّ ٱلنَّفَّـٰثَٰتِ فِي ٱلۡعُقَدِ",
+        transliteration = "Wamin sharri alnnaffathati fee alAAuqadi",
         page = 604,
-        juz = 30,
-        hizb = 60
+        juzNumber = 30,
+        hizbNumber = 60
     ),
     Verse(
         verseNumber = 5,
         surahNumber = 113,
         text = "وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+        transliteration = "Wamin sharri hasidin itha hasada",
         page = 604,
-        juz = 30,
-        hizb = 60
+        juzNumber = 30,
+        hizbNumber = 60
     )
 )
 
@@ -221,25 +236,25 @@ val surahVerseFixtures3 = verseFixtures3.map {
 }
 
 val juzFixture = Juz(
-    number = surahVerseFixture.verse.juz,
+    number = surahVerseFixture.verse.juzNumber,
     firstSurahVerse = surahVerseFixture
 )
 
 val juzFixtures = surahVerseFixtures.map {
     Juz(
-        number = it.verse.juz,
+        number = it.verse.juzNumber,
         firstSurahVerse = it
     )
 }
 
 val hizbFixture = Hizb(
-    number = surahVerseFixture.verse.hizb,
+    number = surahVerseFixture.verse.hizbNumber,
     firstSurahVerse = surahVerseFixture
 )
 
 val hizbFixtures = surahVerseFixtures.map {
     Hizb(
-        number = it.verse.hizb,
+        number = it.verse.hizbNumber,
         firstSurahVerse = it
     )
 }
@@ -372,4 +387,8 @@ val surahVersePreferencesFixture = Constants.DEFAULT_SURAH_VERSE_PREFERENCES.cop
     surahBookmark = surahVerseFixture2,
     juzBookmark = surahVerseFixture2,
     hizbBookmark = surahVerseFixture2
+)
+
+val quranSearchResultFixtures = listOf(
+    QuranSearchResult.SurahResult(surahs = listOf(surahFixture, surahFixture2))
 )

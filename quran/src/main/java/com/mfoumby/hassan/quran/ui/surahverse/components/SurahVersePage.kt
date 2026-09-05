@@ -25,7 +25,7 @@ import com.mfoumby.hassan.common.domain.NumberFormatUtils
 import com.mfoumby.hassan.common.domain.extension.half
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
-import com.mfoumby.hassan.common.ui.extension.mediumSpacing
+import com.mfoumby.hassan.common.extension.mediumSpacing
 import com.mfoumby.hassan.common.ui.theme.bodyUthmanic
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
@@ -65,7 +65,7 @@ fun SurahVersePage(
         surahVerses.firstOrNull()?.verse?.let { firstVerse ->
             Text(
                 modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
-                text = "Juz ${firstVerse.juz} | Page ${firstVerse.page}",
+                text = "Juz ${firstVerse.juzNumber} | Page ${firstVerse.page}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

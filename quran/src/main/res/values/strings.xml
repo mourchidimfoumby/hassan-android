@@ -23,5 +23,7 @@
     <string name="audio">Audio</string>
     <string name="playback">Lecture</string>
     <string name="automatic_scrolling">Défilement automatique</string>
+    <string name="transliteration">Translitération</string>
+    <string name="display_transliteration">Afficher translitération</string>
     <string name="display_tajweed">Afficher Tajweed</string>
 </resources>
