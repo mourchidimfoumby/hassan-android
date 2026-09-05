@@ -153,13 +153,6 @@ private fun SurahVerseCell(
             )
         }
 
-        if (displayTransliteration) {
-            Text(
-                text = surahVerse.verse.transliteration,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-
         if (displayTranslation) {
             surahVerseTranslation?.let {
                 Text(text = "${it.verseNumber}. ${it.text}")

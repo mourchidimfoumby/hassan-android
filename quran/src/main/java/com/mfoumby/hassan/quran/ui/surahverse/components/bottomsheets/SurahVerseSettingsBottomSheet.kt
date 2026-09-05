@@ -249,7 +249,7 @@ private fun AudioTab(
 @Composable
 fun DisplayModeSection(
     displayMode: SurahVersePreferences.DisplayMode,
-    onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit
+    onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit,
 ) {
     Column {
         SectionTitle(
@@ -275,24 +275,6 @@ fun DisplayModeSection(
                     Text(text = stringResource(com.mfoumby.hassan.common.R.string.list))
                 }
             )
-
-            SelectableCell(
-                modifier = Modifier
-                    .padding(horizontal = MaterialTheme.padding.medium)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    modifier = Modifier.weight(1f),
-                    text = stringResource(R.string.automatic_scrolling),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                SimpleSwitch(
-                    checked = audioAutomaticScrolling,
-                    onCheckedChange = onAutomaticScrollingChange
-                )
-            }
         }
     }
 }
