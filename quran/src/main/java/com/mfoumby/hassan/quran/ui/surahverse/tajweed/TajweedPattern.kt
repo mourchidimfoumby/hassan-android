@@ -47,40 +47,24 @@ object TajweedPattern {
     )
 
     private val nuunSakin = buildString {
-        append('(')
         append(nuun)
         append('(')
-        append('[')
-        for (c in sakin) append(c)
-        append(']')
-        append('|')
-
         append(space)
         append('|')
-
         append('[')
         for (c in allHuruf) append(c)
         append(']')
-        append(')')
         append(')')
     }
 
     private val meemSakin = buildString {
-        append('(')
         append(meem)
         append('(')
-        append('[')
-        for (c in sakin) append(c)
-        append(']')
-        append('|')
-
         append(space)
         append('|')
-
         append('[')
         for (c in allHuruf) append(c)
         append(']')
-        append(')')
         append(')')
     }
 
@@ -176,10 +160,17 @@ object TajweedPattern {
     }
 
     val ikhfaaPattern = buildString {
+        append('(')
         append(nuun)
         append('[')
         for (c in hurufIkhfaa) append(c)
         append(']')
+        append('|')
+        append(meem)
+        append(space)
+        append(baa)
+        append(')')
+
         append(harakatPattern)
     }
 
