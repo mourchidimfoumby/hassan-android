@@ -19,7 +19,6 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -51,7 +50,6 @@ import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.entity.Reciter
 import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
-import com.mfoumby.hassan.quran.domain.reciterFixture
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -134,7 +132,7 @@ private fun SurahVerseSettingsBottomSheetContent(
                     label = {
                         Text(
                             text = stringResource(tab.resId),
-                            style = typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     },
                     selected = currentTab == tab
@@ -251,14 +249,18 @@ fun DisplayModeSection(
     displayMode: SurahVersePreferences.DisplayMode,
     onDisplayModeClick: (SurahVersePreferences.DisplayMode) -> Unit,
 ) {
-    Column {
+    Column(
+        verticalArrangement = Arrangement.smallSpacing()
+    ) {
         SectionTitle(
             modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
             text = stringResource(R.string.display_mode)
         )
 
-        Column(
-            verticalArrangement = Arrangement.smallSpacing()
+        Row(
+            modifier = Modifier.padding(MaterialTheme.padding.medium),
+            horizontalArrangement = Arrangement.mediumSpacing(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             SelectableCell(
                 modifier = Modifier
@@ -273,6 +275,22 @@ fun DisplayModeSection(
                 },
                 text = {
                     Text(text = stringResource(com.mfoumby.hassan.common.R.string.list))
+                }
+            )
+
+            SelectableCell(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(onClick = { onDisplayModeClick(SurahVersePreferences.DisplayMode.PAGE) }),
+                selected = displayMode == SurahVersePreferences.DisplayMode.PAGE,
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_outline_two_pager),
+                        contentDescription = null
+                    )
+                },
+                text = {
+                    Text(text = stringResource(com.mfoumby.hassan.common.R.string.page))
                 }
             )
         }
@@ -361,6 +379,12 @@ private fun TranslationSection(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
+                } ?: run {
+                    Text(
+                        text = stringResource(com.mfoumby.hassan.common.R.string.none),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
 
@@ -472,6 +496,12 @@ private fun ReciterSection(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
+                } ?: run {
+                    Text(
+                        text = stringResource(com.mfoumby.hassan.common.R.string.none),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
 
@@ -558,7 +588,7 @@ private fun SurahVerseSettingsBottomSheetContentPreview() {
             translationLanguage = Language.ENGLISH,
             displayTranslation = true,
             displayTransliteration = true,
-            reciter = reciterFixture,
+            reciter = null,
             audioAutomaticScrolling = true,
             onDisplayModeClick = {},
             onDisplayTajweedChange = {},

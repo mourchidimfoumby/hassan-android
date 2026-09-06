@@ -163,6 +163,99 @@ val verseFixtures = listOf(
     )
 )
 
+val verseFixtures2 = listOf(
+    Verse(
+        verseNumber = 1,
+        surahNumber = 2,
+        text = "الٓمٓ",
+        transliteration = "Aliflammeem",
+        page = 2,
+        juzNumber = 1,
+        hizbNumber = 1
+    ),
+    Verse(
+        verseNumber = 2,
+        surahNumber = 2,
+        text = "ذَٰلِكَ ٱلۡكِتَٰبُ لَا رَيۡبَۛ فِيهِۛ هُدٗى لِّلۡمُتَّقِينَ",
+        transliteration = "Thalika alkitabu la rayba feehi hudan lilmuttaqeena",
+        page = 2,
+        juzNumber = 1,
+        hizbNumber = 1
+    ),
+    Verse(
+        verseNumber = 3,
+        surahNumber = 2,
+        text = "ٱلَّذِينَ يُؤۡمِنُونَ بِٱلۡغَيۡبِ وَيُقِيمُونَ ٱلصَّلَوٰةَ وَمِمَّا رَزَقۡنَٰهُمۡ يُنفِقُونَ",
+        transliteration = "Allatheena yuminoona bialghaybi wayuqeemoona alssalata wamimma razaqnahum yunfiqoona",
+        page = 2,
+        juzNumber = 1,
+        hizbNumber = 1
+    ),
+    Verse(
+        verseNumber = 4,
+        surahNumber = 2,
+        text = "وَٱلَّذِينَ يُؤۡمِنُونَ بِمَآ أُنزِلَ إِلَيۡكَ وَمَآ أُنزِلَ مِن قَبۡلِكَ وَبِٱلۡأٓخِرَةِ هُمۡ يُوقِنُونَ",
+        transliteration = "Waallatheena yuminoona bima onzila ilayka wama onzila min qablika wabialakhirati hum yooqinoona",
+        page = 2,
+        juzNumber = 1,
+        hizbNumber = 1
+    ),
+    Verse(
+        verseNumber = 5,
+        surahNumber = 2,
+        text = "أُوْلَـٰٓئِكَ عَلَىٰ هُدٗى مِّن رَّبِّهِمۡۖ وَأُوْلَـٰٓئِكَ هُمُ ٱلۡمُفۡلِحُونَ",
+        transliteration = "Olaika AAala hudan min rabbihim waolaika humu almuflihoona",
+        page = 2,
+        juzNumber = 1,
+        hizbNumber = 1
+    ),
+    Verse(
+        verseNumber = 6,
+        surahNumber = 2,
+        text = "إِنَّ ٱلَّذِينَ كَفَرُواْ سَوَآءٌ عَلَيۡهِمۡ ءَأَنذَرۡتَهُمۡ أَمۡ لَمۡ تُنذِرۡهُمۡ لَا يُؤۡمِنُونَ",
+        transliteration = "Inna allatheena kafaroo sawaon AAalayhim aanthartahum am lam tunthirhum la yuminoona",
+        page = 3,
+        juzNumber = 1,
+        hizbNumber = 1
+    ),
+    Verse(
+        verseNumber = 7,
+        surahNumber = 2,
+        text = "خَتَمَ ٱللَّهُ عَلَىٰ قُلُوبِهِمۡ وَعَلَىٰ سَمۡعِهِمۡۖ وَعَلَىٰٓ أَبۡصَٰرِهِمۡ غِشَٰوَةٞۖ وَلَهُمۡ عَذَابٌ عَظِيمٞ",
+        transliteration = "Khatama Allahu AAala quloobihim waAAala samAAihim waAAala absarihim ghishawatun walahum AAathabun AAatheemun",
+        page = 3,
+        juzNumber = 1,
+        hizbNumber = 1
+    ),
+    Verse(
+        verseNumber = 8,
+        surahNumber = 2,
+        text = "وَمِنَ ٱلنَّاسِ مَن يَقُولُ ءَامَنَّا بِٱللَّهِ وَبِٱلۡيَوۡمِ ٱلۡأٓخِرِ وَمَا هُم بِمُؤۡمِنِينَ",
+        transliteration = "Wamina alnnasi man yaqoolu amanna biAllahi wabialyawmi alakhiri wama hum bimumineena",
+        page = 3,
+        juzNumber = 1,
+        hizbNumber = 1
+    ),
+    Verse(
+        verseNumber = 9,
+        surahNumber = 2,
+        text = "يُخَٰدِعُونَ ٱللَّهَ وَٱلَّذِينَ ءَامَنُواْ وَمَا يَخۡدَعُونَ إِلَّآ أَنفُسَهُمۡ وَمَا يَشۡعُرُونَ",
+        transliteration = "YukhadiAAoona Allaha waallatheena amanoo wama yakhdaAAoona illa anfusahum wama yashAAuroona",
+        page = 3,
+        juzNumber = 1,
+        hizbNumber = 1
+    ),
+    Verse(
+        verseNumber = 10,
+        surahNumber = 2,
+        text = "فِي قُلُوبِهِم مَّرَضٞ فَزَادَهُمُ ٱللَّهُ مَرَضٗاۖ وَلَهُمۡ عَذَابٌ أَلِيمُۢ بِمَا كَانُواْ يَكۡذِبُونَ",
+        transliteration = "Fee quloobihim maradun fazadahumu Allahu maradan walahum AAathabun aleemun bima kanoo yakthiboona",
+        page = 3,
+        juzNumber = 1,
+        hizbNumber = 1
+    )
+)
+
 val verseFixtures3 = listOf(
     Verse(
         verseNumber = 1,
@@ -222,6 +315,13 @@ val surahVerseFixture2 = SurahVerse(
 )
 
 val surahVerseFixtures = verseFixtures.map {
+    SurahVerse(
+        surah = surahFixture,
+        verse = it
+    )
+}
+
+val surahVerseFixtures2 = verseFixtures2.map {
     SurahVerse(
         surah = surahFixture,
         verse = it
