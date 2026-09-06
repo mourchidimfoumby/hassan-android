@@ -9,6 +9,7 @@ data class Tajweed(
     companion object {
         private const val GHUNNAH_COLOR = 0xFF43A047
         private const val IKHFAA_COLOR = GHUNNAH_COLOR
+        private const val IQLAAB_COLOR = GHUNNAH_COLOR
         private const val IDGHAAM_WITH_GHUNNAH_COLOR = GHUNNAH_COLOR
         private const val IDGHAAM_WITHOUT_GHUNNAH_COLOR = 0xFF9E9E9E
         private const val QALQALAH_COLOR = 0xFF1E88E5
@@ -18,6 +19,7 @@ data class Tajweed(
 
     enum class TajweedType(val color: Long) {
         IKHFAA(IKHFAA_COLOR),
+        IQLAAB(IQLAAB_COLOR),
         IDGHAAM_WITH_GHUNNAH_NUN_SAKINAH(IDGHAAM_WITH_GHUNNAH_COLOR),
         IDGHAAM_WITH_GHUNNAH_TANWEEN(IDGHAAM_WITH_GHUNNAH_COLOR),
         IDGHAAM_WITHOUT_GHUNNAH_NUN_SAKINAH(IDGHAAM_WITHOUT_GHUNNAH_COLOR),
