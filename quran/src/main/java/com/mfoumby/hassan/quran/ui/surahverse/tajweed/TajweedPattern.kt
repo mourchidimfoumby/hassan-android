@@ -1,35 +1,59 @@
 package com.mfoumby.hassan.quran.ui.surahverse.tajweed
 
 object TajweedPattern {
-    private val alif = 'ا'
-    private val lam = 'ل'
-    private val nuun = 'ن'
-    private val meem = 'م'
-    private val baa = 'ب'
-    private val shaddah = 'ّ'
-    private val superscriptAlif = 'ٰ'
-    private val subscriptAlif = 'ٖ'
-    private val invertedDamma = 'ٗ'
-    private val maddah = 'ٓ'
-    private val space = "\\s"
-    private val harakaat = listOf('َ', 'ِ', 'ُ')
-    private val tanween = listOf('ً', 'ٍ', 'ٌ', 'ٞ')
-    private val sakin = listOf('ۡ', 'ْ')
-    private val stops = listOf(
-        "مـ", "قلى", '\u06da', '\u06dc',
-        '\u06d9', '\u066a', '\u0615'
+    private const val ALIF = 'ا'
+    private const val LAM = 'ل'
+    private const val NUN = 'ن'
+    private const val MEEM = 'م'
+    private const val BAA = 'ب'
+    private const val YAA = 'ى'
+    private const val SHADDAH = '\u0651' // ّ
+    private const val SUPERSCRIPT_ALIF = '\u0670' // ٰ
+    private const val SUBSCRIPT_ALIF = '\u0656' // ٖ
+    private const val SUPERSCRIPT_MEEM = '\u06E2' // ۢ
+    private const val INVERTED_DAMMA = '\u0657' // ٗ
+    private const val MADDAH = '\u0653' // ٓ
+    private const val SPACE = "\\s"
+    private val harakaat = listOf(
+        '\u064E', // َ
+        '\u064F',  // ُ
+        '\u0650' // ِ
     )
-    private val maddCharIdghaamTanween = listOf('ى', alif)
-    private val ignoreCharBetweenIdghaam = listOf("\u06d6", "\u06E2", space)
-    private val ignoreCharBetweenIdghaamTanween = listOf("\u06ED")
+    private val tanween = listOf(
+        '\u064B', // ً
+        '\u065E',  // ٞ
+        '\u064C', // ٌ
+        '\u0657', // ٗ
+        '\u064D', // ٍ
+    )
+    private val sakin = listOf(
+        '\u06E1', // ۡ
+        '\u0652'  // ْ
+    )
+    private val stops = listOf(
+        "مـ",
+        "قلى",
+        "\u06DA", // ۚ
+        "\u06DC", // ۜ
+        "\u06D9", // ۙ
+        "\u066A", // ٪
+        "\u0615"  // ؕ
+    )
+    private val maddCharIdghaamTanween = listOf(YAA, ALIF)
+    private val ignoreCharBetweenIdghaam = listOf(
+        "\u06D6", // ۖ
+        "\u06E2", // ۢ
+        SPACE
+    )
+    private val ignoreCharWithTanween = listOf(
+        '\u06E2', // ۢ
+        '\u06ED'  // ۭ
+    )
     private val allHuruf = listOf(
         'ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ',
         'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض',
         'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل',
-        'م', 'ن', 'ه', 'و', 'ي'
-    )
-    private val hurufIzhaar = listOf(
-        'ء', 'ه', 'ع', 'ح', 'غ', 'خ'
+        'م', 'ن', 'ه', 'و', 'ي', 'ة'
     )
     private val hurufIkhfaa = listOf(
         'ت', 'ث', 'ج', 'د', 'ذ', 'ز',
@@ -47,9 +71,9 @@ object TajweedPattern {
     )
 
     private val nuunSakin = buildString {
-        append(nuun)
+        append(NUN)
         append('(')
-        append(space)
+        append(SPACE)
         append('|')
         append('[')
         for (c in allHuruf) append(c)
@@ -58,9 +82,9 @@ object TajweedPattern {
     }
 
     private val meemSakin = buildString {
-        append(meem)
+        append(MEEM)
         append('(')
-        append(space)
+        append(SPACE)
         append('|')
         append('[')
         for (c in allHuruf) append(c)
@@ -72,9 +96,9 @@ object TajweedPattern {
         append('[')
         for (c in harakaat) append(c)
         for (c in tanween) append(c)
-        append(superscriptAlif)
-        append(subscriptAlif)
-        append(invertedDamma)
+        append(SUPERSCRIPT_ALIF)
+        append(SUBSCRIPT_ALIF)
+        append(INVERTED_DAMMA)
         append("]?")
     }
 
@@ -87,15 +111,15 @@ object TajweedPattern {
         for (c in hurufIdghaamWithGhunnah) append(c)
         append(']')
 
-        append(shaddah)
+        append(SHADDAH)
         append('?')
 
         append('[')
         for (c in harakaat) append(c)
         for (c in tanween) append(c)
-        append(superscriptAlif)
-        append(subscriptAlif)
-        append(invertedDamma)
+        append(SUPERSCRIPT_ALIF)
+        append(SUBSCRIPT_ALIF)
+        append(INVERTED_DAMMA)
         append(']')
     }
 
@@ -108,19 +132,19 @@ object TajweedPattern {
         for (c in hurufIdghaamWithoutGhunnah) append(c)
         append(']')
 
-        append(shaddah)
+        append(SHADDAH)
         append('?')
         append(harakatPattern)
-        append(alif)
+        append(ALIF)
         append('?')
     }
     private val qalqalahAtMiddlePattern = buildString {
         append("[")
-        for (c in hurufQalqalah ) append(c)
+        for (c in hurufQalqalah) append(c)
         append(']')
         append('[')
         for (c in sakin) append(c)
-        append(space)
+        append(SPACE)
         append("]")
     }
 
@@ -129,7 +153,7 @@ object TajweedPattern {
         for (c in hurufQalqalah) append(c)
         append(']')
 
-        append(shaddah)
+        append(SHADDAH)
         append('?')
 
         append("[")
@@ -143,7 +167,7 @@ object TajweedPattern {
         for (c in hurufQalqalah) append(c)
         append(']')
 
-        append(shaddah)
+        append(SHADDAH)
         append('?')
 
         append('[')
@@ -161,16 +185,51 @@ object TajweedPattern {
 
     val ikhfaaPattern = buildString {
         append('(')
-        append(nuun)
+        append(NUN)
         append('[')
         for (c in hurufIkhfaa) append(c)
         append(']')
         append('|')
-        append(meem)
-        append(space)
-        append(baa)
+        append(MEEM)
+        append(SPACE)
+        append(BAA)
         append(')')
 
+        append(harakatPattern)
+    }
+
+    val iqlaabPattern = buildString {
+        append('(')
+        append(NUN)
+
+        append('|')
+
+        append('[')
+        for (c in allHuruf) append(c)
+        append(']')
+        append(SHADDAH)
+        append('?')
+
+        append('(')
+        append('[')
+        for (c in tanween) append(c)
+        append(']')
+        append('|')
+        append('[')
+        for (c in harakaat) append(c)
+        append(']')
+        append(SUPERSCRIPT_MEEM)
+        append(')')
+        append('[')
+        for (c in ignoreCharWithTanween) append(c)
+        append(']')
+        append('?')
+        append(')')
+
+        append(SPACE)
+        append('?')
+
+        append(BAA)
         append(harakatPattern)
     }
 
@@ -181,11 +240,14 @@ object TajweedPattern {
 
     val idghaamWithGhunnahTanweenPattern = buildString {
         append('[')
+        for (c in allHuruf) append(c)
+        append(']')
+        append('[')
         for (c in tanween) append(c)
         append(']')
 
         append('[')
-        append(ignoreCharBetweenIdghaamTanween)
+        for (c in ignoreCharWithTanween) append(c)
         append(']')
         append('?')
 
@@ -204,11 +266,14 @@ object TajweedPattern {
 
     val idghaamWithoutGhunnahTanweenPattern = buildString {
         append('[')
+        for (c in allHuruf) append(c)
+        append(']')
+        append('[')
         for (c in tanween) append(c)
         append(']')
 
         append('[')
-        append(ignoreCharBetweenIdghaamTanween)
+        for (c in ignoreCharWithTanween) append(c)
         append(']')
         append('?')
 
@@ -222,8 +287,8 @@ object TajweedPattern {
 
     val idghaamShafawiPattern = buildString {
         append(meemSakin)
-        append(meem)
-        append(shaddah)
+        append(MEEM)
+        append(SHADDAH)
         append(harakatPattern)
     }
 
@@ -239,38 +304,38 @@ object TajweedPattern {
         append('[')
         hurufMadd.forEach { append(it) }
         append(']')
-        append(maddah)
+        append(MADDAH)
         append('|')
-        append(lam)
-        append(shaddah)
+        append(LAM)
+        append(SHADDAH)
         append('?')
         append('[')
         for (c in harakaat) append(c)
         append(']')
-        append(alif)
-        append(maddah)
+        append(ALIF)
+        append(MADDAH)
     }
 
     val maddSixTimePattern = buildString {
         append('[')
         hurufMadd.forEach { append(it) }
         append(']')
-        append(maddah)
+        append(MADDAH)
         append('[')
         for (c in allHuruf) append(c)
         append(']')
-        append(shaddah)
+        append(SHADDAH)
     }
 
     val maddHarfMuqattatPattern = buildString {
         append('[')
         for (c in hurufMuqattaatMaddah) append(c)
         append(']')
-        append(maddah)
+        append(MADDAH)
     }
 
     val maddSuperscriptAlif = buildString {
-        append(superscriptAlif)
-        append(maddah)
+        append(SUPERSCRIPT_ALIF)
+        append(MADDAH)
     }
 }
