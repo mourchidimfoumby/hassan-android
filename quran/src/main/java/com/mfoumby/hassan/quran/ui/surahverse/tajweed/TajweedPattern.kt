@@ -2,15 +2,28 @@ package com.mfoumby.hassan.quran.ui.surahverse.tajweed
 
 object TajweedPattern {
     private val alif = 'ا'
+    private val lam = 'ل'
     private val nuun = 'ن'
-    private val space = "\\s"
-    private val harakaat = listOf('َ', 'ِ', 'ُ')
-    private val tanween = listOf('ً', 'ٍ', 'ٌ', 'ٞ')
     private val shaddah = 'ّ'
     private val superscriptAlif = 'ٰ'
     private val subscriptAlif = 'ٖ'
     private val invertedDamma = 'ٗ'
+    private val maddah = 'ٓ'
+    private val space = "\\s"
+    private val harakaat = listOf('َ', 'ِ', 'ُ')
+    private val tanween = listOf('ً', 'ٍ', 'ٌ', 'ٞ')
     private val sakin = listOf('ۡ', 'ْ')
+    private val stops = listOf(
+        "مـ", "قلى", '\u06da', '\u06dc',
+        '\u06d9', '\u066a', '\u0615'
+    )
+    private val ignoreCharBetweenIdghaam = listOf("\u06d6", "\u06E2", space)
+    private val allHuruf = listOf(
+        'ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ',
+        'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض',
+        'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل',
+        'م', 'ن', 'ه', 'و', 'ي'
+    )
     private val hurufIzhaar = listOf(
         'ء', 'ه', 'ع', 'ح', 'غ', 'خ'
     )
@@ -19,20 +32,15 @@ object TajweedPattern {
         'س', 'ش', 'ص', 'ض', 'ط', 'ظ',
         'ف', 'ق', 'ك', 'ک'
     )
-    private val ignoreCharBetweenIdghaam = listOf("\u06d6", "\u06E2", space)
     private val hurufIdghaamWithGhunnah = listOf('ي', 'و', 'م', 'ن')
     private val hurufIdghaamWithoutGhunnah = listOf('ر', 'ل')
-    private val allHuruf = listOf(
-        'ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ',
-        'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض',
-        'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل',
-        'م', 'ن', 'ه', 'و', 'ي'
-    )
-    private val stops = listOf(
-        "مـ", "قلى", '\u06da', '\u06dc',
-        '\u06d9', '\u066a', '\u0615'
-    )
     private val hurufQalqalah = listOf('ق', 'ط', 'ب', 'ج', 'د')
+    private val hurufMuqattaatMaddah = listOf(
+        'ن', 'ق', 'ص', 'ع', 'س', 'ل', 'ك', 'م'
+    )
+    private val hurufMadd = listOf(
+        'ا', 'و', 'ي', 'ۦ', 'ۥ'
+    )
 
     private val nuunSakin = buildString {
         append('(')
@@ -187,5 +195,44 @@ object TajweedPattern {
         append(qalqalahAtEndPattern)
         append('|')
         append(qalqalahAtStopPattern)
+    }
+
+    val maddFourTimePattern = buildString {
+        append('[')
+        hurufMadd.forEach { append(it) }
+        append(']')
+        append(maddah)
+        append('|')
+        append(lam)
+        append(shaddah)
+        append('?')
+        append('[')
+        for (c in harakaat) append(c)
+        append(']')
+        append(alif)
+        append(maddah)
+    }
+
+    val maddSixTimePattern = buildString {
+        append('[')
+        hurufMadd.forEach { append(it) }
+        append(']')
+        append(maddah)
+        append('[')
+        for (c in allHuruf) append(c)
+        append(']')
+        append(shaddah)
+    }
+
+    val maddHarfMuqattatPattern = buildString {
+        append('[')
+        for (c in hurufMuqattaatMaddah) append(c)
+        append(']')
+        append(maddah)
+    }
+
+    val maddSuperscriptAlif = buildString {
+        append(superscriptAlif)
+        append(maddah)
     }
 }

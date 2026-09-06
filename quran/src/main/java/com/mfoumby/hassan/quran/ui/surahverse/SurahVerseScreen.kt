@@ -331,6 +331,7 @@ private fun SurahVerseScreen(
                             surahVerses = surahVerses,
                             page = page,
                             surahVerseToScroll = informativeDisplayMode.surahVerse,
+                            surahVersePreferences = surahVersePreferences,
                             onPageChange = onPageChange,
                             onSurahVerseClick = {
                                 activeBottomSheet = SurahVerseBottomSheet.VerseBottomSheet(it)
@@ -472,6 +473,7 @@ private fun SurahVersePageMode(
     surahVerses: List<SurahVerse>,
     page: Int,
     surahVerseToScroll: SurahVerse?,
+    surahVersePreferences: SurahVersePreferences,
     onPageChange: (Int) -> Unit,
     onSurahVerseClick: (SurahVerse) -> Unit,
     onScrollValueChange: (ScrollValue) -> Unit
@@ -498,6 +500,7 @@ private fun SurahVersePageMode(
             modifier = Modifier.fillMaxSize(),
             surahVerses = surahVerses.filter { it.verse.page == page.fromIndex() },
             surahVerseToScroll = surahVerseToScroll,
+            surahVersePreferences = surahVersePreferences,
             onSurahVerseClick = onSurahVerseClick,
             onScrollValueChange = onScrollValueChange
         )

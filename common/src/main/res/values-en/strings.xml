@@ -28,4 +28,5 @@
     <string name="downloading">Downloading</string>
     <string name="none_reciter_selected_error">Please select a reciter to listening the audio.</string>
     <string name="download_translation_error">An error occurred during the translation download %s</string>
+    <string name="none">None</string>
 </resources>

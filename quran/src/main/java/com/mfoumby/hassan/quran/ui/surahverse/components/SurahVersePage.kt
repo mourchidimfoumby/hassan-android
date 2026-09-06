@@ -23,14 +23,17 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import com.mfoumby.hassan.common.domain.NumberFormatUtils
 import com.mfoumby.hassan.common.domain.extension.half
+import com.mfoumby.hassan.common.extension.mediumSpacing
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
-import com.mfoumby.hassan.common.extension.mediumSpacing
 import com.mfoumby.hassan.common.ui.theme.bodyUthmanic
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
-import com.mfoumby.hassan.quran.domain.surahVerseFixtures3
+import com.mfoumby.hassan.quran.domain.entity.SurahVersePreferences
+import com.mfoumby.hassan.quran.domain.surahVerseFixtures2
+import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
 import com.mfoumby.hassan.quran.ui.surahverse.ScrollValue
+import com.mfoumby.hassan.quran.ui.surahverse.tajweed.TajweedText
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -38,6 +41,7 @@ fun SurahVersePage(
     modifier: Modifier = Modifier,
     surahVerses: List<SurahVerse>,
     surahVerseToScroll: SurahVerse?,
+    surahVersePreferences: SurahVersePreferences,
     onSurahVerseClick: (SurahVerse) -> Unit,
     onScrollValueChange: (ScrollValue) -> Unit
 ) {
@@ -87,6 +91,7 @@ fun SurahVersePage(
 
                     SurahVerseText(
                         surahVerses = groupedSurahVerses.value,
+                        displayTajweed = surahVersePreferences.displayTajweed,
                         onSurahVerseClick = onSurahVerseClick
                     )
                 }
@@ -98,19 +103,19 @@ fun SurahVersePage(
 @Composable
 fun SurahVerseText(
     surahVerses: List<SurahVerse>,
+    displayTajweed: Boolean,
     onSurahVerseClick: (SurahVerse) -> Unit
 ) {
     val clickTextStyle = SpanStyle(
         background = Color.Gray.copy(alpha = 0.3f)
     )
+
     val annotatedText = buildAnnotatedString {
         surahVerses.forEach { surahVerse ->
             withLink(
                 LinkAnnotation.Clickable(
                     tag = surahVerse.verse.verseNumber.toString(),
-                    styles = TextLinkStyles(
-                        pressedStyle = clickTextStyle
-                    ),
+                    styles = TextLinkStyles(pressedStyle = clickTextStyle),
                     linkInteractionListener = {
                         onSurahVerseClick(surahVerse)
                     }
@@ -119,7 +124,7 @@ fun SurahVerseText(
                 withStyle(
                     style = MaterialTheme.typography.bodyUthmanic
                         .toSpanStyle()
-                        .copy(color = MaterialTheme.colorScheme.onSurface,)
+                        .copy(color = MaterialTheme.colorScheme.onSurface)
                 ) {
                     append(surahVerse.verse.text)
                     append(" ")
@@ -130,13 +135,23 @@ fun SurahVerseText(
         }
     }
 
-    BasicText(
-        modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
-        text = annotatedText,
-        style = MaterialTheme.typography.bodyUthmanic.copy(
-            lineHeight = MaterialTheme.typography.bodyUthmanic.lineHeight * 1.2
+    if (displayTajweed) {
+        TajweedText(
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+            text = annotatedText,
+            style = MaterialTheme.typography.bodyUthmanic.copy(
+                lineHeight = MaterialTheme.typography.bodyUthmanic.lineHeight * 1.2
+            )
         )
-    )
+    } else {
+        BasicText(
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+            text = annotatedText,
+            style = MaterialTheme.typography.bodyUthmanic.copy(
+                lineHeight = MaterialTheme.typography.bodyUthmanic.lineHeight * 1.2
+            )
+        )
+    }
 }
 
 @PhonePreviews
@@ -144,8 +159,9 @@ fun SurahVerseText(
 private fun SurahVersePagePreview() {
     Previews.Preview {
         SurahVersePage(
-            surahVerses = surahVerseFixtures3,
+            surahVerses = surahVerseFixtures2,
             surahVerseToScroll = null,
+            surahVersePreferences = surahVersePreferencesFixture.copy(displayTajweed = true),
             onSurahVerseClick = {},
             onScrollValueChange = {}
         )
