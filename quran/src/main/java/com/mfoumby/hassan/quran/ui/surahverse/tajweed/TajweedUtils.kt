@@ -3,10 +3,11 @@ package com.mfoumby.hassan.quran.ui.surahverse.tajweed
 object TajweedUtils {
     private val patterns = listOf(
         TajweedPattern.ikhfaaPattern.toRegex() to Tajweed.TajweedType.IKHFAA,
-        TajweedPattern.idghaamWithGhunnahTanweenPattern.toRegex() to Tajweed.TajweedType.IDGHAAM_WITH_GHUNNAH_TANWEEN,
         TajweedPattern.idghaamWithGhunnahNunSakinahPattern.toRegex() to Tajweed.TajweedType.IDGHAAM_WITH_GHUNNAH_NUN_SAKINAH,
+        TajweedPattern.idghaamWithGhunnahTanweenPattern.toRegex() to Tajweed.TajweedType.IDGHAAM_WITH_GHUNNAH_TANWEEN,
         TajweedPattern.idghaamWithoutGhunnahNunSakinahPattern.toRegex() to Tajweed.TajweedType.IDGHAAM_WITHOUT_GHUNNAH_NUN_SAKINAH,
         TajweedPattern.idghaamWithoutGhunnahTanweenPattern.toRegex() to Tajweed.TajweedType.IDGHAAM_WITHOUT_GHUNNAH_TANWEEN,
+        TajweedPattern.idghaamShafawiPattern.toRegex() to Tajweed.TajweedType.IDGHAAM_SHAFAWI,
         TajweedPattern.qalqalahPattern.toRegex() to Tajweed.TajweedType.QALQALAH,
         TajweedPattern.maddFourTimePattern.toRegex() to Tajweed.TajweedType.MADD_FOUR_TIME,
         TajweedPattern.maddSixTimePattern.toRegex() to Tajweed.TajweedType.MADD_SIX_TIME,
@@ -18,7 +19,7 @@ object TajweedUtils {
         return patterns.flatMap { (regex, type) ->
             regex.findAll(verse).map { r ->
                 val startOffset = when (type) {
-                    Tajweed.TajweedType.IDGHAAM_WITH_GHUNNAH_TANWEEN -> 1
+                    Tajweed.TajweedType.IDGHAAM_WITH_GHUNNAH_TANWEEN,
                     Tajweed.TajweedType.IDGHAAM_WITHOUT_GHUNNAH_TANWEEN -> 1
                     Tajweed.TajweedType.MADD_SUPERSCRIPT_ALIF -> 3
                     else -> 0
