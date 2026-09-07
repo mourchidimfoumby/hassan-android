@@ -11,7 +11,6 @@
     <string name="juz">Juz</string>
     <string name="hizb">Hizb</string>
 
-    <string name="download_audio_dialog_text">The audio needs to be downloaded. Do you want to download it?</string>
     <string name="display_mode">Display mode</string>
     <string name="display_tajweed">Display Tajweed</string>
     <string name="last_read">Last read</string>
