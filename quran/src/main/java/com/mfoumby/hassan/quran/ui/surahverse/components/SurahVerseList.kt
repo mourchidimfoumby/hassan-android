@@ -21,6 +21,7 @@ import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
 import com.mfoumby.hassan.common.ui.components.SimpleLazyColumn
 import com.mfoumby.hassan.common.ui.theme.bodyUthmanic
+import com.mfoumby.hassan.common.ui.theme.dynamicGrey
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.domain.entity.SurahVerse
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseAudio
@@ -149,7 +150,7 @@ private fun SurahVerseCell(
         if (displayTransliteration) {
             Text(
                 text = surahVerse.verse.transliteration,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.dynamicGrey
             )
         }
 
@@ -168,7 +169,7 @@ private fun SurahVerseListPreview() {
         SurahVerseList(
             surahVerses = surahVerseFixtures,
             surahVerseTranslations = surahVerseTranslationFixtures,
-            surahVersePreferences = surahVersePreferencesFixture,
+            surahVersePreferences = surahVersePreferencesFixture.copy(displayTransliteration = true),
             surahVerseToScroll = null,
             audioAutomaticScrolling = true,
             currentAudioTrack = surahVerseAudioFixture,

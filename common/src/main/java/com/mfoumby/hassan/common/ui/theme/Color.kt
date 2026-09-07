@@ -58,10 +58,6 @@ internal val errorDark = Color(0xFFD64A4C)
 internal val outlineDark = Color(0xFF939393)
 internal val outlineVariantDark = Color(0xFF3C3C3C)
 
-internal val lightGrey = Color(0xFFE0E0E0)
-
-internal val darkGrey = Color(0xFF323232)
-
 val ColorScheme.loadingImageBackground: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFEEEEEE)
@@ -79,3 +75,7 @@ val ColorScheme.transparentListItemColor: ListItemColors
         containerColor = Color.Transparent,
         leadingIconColor = MaterialTheme.colorScheme.onSurface
     )
+
+val ColorScheme.dynamicGrey : Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFFB4B4B4) else Color(0xFF787878)
