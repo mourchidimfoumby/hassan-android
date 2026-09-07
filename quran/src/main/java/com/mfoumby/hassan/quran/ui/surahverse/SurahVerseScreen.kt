@@ -57,7 +57,6 @@ import com.mfoumby.hassan.quran.domain.surahVerseFixtures3
 import com.mfoumby.hassan.quran.domain.surahVersePlayerManifestFixture
 import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
 import com.mfoumby.hassan.quran.domain.surahVerseTranslationFixtures
-import com.mfoumby.hassan.quran.ui.surahverse.components.DownloadAudioDialog
 import com.mfoumby.hassan.quran.ui.surahverse.components.DownloadingAudioDialog
 import com.mfoumby.hassan.quran.ui.surahverse.components.SurahVerseList
 import com.mfoumby.hassan.quran.ui.surahverse.components.SurahVersePage
@@ -92,15 +91,17 @@ fun SurahVerseDestination(
     LaunchedEffect(Unit) {
         viewModel.event.collect {
             when (it) {
-                SurahVerseViewModel.SurahVerseUiEvent.AudioDownloadSuccess -> activeDialog = null
+                SurahVerseViewModel.SurahVerseUiEvent.AudioDownloadSuccess -> {
+                    activeDialog = null
+                }
 
                 is SurahVerseViewModel.SurahVerseUiEvent.AudioDownloadError -> {
                     activeDialog = null
                     showSnackbar(resources.getString(it.messageId))
                 }
 
-                SurahVerseViewModel.SurahVerseUiEvent.DownloadAudioRequest ->
-                    activeDialog = SurahVerseDialog.DownloadAudioDialog
+                SurahVerseViewModel.SurahVerseUiEvent.DownloadAudio ->
+                    activeDialog = SurahVerseDialog.DownloadingAudioDialog
 
                 is SingleUiEvent.Error -> {
                     activeDialog = null
@@ -111,16 +112,6 @@ fun SurahVerseDestination(
     }
 
     when (activeDialog) {
-        SurahVerseDialog.DownloadAudioDialog -> {
-            DownloadAudioDialog(
-                onConfirm = {
-                    viewModel.downloadAudio()
-                    activeDialog = SurahVerseDialog.DownloadingAudioDialog
-                },
-                onCancel = { activeDialog = null }
-            )
-        }
-
         SurahVerseDialog.DownloadingAudioDialog -> {
             uiState.audioDownloadProgress?.let { audioDownloadProgress ->
                 DownloadingAudioDialog(
@@ -536,7 +527,6 @@ private sealed class SurahVerseBottomSheet {
 }
 
 private sealed class SurahVerseDialog {
-    data object DownloadAudioDialog: SurahVerseDialog()
     data object DownloadingAudioDialog: SurahVerseDialog()
 }
 

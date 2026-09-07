@@ -1,14 +1,11 @@
 package com.mfoumby.hassan.quran.data.repository
 
-import com.mfoumby.hassan.common.data.e
+import android.util.Log
 import com.mfoumby.hassan.quran.data.local.SurahVerseAudioLocalDataSource
 import com.mfoumby.hassan.quran.data.remote.SurahVerseAudioRemoteDataSource
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseAudio
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseAudioRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
 
 class SurahVerseAudioRepositoryImpl(
     private val surahVerseAudioLocalDataSource: SurahVerseAudioLocalDataSource,
@@ -21,16 +18,19 @@ class SurahVerseAudioRepositoryImpl(
         surahVerseAudioLocalDataSource.deleteSurahVerseAudios(surahNumber, reciterId)
     }
 
-    override fun downloadSurahVerseAudio(surah: Surah, reciterId: String): Flow<Int> = flow {
-        for (verseNumber in 1..surah.totalVerses) {
-            surahVerseAudioRemoteDataSource.downloadSurahVerseAudio(surah.number, verseNumber, reciterId).let {
-                surahVerseAudioLocalDataSource.storeSurahVerseAudio(surah.number, verseNumber, reciterId, it)
+    override suspend fun downloadSurahVerseAudio(surahNumber: Int, verseNumber: Int, reciterId: String) {
+        try {
+            surahVerseAudioRemoteDataSource.downloadSurahVerseAudio(surahNumber, verseNumber, reciterId).let {
+                surahVerseAudioLocalDataSource.storeSurahVerseAudio(surahNumber, verseNumber, reciterId, it)
             }
-            emit(verseNumber)
+        } catch (e: Exception) {
+            Log.e(
+                "SurahVerseAudioRepositoryImpl",
+                "The downloading of $reciterId audio recitation failed for surah $surahNumber:$verseNumber : ${e.message}",
+                e
+            )
+            throw e
         }
-    }.catch {
-        e("The downloading of $reciterId audio recitation failed for surah ${surah.transliteration} : ${it.message}", it)
-        throw it
     }
 
     override suspend fun isSurahVerseAudioDownloaded(surah: Surah, reciterId: String): Boolean =

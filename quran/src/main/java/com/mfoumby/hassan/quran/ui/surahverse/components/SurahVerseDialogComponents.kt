@@ -17,29 +17,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
+import com.mfoumby.hassan.common.extension.mediumSpacing
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
-import com.mfoumby.hassan.common.ui.components.SimpleDialog
-import com.mfoumby.hassan.common.extension.mediumSpacing
 import com.mfoumby.hassan.common.ui.theme.padding
 import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.entity.Reciter
 import com.mfoumby.hassan.quran.domain.entity.Surah
 import com.mfoumby.hassan.quran.domain.reciterFixture
 import com.mfoumby.hassan.quran.domain.surahFixture
-
-@Composable
-fun DownloadAudioDialog(
-    onConfirm: () -> Unit,
-    onCancel: () -> Unit
-) {
-    SimpleDialog(
-        text = stringResource(R.string.download_audio_dialog_text),
-        confirmText = stringResource(com.mfoumby.hassan.common.R.string.download),
-        onConfirm = onConfirm,
-        onCancel = onCancel
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -113,17 +99,6 @@ private fun DownloadingAudioDialogContent(
                 }
             }
         }
-    }
-}
-
-@PhonePreviews
-@Composable
-private fun DownloadAudioDialogPreview() {
-    Previews.Preview {
-        DownloadAudioDialog(
-            onConfirm = {},
-            onCancel = {}
-        )
     }
 }
 

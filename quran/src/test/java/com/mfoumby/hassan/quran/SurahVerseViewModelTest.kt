@@ -372,7 +372,7 @@ class SurahVerseViewModelTest {
         viewModel.onPlaySurahVerseAudio(surahVerseFixture)
 
         // Then
-        assert(results.first() is SurahVerseViewModel.SurahVerseUiEvent.DownloadAudioRequest)
+        assert(results.first() is SurahVerseViewModel.SurahVerseUiEvent.DownloadAudio)
     }
 
     @Test

@@ -21,6 +21,7 @@ import com.mfoumby.hassan.quran.domain.repository.SurahVerseAudioRepository
 import com.mfoumby.hassan.quran.domain.repository.SurahVersePreferencesRepository
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseRepository
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseTranslationRepository
+import com.mfoumby.hassan.quran.domain.usecase.DownloadSurahVerseAudioUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -53,8 +54,9 @@ class SurahVerseViewModel(
     private val surahVerseRepository: SurahVerseRepository,
     private val surahVersePreferencesRepository: SurahVersePreferencesRepository,
     private val surahVerseTranslationRepository: SurahVerseTranslationRepository,
-    private val surahVerseAudioRepository: SurahVerseAudioRepository
-): ViewModel() {
+    private val surahVerseAudioRepository: SurahVerseAudioRepository,
+    private val downloadSurahVerseAudioUseCase: DownloadSurahVerseAudioUseCase
+) : ViewModel() {
     private val _uiState = MutableStateFlow(SurahVerseUiState())
     val uiState: StateFlow<SurahVerseUiState> = _uiState.asStateFlow()
     private val _event = MutableSharedFlow<SingleUiEvent?>()
@@ -81,13 +83,23 @@ class SurahVerseViewModel(
             val surahVerses = when (informativeDisplayMode) {
                 is InformativeDisplayMode.ListMode -> {
                     when (quranMode) {
-                        is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurah(informativeDisplayMode.surahVerse.surah.number)
-                        is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuz(informativeDisplayMode.surahVerse.verse.juzNumber)
-                        is QuranMode.HizbMode -> surahVerseRepository.getSurahVersesFromHizb(informativeDisplayMode.surahVerse.verse.hizbNumber)
+                        is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurah(
+                            informativeDisplayMode.surahVerse.surah.number
+                        )
+
+                        is QuranMode.JuzMode -> surahVerseRepository.getSurahVersesFromJuz(
+                            informativeDisplayMode.surahVerse.verse.juzNumber
+                        )
+
+                        is QuranMode.HizbMode -> surahVerseRepository.getSurahVersesFromHizb(
+                            informativeDisplayMode.surahVerse.verse.hizbNumber
+                        )
                     }
                 }
 
-                is InformativeDisplayMode.PageMode -> surahVerseRepository.getSurahVersesFromPage(informativeDisplayMode.surahVerse.verse.page)
+                is InformativeDisplayMode.PageMode -> surahVerseRepository.getSurahVersesFromPage(
+                    informativeDisplayMode.surahVerse.verse.page
+                )
             }
 
             _uiState.update {
@@ -117,21 +129,33 @@ class SurahVerseViewModel(
     fun onDisplayTranslationChange(displayTranslation: Boolean) {
         val preferences = uiState.value.preferences ?: return
         viewModelScope.launch {
-            surahVersePreferencesRepository.setSurahVersePreferences(preferences.copy(displayTranslation = displayTranslation))
+            surahVersePreferencesRepository.setSurahVersePreferences(
+                preferences.copy(
+                    displayTranslation = displayTranslation
+                )
+            )
         }
     }
 
     fun onDisplayTransliterationChange(displayTransliteration: Boolean) {
         val preferences = uiState.value.preferences ?: return
         viewModelScope.launch {
-            surahVersePreferencesRepository.setSurahVersePreferences(preferences.copy(displayTransliteration = displayTransliteration))
+            surahVersePreferencesRepository.setSurahVersePreferences(
+                preferences.copy(
+                    displayTransliteration = displayTransliteration
+                )
+            )
         }
     }
 
     fun onAutomaticScrollingChange(audioAutomaticScrolling: Boolean) {
         val preferences = uiState.value.preferences ?: return
         viewModelScope.launch {
-            surahVersePreferencesRepository.setSurahVersePreferences(preferences.copy(audioAutomaticScrolling = audioAutomaticScrolling))
+            surahVersePreferencesRepository.setSurahVersePreferences(
+                preferences.copy(
+                    audioAutomaticScrolling = audioAutomaticScrolling
+                )
+            )
         }
     }
 
@@ -143,17 +167,12 @@ class SurahVerseViewModel(
                     stateValue.playerManifest == null ->
                         _event.emit(SingleUiEvent.Error(R.string.none_reciter_selected_error))
 
-                    stateValue.playerManifest.surahVerseAudios.size < stateValue.surahVerses.size ->
-                        _event.emit(SurahVerseUiEvent.DownloadAudioRequest)
-
-                    else -> {
-                        updatePlayerState(surahVerse.surah.number, surahVerse.verse.verseNumber) { surahVerseAudio ->
-                            _uiState.update { state ->
-                                state.copy(currentAudioTrack = surahVerseAudio)
-                            }
-                            SurahVersePlayerManifest.State.Playing(surahVerseAudio)
-                        }
+                    stateValue.playerManifest.surahVerseAudios.size < stateValue.surahVerses.size -> {
+                        _event.emit(SurahVerseUiEvent.DownloadAudio)
+                        downloadAudio(onComplete = { playAudio(surahVerse) })
                     }
+
+                    else -> playAudio(surahVerse)
                 }
             } catch (_: Exception) {
                 _event.emit(SingleUiEvent.Error(R.string.unknown_error))
@@ -170,7 +189,49 @@ class SurahVerseViewModel(
         }
     }
 
-    fun downloadAudio() {
+    fun stopAudioDownload() {
+        audioDownloadJob?.cancel()
+        audioDownloadJob = null
+        _uiState.update {
+            it.copy(audioDownloadProgress = null)
+        }
+        val stateValue = uiState.value
+        val reciter = stateValue.preferences?.reciter ?: return
+        val surah = stateValue.surah ?: return
+        viewModelScope.launch {
+            surahVerseAudioRepository.deleteSurahVerseAudios(surah.number, reciter.id)
+        }
+    }
+
+    fun onSaveBookmark(surahVerse: SurahVerse) {
+        val preferences = uiState.value.preferences ?: return
+        viewModelScope.launch {
+            when (quranMode) {
+                is QuranMode.SurahMode -> surahVersePreferencesRepository.setSurahVersePreferences(
+                    preferences.copy(surahBookmark = surahVerse)
+                )
+
+                is QuranMode.JuzMode -> surahVersePreferencesRepository.setSurahVersePreferences(
+                    preferences.copy(juzBookmark = surahVerse)
+                )
+
+                is QuranMode.HizbMode -> surahVersePreferencesRepository.setSurahVersePreferences(
+                    preferences.copy(hizbBookmark = surahVerse)
+                )
+            }
+        }
+    }
+
+    private fun playAudio(surahVerse: SurahVerse) {
+        updatePlayerState(surahVerse.surah.number, surahVerse.verse.verseNumber) { surahVerseAudio ->
+            _uiState.update { state ->
+                state.copy(currentAudioTrack = surahVerseAudio)
+            }
+            SurahVersePlayerManifest.State.Playing(surahVerseAudio)
+        }
+    }
+
+    private fun downloadAudio(onComplete: () -> Unit) {
         audioDownloadJob?.cancel()
         audioDownloadJob = null
         audioDownloadJob = viewModelScope.launch {
@@ -181,13 +242,16 @@ class SurahVerseViewModel(
                 val groupedSurahVerses = stateValue.surahVerses.groupBy { it.surah }
                 groupedSurahVerses
                     .filterNot {
-                        surahVerseAudioRepository.isSurahVerseAudioDownloaded(it.value.first().surah, reciter.id)
+                        surahVerseAudioRepository.isSurahVerseAudioDownloaded(
+                            it.value.first().surah,
+                            reciter.id
+                        )
                     }
                     .run {
                         val totalSteps = keys.size
                         forEach { (surah, _) ->
                             currentStep++
-                            surahVerseAudioRepository.downloadSurahVerseAudio(surah, reciter.id).collect {
+                            downloadSurahVerseAudioUseCase.execute(surah, reciter.id).collect {
                                 _uiState.update { state ->
                                     val audioDownloadProgress = AudioDownloadProgress(
                                         surah = surah,
@@ -219,6 +283,7 @@ class SurahVerseViewModel(
                     )
                 }
                 _event.emit(SurahVerseUiEvent.AudioDownloadSuccess)
+                onComplete()
             } catch (_: UnknownHostException) {
                 _event.emit(SurahVerseUiEvent.AudioDownloadError(R.string.not_internet_connection_error))
             } catch (_: IOException) {
@@ -229,40 +294,9 @@ class SurahVerseViewModel(
         }
     }
 
-    fun stopAudioDownload() {
-        audioDownloadJob?.cancel()
-        audioDownloadJob = null
-        _uiState.update {
-            it.copy(audioDownloadProgress = null)
-        }
-        val stateValue = uiState.value
-        val reciter = stateValue.preferences?.reciter ?: return
-        val surah = stateValue.surah ?: return
-        viewModelScope.launch {
-            surahVerseAudioRepository.deleteSurahVerseAudios(surah.number, reciter.id)
-        }
-    }
-
-    fun onSaveBookmark(surahVerse: SurahVerse) {
-        val preferences = uiState.value.preferences ?: return
-        viewModelScope.launch {
-            when (quranMode) {
-                is QuranMode.SurahMode -> surahVersePreferencesRepository.setSurahVersePreferences(
-                    preferences.copy(surahBookmark = surahVerse)
-                )
-                is QuranMode.JuzMode -> surahVersePreferencesRepository.setSurahVersePreferences(
-                    preferences.copy(juzBookmark = surahVerse)
-                )
-                is QuranMode.HizbMode -> surahVersePreferencesRepository.setSurahVersePreferences(
-                    preferences.copy(hizbBookmark = surahVerse)
-                )
-            }
-        }
-    }
-
     private suspend fun setNewPage(page: Int) {
         val informativeDisplayMode = uiState.value.informativeDisplayMode ?: return
-        val surahVerses = when(informativeDisplayMode) {
+        val surahVerses = when (informativeDisplayMode) {
             is InformativeDisplayMode.ListMode -> {
                 when (quranMode) {
                     is QuranMode.SurahMode -> surahVerseRepository.getSurahVersesFromSurah(page)
@@ -270,6 +304,7 @@ class SurahVerseViewModel(
                     is QuranMode.HizbMode -> surahVerseRepository.getSurahVersesFromHizb(page)
                 }
             }
+
             is InformativeDisplayMode.PageMode -> surahVerseRepository.getSurahVersesFromPage(page)
         }
         val fistVerse = surahVerses.firstOrNull() ?: return
@@ -345,7 +380,8 @@ class SurahVerseViewModel(
 
                 val playerManifestJob = playerManifestFlow.map { playerManifest ->
                     _uiState.update { state ->
-                        val playerState = state.playerManifest?.state ?: SurahVersePlayerManifest.State.Idle
+                        val playerState =
+                            state.playerManifest?.state ?: SurahVersePlayerManifest.State.Idle
                         state.copy(playerManifest = playerManifest.copy(state = playerState))
                     }
                 }.launchIn(viewModelScope)
@@ -416,7 +452,11 @@ class SurahVerseViewModel(
         }
     }
 
-    private fun getSurahVerseTranslationsFlow(surah: Surah, juz: Int, hizb: Int): Flow<List<SurahVerseTranslation>> {
+    private fun getSurahVerseTranslationsFlow(
+        surah: Surah,
+        juz: Int,
+        hizb: Int
+    ): Flow<List<SurahVerseTranslation>> {
         val translationLanguageFlow = surahVersePreferencesRepository.getSurahVersePreferencesFlow()
             .map { it.translationLanguage }
             .distinctUntilChanged()
@@ -444,14 +484,25 @@ class SurahVerseViewModel(
         ) { language, surah, juz, hizb ->
             if (language == null) return@combine emptyList()
             when (quranMode) {
-                is QuranMode.SurahMode -> surahVerseTranslationRepository.getSurahVerseTranslations(surah.number, language)
-                is QuranMode.JuzMode -> surahVerseTranslationRepository.getSurahVerseTranslationsFromJuz(juz, language)
-                is QuranMode.HizbMode -> surahVerseTranslationRepository.getSurahVerseTranslationsFromHizb(hizb, language)
+                is QuranMode.SurahMode -> surahVerseTranslationRepository.getSurahVerseTranslations(
+                    surah.number,
+                    language
+                )
+
+                is QuranMode.JuzMode -> surahVerseTranslationRepository.getSurahVerseTranslationsFromJuz(
+                    juz,
+                    language
+                )
+
+                is QuranMode.HizbMode -> surahVerseTranslationRepository.getSurahVerseTranslationsFromHizb(
+                    hizb,
+                    language
+                )
             }
         }
     }
 
-    private fun getSurahVersePlayerDataFlow() : Flow<SurahVersePlayerManifest> {
+    private fun getSurahVersePlayerDataFlow(): Flow<SurahVersePlayerManifest> {
         val reciterFlow = surahVersePreferencesRepository.getSurahVersePreferencesFlow()
             .mapNotNull { it.reciter }
             .distinctUntilChanged()
@@ -484,7 +535,12 @@ class SurahVerseViewModel(
                             val lastVerseNumber = verses.last().verse.verseNumber
                             val offset = firstVerseNumber - 1
                             val limit = lastVerseNumber - firstVerseNumber + 1
-                            surahVerseAudioRepository.getSurahVerseAudios(surah, reciter.id, offset, limit)
+                            surahVerseAudioRepository.getSurahVerseAudios(
+                                surah,
+                                reciter.id,
+                                offset,
+                                limit
+                            )
                         }
                 }
             }
@@ -514,8 +570,11 @@ class SurahVerseViewModel(
     )
 
     sealed class InformativeDisplayMode(open val surahVerse: SurahVerse) {
-        data class ListMode(override val surahVerse: SurahVerse): InformativeDisplayMode(surahVerse)
-        data class PageMode(override val surahVerse: SurahVerse): InformativeDisplayMode(surahVerse)
+        data class ListMode(override val surahVerse: SurahVerse) :
+            InformativeDisplayMode(surahVerse)
+
+        data class PageMode(override val surahVerse: SurahVerse) :
+            InformativeDisplayMode(surahVerse)
 
         fun toDisplayMode(): SurahVersePreferences.DisplayMode = when (this) {
             is ListMode -> SurahVersePreferences.DisplayMode.LIST
@@ -541,9 +600,9 @@ class SurahVerseViewModel(
         val totalSteps: Int
     )
 
-    sealed interface SurahVerseUiEvent: SingleUiEvent {
-        data object DownloadAudioRequest: SurahVerseUiEvent
-        data object AudioDownloadSuccess: SurahVerseUiEvent
-        data class AudioDownloadError(@param:StringRes val messageId: Int): SurahVerseUiEvent
+    sealed interface SurahVerseUiEvent : SingleUiEvent {
+        data object DownloadAudio : SurahVerseUiEvent
+        data object AudioDownloadSuccess : SurahVerseUiEvent
+        data class AudioDownloadError(@param:StringRes val messageId: Int) : SurahVerseUiEvent
     }
 }
