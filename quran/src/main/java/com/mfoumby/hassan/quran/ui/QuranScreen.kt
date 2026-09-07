@@ -23,7 +23,6 @@ import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -31,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.mfoumby.hassan.common.domain.extension.asIndex
@@ -114,17 +112,14 @@ private fun QuranScreen(
         pageCount = { QuranTab.entries.size }
     )
     val scope = rememberCoroutineScope()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val selectedPage by remember {
         derivedStateOf { pagerState.currentPage }
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TitleTopBar(
                 title = stringResource(R.string.quran),
-                scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(onClick = onSearchClick) {
                         Icon(
