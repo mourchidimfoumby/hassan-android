@@ -46,8 +46,7 @@ import com.mfoumby.hassan.common.ui.theme.topAppBarColor
 @Composable
 fun TitleTopBar(
     title: String,
-    actions: @Composable (RowScope.() -> Unit) = {},
-    scrollBehavior: TopAppBarScrollBehavior? = null
+    actions: @Composable (RowScope.() -> Unit) = {}
 ) {
     TopAppBar(
         title = {
@@ -59,7 +58,6 @@ fun TitleTopBar(
         },
         colors = MaterialTheme.colorScheme.topAppBarColor,
         actions = actions,
-        scrollBehavior = scrollBehavior
     )
 }
 
