@@ -40,12 +40,9 @@ class HassanApplication: Application() {
 
     private fun configureFirestore() {
         val db = FirebaseFirestore.getInstance()
-        db.clearPersistence()
-
         val memoryCacheSettings = MemoryCacheSettings
             .newBuilder()
             .build()
-
         val firestoreSettings = FirebaseFirestoreSettings.Builder()
             .setLocalCacheSettings(memoryCacheSettings)
             .build()
