@@ -1,6 +1,6 @@
 package com.mfoumby.hassan.quran
 
-import com.mfoumby.hassan.quran.ui.QuranViewModel
+import com.mfoumby.hassan.quran.ui.quran.QuranViewModel
 import com.mfoumby.hassan.quran.ui.quransearch.QuranSearchViewModel
 import com.mfoumby.hassan.quran.ui.surahverse.SurahVerseViewModel
 import com.mfoumby.hassan.quran.ui.surahverse.reciters.RecitersViewModel

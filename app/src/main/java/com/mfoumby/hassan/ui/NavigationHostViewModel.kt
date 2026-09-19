@@ -2,7 +2,7 @@ package com.mfoumby.hassan.ui
 
 import androidx.lifecycle.ViewModel
 import com.mfoumby.hassan.common.Route
-import com.mfoumby.hassan.quran.ui.QuranBaseRoute
+import com.mfoumby.hassan.quran.ui.quran.QuranBaseRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

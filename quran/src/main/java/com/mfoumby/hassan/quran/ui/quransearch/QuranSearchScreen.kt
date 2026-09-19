@@ -44,7 +44,7 @@ import com.mfoumby.hassan.quran.domain.entity.QuranSearchResult
 import com.mfoumby.hassan.quran.domain.entity.QuranSearchResultType
 import com.mfoumby.hassan.quran.domain.quranSearchResultFixtures
 import com.mfoumby.hassan.quran.extension.labelResId
-import com.mfoumby.hassan.quran.ui.SurahListItem
+import com.mfoumby.hassan.quran.ui.quran.SurahListItem
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

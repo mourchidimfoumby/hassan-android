@@ -7,7 +7,7 @@ import com.mfoumby.hassan.quran.domain.repository.SurahVersePreferencesRepositor
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseRepository
 import com.mfoumby.hassan.quran.domain.surahFixtures
 import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
-import com.mfoumby.hassan.quran.ui.QuranViewModel
+import com.mfoumby.hassan.quran.ui.quran.QuranViewModel
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers

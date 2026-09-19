@@ -56,12 +56,13 @@ private fun VerticalScrollBarIndicator(
     )
 }
 
-@Preview
+@Preview(heightDp = 300)
 @Composable
 private fun SimpleLazyColumnPreview() {
+    val itemCount = 20
     Previews.Preview {
-        SimpleLazyColumn(itemCount = 100) {
-            items(100) {
+        SimpleLazyColumn(itemCount = itemCount) {
+            items(itemCount) {
                 Text(text = "Item $it")
             }
         }
