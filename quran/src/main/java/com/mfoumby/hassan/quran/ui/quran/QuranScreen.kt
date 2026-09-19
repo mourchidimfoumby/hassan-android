@@ -175,7 +175,12 @@ private fun QuranContent(
                         selected = type == quranContentType,
                         onClick = { onContentTypeChange(type) },
                         label = {
-                            Text(type.name)
+                            val text = when (type) {
+                                QuranViewModel.QuranContentType.SURAH -> stringResource(R.string.surah)
+                                QuranViewModel.QuranContentType.JUZ -> stringResource(R.string.juz)
+                                QuranViewModel.QuranContentType.HIZB -> stringResource(R.string.hizb)
+                            }.uppercase()
+                            Text(text = text)
                         }
                     )
                 }
