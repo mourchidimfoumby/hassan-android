@@ -1,4 +1,4 @@
-package com.mfoumby.hassan.quran.ui
+package com.mfoumby.hassan.quran.ui.quran
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController

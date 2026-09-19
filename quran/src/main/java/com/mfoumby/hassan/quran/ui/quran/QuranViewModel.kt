@@ -1,4 +1,4 @@
-package com.mfoumby.hassan.quran.ui
+package com.mfoumby.hassan.quran.ui.quran
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,6 +26,12 @@ class QuranViewModel(
 
     init {
         initUiState()
+    }
+
+    fun onQuranContentTypeChange(quranContentType: QuranContentType) {
+        _uiState.update {
+            it.copy(contentType = quranContentType)
+        }
     }
 
     private fun initUiState() {
@@ -57,6 +63,11 @@ class QuranViewModel(
         val allJuz: List<Juz> = emptyList(),
         val allHizb: List<Hizb> = emptyList(),
         val preferences: SurahVersePreferences? = null,
+        val contentType: QuranContentType = QuranContentType.SURAH,
         val isLoading: Boolean = true
     )
+
+    enum class QuranContentType {
+        SURAH, JUZ, HIZB
+    }
 }

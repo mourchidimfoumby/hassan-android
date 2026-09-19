@@ -3,7 +3,7 @@ package com.mfoumby.hassan.ui
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.mfoumby.hassan.common.Route
-import com.mfoumby.hassan.quran.ui.QuranRoute
+import com.mfoumby.hassan.quran.ui.quran.QuranRoute
 
 sealed class TopLevelDestination(
     open val badges: Int,

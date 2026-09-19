@@ -10,9 +10,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mfoumby.hassan.common.Route
-import com.mfoumby.hassan.quran.ui.QuranBaseRoute
-import com.mfoumby.hassan.quran.ui.navigateToQuran
-import com.mfoumby.hassan.quran.ui.quranSection
+import com.mfoumby.hassan.quran.ui.quran.QuranBaseRoute
+import com.mfoumby.hassan.quran.ui.quran.navigateToQuran
+import com.mfoumby.hassan.quran.ui.quran.quranSection
 import com.mfoumby.hassan.quran.ui.quransearch.navigateToQuranSearch
 import com.mfoumby.hassan.quran.ui.quransearch.quranSearchScreen
 import com.mfoumby.hassan.quran.ui.surahverse.hizbSurahVerseScreen
