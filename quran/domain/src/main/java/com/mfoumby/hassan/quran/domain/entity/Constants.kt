@@ -14,8 +14,6 @@ object Constants {
         displayTransliteration = false,
         reciter = null,
         audioAutomaticScrolling = true,
-        surahBookmark = null,
-        juzBookmark = null,
-        hizbBookmark = null
+        surahVerseBookmark = null
     )
 }

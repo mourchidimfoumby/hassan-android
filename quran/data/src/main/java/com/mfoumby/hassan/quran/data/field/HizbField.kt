@@ -12,7 +12,7 @@ object HizbField {
         const val HIZB_FIRST_VERSE_TEXT = "${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_TEXT}"
         const val HIZB_FIRST_VERSE_TRANSLITERATION = "${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_TRANSLITERATION}"
         const val HIZB_FIRST_VERSE_PAGE = "${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_PAGE}"
-        const val HIZB_FIRST_VERSE_HIZB = "${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_HIZB}"
+        const val HIZB_FIRST_VERSE_HIZB = "${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_HIZB_NUMBER}"
 
         const val HIZB_FIRST_SURAH_NUMBER = "${HIZB_FIRST_SURAH}_${SurahField.Local.SURAH_NUMBER}"
         const val HIZB_FIRST_SURAH_NAME = "${HIZB_FIRST_SURAH}_${SurahField.Local.SURAH_NAME}"

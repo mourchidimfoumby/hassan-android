@@ -8,7 +8,5 @@ data class LocalSurahVersePreferences(
     val displayTajweed: Boolean,
     val reciter: String?,
     val audioAutomaticScrolling: Boolean,
-    val surahBookmark: String?,
-    val juzBookmark: String?,
-    val hizbBookmark: String?
+    val surahVerseBookmark: String?
 )

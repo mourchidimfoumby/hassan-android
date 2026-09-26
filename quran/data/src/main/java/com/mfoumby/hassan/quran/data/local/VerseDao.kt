@@ -6,8 +6,8 @@ import androidx.room.Transaction
 import androidx.room.Upsert
 import com.mfoumby.hassan.quran.data.field.HizbField
 import com.mfoumby.hassan.quran.data.field.JuzField
-import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_HIZB
-import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_JUZ
+import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_HIZB_NUMBER
+import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_JUZ_NUMBER
 import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_NUMBER
 import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_PAGE
 import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_SURAH_NUMBER
@@ -38,7 +38,7 @@ interface VerseDao {
     @Transaction
     @Query("""
         SELECT * FROM $VERSE_TABLE_NAME
-        WHERE $VERSE_JUZ = :juzNumber
+        WHERE $VERSE_JUZ_NUMBER = :juzNumber
         ORDER BY $VERSE_SURAH_NUMBER, $VERSE_NUMBER
         LIMIT :limit
     """)
@@ -47,7 +47,7 @@ interface VerseDao {
     @Transaction
     @Query("""
         SELECT * FROM $VERSE_TABLE_NAME
-        WHERE $VERSE_HIZB = :hizbNumber
+        WHERE $VERSE_HIZB_NUMBER = :hizbNumber
         ORDER BY $VERSE_SURAH_NUMBER, $VERSE_NUMBER
         LIMIT :limit
     """)

@@ -20,8 +20,8 @@ fun LocalVerse.toVerse() = Verse(
     text = text,
     transliteration = transliteration,
     page = page,
-    juzNumber = juz,
-    hizbNumber = hizb
+    juzNumber = juzNumber,
+    hizbNumber = hizbNumber
 )
 
 fun Verse.toLocal() = LocalVerse(
@@ -30,6 +30,6 @@ fun Verse.toLocal() = LocalVerse(
     text = text,
     transliteration = transliteration,
     page = page,
-    juz = juzNumber,
-    hizb = hizbNumber
+    juzNumber = juzNumber,
+    hizbNumber = hizbNumber
 )

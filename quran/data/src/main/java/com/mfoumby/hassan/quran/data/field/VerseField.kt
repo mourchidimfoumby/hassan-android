@@ -8,8 +8,8 @@ object VerseField {
         const val VERSE_TEXT = "verse_text"
         const val VERSE_TRANSLITERATION = "verse_transliteration"
         const val VERSE_PAGE = "verse_page"
-        const val VERSE_JUZ = "verse_juz"
-        const val VERSE_HIZB = "verse_hizb"
+        const val VERSE_JUZ_NUMBER = "verse_juz_number"
+        const val VERSE_HIZB_NUMBER = "verse_hizb_number"
     }
 
     object Remote {

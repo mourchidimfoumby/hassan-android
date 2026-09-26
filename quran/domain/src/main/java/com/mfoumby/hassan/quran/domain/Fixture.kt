@@ -362,7 +362,9 @@ val hizbFixtures = surahVerseFixtures.map {
 val surahVerseTranslationFixture = SurahVerseTranslation(
     verseNumber = 1,
     surahNumber = 1,
-    text = "In the Name of Allah—the Most Compassionate, Most Merciful.",
+    juzNumber = 1,
+    hizbNumber = 1,
+    translation = "In the Name of Allah—the Most Compassionate, Most Merciful.",
     language = Language.ENGLISH
 )
 
@@ -370,43 +372,57 @@ val surahVerseTranslationFixtures = listOf(
     SurahVerseTranslation(
         verseNumber = 1,
         surahNumber = 1,
-        text = "In the Name of Allah—the Most Compassionate, Most Merciful.",
+        juzNumber = 1,
+        hizbNumber = 1,
+        translation = "In the Name of Allah—the Most Compassionate, Most Merciful.",
         language = Language.ENGLISH
     ),
     SurahVerseTranslation(
         verseNumber = 2,
         surahNumber = 1,
-        text = "All praise is for Allah—Lord of all worlds,",
+        juzNumber = 1,
+        hizbNumber = 1,
+        translation = "All praise is for Allah—Lord of all worlds,",
         language = Language.ENGLISH
     ),
     SurahVerseTranslation(
         verseNumber = 3,
         surahNumber = 1,
-        text = "the Most Compassionate, Most Merciful,",
+        juzNumber = 1,
+        hizbNumber = 1,
+        translation = "the Most Compassionate, Most Merciful,",
         language = Language.ENGLISH
     ),
     SurahVerseTranslation(
         verseNumber = 4,
         surahNumber = 1,
-        text = "Master of the Day of Judgment.",
+        juzNumber = 1,
+        hizbNumber = 1,
+        translation = "Master of the Day of Judgment.",
         language = Language.ENGLISH
     ),
     SurahVerseTranslation(
         verseNumber = 5,
         surahNumber = 1,
-        text = "You ˹alone˺ we worship and You ˹alone˺ we ask for help.",
+        juzNumber = 1,
+        hizbNumber = 1,
+        translation = "You ˹alone˺ we worship and You ˹alone˺ we ask for help.",
         language = Language.ENGLISH
     ),
     SurahVerseTranslation(
         verseNumber = 6,
         surahNumber = 1,
-        text = "Guide us along the Straight Path,",
+        juzNumber = 1,
+        hizbNumber = 1,
+        translation = "Guide us along the Straight Path,",
         language = Language.ENGLISH
     ),
     SurahVerseTranslation(
         verseNumber = 7,
         surahNumber = 1,
-        text = "the Path of those You have blessed—not those You are displeased with, or those who are astray.",
+        juzNumber = 1,
+        hizbNumber = 1,
+        translation = "the Path of those You have blessed—not those You are displeased with, or those who are astray.",
         language = Language.ENGLISH
     )
 )
@@ -484,9 +500,7 @@ val surahVersePreferencesFixture = Constants.DEFAULT_SURAH_VERSE_PREFERENCES.cop
     displayTranslation = true,
     reciter = reciterFixture,
     audioAutomaticScrolling = true,
-    surahBookmark = surahVerseFixture2,
-    juzBookmark = surahVerseFixture2,
-    hizbBookmark = surahVerseFixture2
+    surahVerseBookmark = surahVerseFixture2
 )
 
 val quranSearchResultFixtures = listOf(

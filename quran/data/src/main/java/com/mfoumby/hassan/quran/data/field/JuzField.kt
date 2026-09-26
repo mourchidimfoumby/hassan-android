@@ -12,7 +12,7 @@ object JuzField {
         const val JUZ_FIRST_VERSE_TEXT = "${JUZ_FIRST_VERSE}_${VerseField.Local.VERSE_TEXT}"
         const val JUZ_FIRST_VERSE_TRANSLITERATION = "${JUZ_FIRST_VERSE}_${VerseField.Local.VERSE_TRANSLITERATION}"
         const val JUZ_FIRST_VERSE_PAGE = "${JUZ_FIRST_VERSE}_${VerseField.Local.VERSE_PAGE}"
-        const val JUZ_FIRST_VERSE_JUZ = "${JUZ_FIRST_VERSE}_${VerseField.Local.VERSE_JUZ}"
+        const val JUZ_FIRST_VERSE_JUZ = "${JUZ_FIRST_VERSE}_${VerseField.Local.VERSE_JUZ_NUMBER}"
 
         const val JUZ_FIRST_SURAH_NUMBER = "${JUZ_FIRST_SURAH}_${SurahField.Local.SURAH_NUMBER}"
         const val JUZ_FIRST_SURAH_NAME = "${JUZ_FIRST_SURAH}_${SurahField.Local.SURAH_NAME}"

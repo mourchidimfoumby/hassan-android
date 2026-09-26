@@ -6,22 +6,28 @@ import com.mfoumby.hassan.quran.data.model.RemoteSurahVerseTranslation
 import com.mfoumby.hassan.quran.domain.entity.SurahVerseTranslation
 
 fun LocalSurahVerseTranslation.toSurahVerseTranslation() = SurahVerseTranslation(
-    verseNumber = number,
+    verseNumber = verseNumber,
     surahNumber = surahNumber,
-    text = translation,
+    juzNumber = juzNumber,
+    hizbNumber = hizbNumber,
+    translation = translation,
     language = Language.valueOf(language)
 )
 
 fun RemoteSurahVerseTranslation.toSurahVerseTranslation(language: Language) = SurahVerseTranslation(
-    verseNumber = number,
+    verseNumber = verseNumber,
     surahNumber = surahNumber,
-    text = translation,
+    juzNumber = juzNumber,
+    hizbNumber = hizbNumber,
+    translation = translation,
     language = language
 )
 
 fun SurahVerseTranslation.toLocal() = LocalSurahVerseTranslation(
-    number = verseNumber,
+    verseNumber = verseNumber,
     surahNumber = surahNumber,
-    translation = text,
+    juzNumber = juzNumber,
+    hizbNumber = hizbNumber,
+    translation = translation,
     language = language.name
 )

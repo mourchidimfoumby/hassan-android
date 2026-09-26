@@ -11,6 +11,7 @@ import com.mfoumby.hassan.quran.domain.repository.SurahVersePreferencesRepositor
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseTranslationLanguageRepository
 import com.mfoumby.hassan.quran.domain.usecase.DeleteTranslationLanguageUseCase
 import com.mfoumby.hassan.quran.domain.usecase.DownloadSurahVerseTranslationUseCase
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,13 +60,10 @@ class SurahVerseTranslationLanguageViewModel(
                        try {
                            downloadSurahVerseTranslationUseCase.execute(translationLanguage).collect { translationLanguage ->
                                _uiState.update { state ->
-                                   state.translationLanguages?.map {
-                                       if (it.language == translationLanguage.language) {
-                                           translationLanguage
-                                       } else it
-                                   }?.let {
-                                       state.copy(translationLanguages = it)
-                                   } ?: state
+                                   state.translationLanguages
+                                       ?.map { if (it.language == translationLanguage.language) translationLanguage else it }
+                                       ?.let { state.copy(translationLanguages = it) }
+                                       ?: state
                                }
                            }
 
@@ -74,8 +72,16 @@ class SurahVerseTranslationLanguageViewModel(
                                    surahVersePreferences.copy(translationLanguage = translationLanguage.language)
                                )
                            }
-                       } catch (_: Exception) {
-                           _event.emit(SurahVerseTranslationUiEvent.SurahVerseTranslationDownloadError(translationLanguage))
+                       } catch (e: Exception) {
+                           _uiState.update { state ->
+                               state.translationLanguages
+                                   ?.map { if (it.language == translationLanguage.language) translationLanguage else it }
+                                   ?.let { state.copy(translationLanguages = it) }
+                                   ?: state
+                           }
+                           if (e !is CancellationException) {
+                               _event.emit(SurahVerseTranslationUiEvent.SurahVerseTranslationDownloadError(translationLanguage))
+                           }
                        } finally {
                            cancelDownloadingJob(translationLanguage)
                        }

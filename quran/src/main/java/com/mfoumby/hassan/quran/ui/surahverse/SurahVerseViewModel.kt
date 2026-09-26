@@ -206,19 +206,9 @@ class SurahVerseViewModel(
     fun onSaveBookmark(surahVerse: SurahVerse) {
         val preferences = uiState.value.preferences ?: return
         viewModelScope.launch {
-            when (quranMode) {
-                is QuranMode.SurahMode -> surahVersePreferencesRepository.setSurahVersePreferences(
-                    preferences.copy(surahBookmark = surahVerse)
-                )
-
-                is QuranMode.JuzMode -> surahVersePreferencesRepository.setSurahVersePreferences(
-                    preferences.copy(juzBookmark = surahVerse)
-                )
-
-                is QuranMode.HizbMode -> surahVersePreferencesRepository.setSurahVersePreferences(
-                    preferences.copy(hizbBookmark = surahVerse)
-                )
-            }
+            surahVersePreferencesRepository.setSurahVersePreferences(
+                preferences.copy(surahVerseBookmark = surahVerse)
+            )
         }
     }
 

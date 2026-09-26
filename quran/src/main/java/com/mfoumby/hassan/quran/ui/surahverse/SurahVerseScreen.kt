@@ -66,7 +66,6 @@ import com.mfoumby.hassan.quran.ui.surahverse.components.bottomsheets.SurahVerse
 import kotlinx.coroutines.flow.drop
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
-import kotlin.math.max
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -146,9 +145,12 @@ fun SurahVerseDestination(
     LaunchedEffect(surahVersePlayerData?.state) {
         when (val state = surahVersePlayerData?.state) {
             is SurahVersePlayerManifest.State.Playing -> {
-                val index = max(surahVersePlayerData.surahVerseAudios.values.indexOf(state.surahVerseAudio), 0)
-                player.seekTo(index, 0)
-                player.play()
+                surahVersePlayerData.surahVerseAudios.values.indexOf(state.surahVerseAudio)
+                    .takeIf { it >= 0 }
+                    ?.let { index ->
+                        player.seekTo(index, 0)
+                        player.play()
+                    }
             }
 
             else -> Unit
