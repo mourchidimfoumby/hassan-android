@@ -85,7 +85,6 @@ private fun DownloadingAudioDialogContent(
                 style = MaterialTheme.typography.bodySmall
             )
 
-
             LinearProgressIndicator(
                 modifier = Modifier.fillMaxWidth(),
                 progress = { progress }

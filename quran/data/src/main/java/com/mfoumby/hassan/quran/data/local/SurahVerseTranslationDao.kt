@@ -3,11 +3,12 @@ package com.mfoumby.hassan.quran.data.local
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
+import com.mfoumby.hassan.quran.data.field.SurahVerseTranslationField.Local.HIZB_NUMBER
+import com.mfoumby.hassan.quran.data.field.SurahVerseTranslationField.Local.JUZ_NUMBER
 import com.mfoumby.hassan.quran.data.field.SurahVerseTranslationField.Local.LANGUAGE
 import com.mfoumby.hassan.quran.data.field.SurahVerseTranslationField.Local.SURAH_NUMBER
 import com.mfoumby.hassan.quran.data.field.SurahVerseTranslationField.Local.TABLE_NAME
 import com.mfoumby.hassan.quran.data.field.SurahVerseTranslationField.Local.VERSE_NUMBER
-import com.mfoumby.hassan.quran.data.field.VerseField
 import com.mfoumby.hassan.quran.data.model.LocalSurahVerseTranslation
 
 @Dao
@@ -22,26 +23,20 @@ interface SurahVerseTranslationDao {
     suspend fun getSurahVerseTranslations(surahNumber: Int, language: String): List<LocalSurahVerseTranslation>
 
     @Query("""
-        SELECT VT.*
-        FROM $TABLE_NAME VT
-        INNER JOIN ${VerseField.Local.VERSE_TABLE_NAME} V 
-            ON V.${VerseField.Local.VERSE_SURAH_NUMBER} = VT.$SURAH_NUMBER
-            AND V.${VerseField.Local.VERSE_NUMBER} = VT.$VERSE_NUMBER
-        WHERE V.${VerseField.Local.VERSE_JUZ} = :juzNumber 
-            AND VT.$LANGUAGE = :language
-        ORDER BY VT.$SURAH_NUMBER, VT.$VERSE_NUMBER
+        SELECT *
+        FROM $TABLE_NAME
+        WHERE $JUZ_NUMBER = :juzNumber 
+        AND $LANGUAGE = :language
+        ORDER BY $SURAH_NUMBER, $VERSE_NUMBER
     """)
     suspend fun getSurahVerseTranslationsFromJuz(juzNumber: Int, language: String): List<LocalSurahVerseTranslation>
 
     @Query("""
-        SELECT VT.*
-        FROM $TABLE_NAME VT
-        INNER JOIN ${VerseField.Local.VERSE_TABLE_NAME} V 
-            ON V.${VerseField.Local.VERSE_SURAH_NUMBER} = VT.$SURAH_NUMBER
-            AND V.${VerseField.Local.VERSE_NUMBER} = VT.$VERSE_NUMBER
-        WHERE V.${VerseField.Local.VERSE_HIZB} = :hizbNumber 
-            AND VT.$LANGUAGE = :language
-        ORDER BY VT.$SURAH_NUMBER, VT.$VERSE_NUMBER
+        SELECT *
+        FROM $TABLE_NAME
+        WHERE $HIZB_NUMBER = :hizbNumber 
+        AND $LANGUAGE = :language
+        ORDER BY $SURAH_NUMBER, $VERSE_NUMBER
     """)
     suspend fun getSurahVerseTranslationsFromHizb(hizbNumber: Int, language: String): List<LocalSurahVerseTranslation>
 

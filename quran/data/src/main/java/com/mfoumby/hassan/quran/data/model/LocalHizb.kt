@@ -16,15 +16,15 @@ import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_TABLE_NAME
     viewName = HIZB_VIEW_NAME,
     value = """
         SELECT 
-            ${VerseField.Local.VERSE_HIZB} AS $HIZB_NUMBER,
+            ${VerseField.Local.VERSE_HIZB_NUMBER} AS $HIZB_NUMBER,
 
             V.${VerseField.Local.VERSE_NUMBER} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_NUMBER},
             V.${VerseField.Local.VERSE_SURAH_NUMBER} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_SURAH_NUMBER},
             V.${VerseField.Local.VERSE_TEXT} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_TEXT},
             V.${VerseField.Local.VERSE_TRANSLITERATION} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_TRANSLITERATION},
             V.${VerseField.Local.VERSE_PAGE} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_PAGE},
-            V.${VerseField.Local.VERSE_JUZ} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_JUZ},
-            V.${VerseField.Local.VERSE_HIZB} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_HIZB},
+            V.${VerseField.Local.VERSE_JUZ_NUMBER} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_JUZ_NUMBER},
+            V.${VerseField.Local.VERSE_HIZB_NUMBER} AS ${HIZB_FIRST_VERSE}_${VerseField.Local.VERSE_HIZB_NUMBER},
 
             S.${SurahField.Local.SURAH_NUMBER} AS ${HIZB_FIRST_SURAH}_${SurahField.Local.SURAH_NUMBER},
             S.${SurahField.Local.SURAH_NAME} AS ${HIZB_FIRST_SURAH}_${SurahField.Local.SURAH_NAME},
@@ -34,17 +34,17 @@ import com.mfoumby.hassan.quran.data.field.VerseField.Local.VERSE_TABLE_NAME
             S.${SurahField.Local.SURAH_TRANSLATION} AS ${HIZB_FIRST_SURAH}_${SurahField.Local.SURAH_TRANSLATION}
         FROM $VERSE_TABLE_NAME V
         INNER JOIN (
-            SELECT ${VerseField.Local.VERSE_HIZB} AS HIZB, MIN(${VerseField.Local.VERSE_SURAH_NUMBER}) AS SURAH_NUMBER
+            SELECT ${VerseField.Local.VERSE_HIZB_NUMBER} AS HIZB, MIN(${VerseField.Local.VERSE_SURAH_NUMBER}) AS SURAH_NUMBER
             FROM $VERSE_TABLE_NAME
-            GROUP BY ${VerseField.Local.VERSE_HIZB}
+            GROUP BY ${VerseField.Local.VERSE_HIZB_NUMBER}
         ) FIRST_SURAH
-        ON V.${VerseField.Local.VERSE_HIZB} = FIRST_SURAH.HIZB 
+        ON V.${VerseField.Local.VERSE_HIZB_NUMBER} = FIRST_SURAH.HIZB 
         AND V.${VerseField.Local.VERSE_SURAH_NUMBER} = FIRST_SURAH.SURAH_NUMBER
         INNER JOIN $SURAH_TABLE_NAME S ON V.${VerseField.Local.VERSE_SURAH_NUMBER} = S.${SurahField.Local.SURAH_NUMBER}
         WHERE V.${VerseField.Local.VERSE_NUMBER} = (
             SELECT MIN(V2.${VerseField.Local.VERSE_NUMBER})
             FROM $VERSE_TABLE_NAME V2
-            WHERE V2.${VerseField.Local.VERSE_HIZB} = V.${VerseField.Local.VERSE_HIZB}
+            WHERE V2.${VerseField.Local.VERSE_HIZB_NUMBER} = V.${VerseField.Local.VERSE_HIZB_NUMBER}
               AND V2.${VerseField.Local.VERSE_SURAH_NUMBER} = V.${VerseField.Local.VERSE_SURAH_NUMBER}
         );
     """

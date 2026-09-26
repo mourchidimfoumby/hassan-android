@@ -18,6 +18,7 @@ import com.mfoumby.hassan.quran.domain.surahVerseFixtures
 import com.mfoumby.hassan.quran.domain.surahVerseFixtures3
 import com.mfoumby.hassan.quran.domain.surahVersePreferencesFixture
 import com.mfoumby.hassan.quran.domain.surahVerseTranslationFixtures
+import com.mfoumby.hassan.quran.domain.usecase.DownloadSurahVerseAudioUseCase
 import com.mfoumby.hassan.quran.ui.surahverse.SurahVerseViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -48,6 +49,7 @@ class SurahVerseViewModelTest {
     private val surahVerseTranslationRepository: SurahVerseTranslationRepository = mockk()
     private val surahVersePreferencesRepository: SurahVersePreferencesRepository = mockk()
     private val surahVerseAudioRepository: SurahVerseAudioRepository = mockk()
+    private val downloadSurahVerseAudioUseCase: DownloadSurahVerseAudioUseCase = mockk()
 
     lateinit var viewModel: SurahVerseViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -65,7 +67,8 @@ class SurahVerseViewModelTest {
         every { surahVersePreferencesRepository.getSurahVersePreferencesFlow() } returns flowOf(surahVersePreferencesFixture)
         coEvery { surahVersePreferencesRepository.getSurahVersePreferences() } returns surahVersePreferencesFixture
         coEvery { surahVersePreferencesRepository.setSurahVersePreferences(any()) } returns Unit
-        every { surahVerseAudioRepository.downloadSurahVerseAudio(any(), any()) } returns flow { emit(1); delay(100.milliseconds) }
+        coEvery { surahVerseAudioRepository.downloadSurahVerseAudio(any(), any(), any()) } returns Unit
+        every { downloadSurahVerseAudioUseCase.execute(any(), any()) } returns flow { emit(1); delay(100.milliseconds) }
         coEvery { surahVerseAudioRepository.getSurahVerseAudios(any(), any(), any(), any()) } returns listOf(surahVerseAudioFixture)
         coEvery { surahVerseAudioRepository.deleteSurahVerseAudios(any(), any()) } returns Unit
         coEvery { surahVerseAudioRepository.isSurahVerseAudioDownloaded(any(), any()) } returns false
@@ -78,7 +81,8 @@ class SurahVerseViewModelTest {
             surahVerseRepository = surahVerseRepository,
             surahVersePreferencesRepository = surahVersePreferencesRepository,
             surahVerseTranslationRepository = surahVerseTranslationRepository,
-            surahVerseAudioRepository = surahVerseAudioRepository
+            surahVerseAudioRepository = surahVerseAudioRepository,
+            downloadSurahVerseAudioUseCase = downloadSurahVerseAudioUseCase
         )
     }
 
@@ -220,7 +224,8 @@ class SurahVerseViewModelTest {
             surahVerseRepository = surahVerseRepository,
             surahVerseTranslationRepository = surahVerseTranslationRepository,
             surahVersePreferencesRepository = surahVersePreferencesRepository,
-            surahVerseAudioRepository = surahVerseAudioRepository
+            surahVerseAudioRepository = surahVerseAudioRepository,
+            downloadSurahVerseAudioUseCase = downloadSurahVerseAudioUseCase
         )
 
         // When
@@ -253,7 +258,8 @@ class SurahVerseViewModelTest {
             surahVerseRepository = surahVerseRepository,
             surahVerseTranslationRepository = surahVerseTranslationRepository,
             surahVersePreferencesRepository = surahVersePreferencesRepository,
-            surahVerseAudioRepository = surahVerseAudioRepository
+            surahVerseAudioRepository = surahVerseAudioRepository,
+            downloadSurahVerseAudioUseCase = downloadSurahVerseAudioUseCase
         )
 
         // When
@@ -457,7 +463,7 @@ class SurahVerseViewModelTest {
             when (quranModeFixture) {
                 is QuranMode.SurahMode -> {
                     surahVersePreferencesRepository.setSurahVersePreferences(
-                        surahVersePreferencesFixture.copy(surahBookmark = surahVerse)
+                        surahVersePreferencesFixture.copy(surahVerseBookmark = surahVerse)
                     )
                 }
 

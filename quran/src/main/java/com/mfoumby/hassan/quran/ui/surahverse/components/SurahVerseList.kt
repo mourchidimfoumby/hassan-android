@@ -156,7 +156,7 @@ private fun SurahVerseCell(
 
         if (displayTranslation) {
             surahVerseTranslation?.let {
-                Text(text = "${it.verseNumber}. ${it.text}")
+                Text(text = "${it.verseNumber}. ${it.translation}")
             }
         }
     }

@@ -7,11 +7,9 @@ import com.mfoumby.hassan.quran.domain.entity.Constants.TOTAL_QURAN_VERSES
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseTranslationLanguageRepository
 import com.mfoumby.hassan.quran.domain.repository.SurahVerseTranslationRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
 
 class DownloadSurahVerseTranslationUseCase(
     private val surahVerseTranslationRepository: SurahVerseTranslationRepository,
@@ -30,18 +28,12 @@ class DownloadSurahVerseTranslationUseCase(
                     )
                 )
             }
-            .onEach(surahVerseTranslationLanguageRepository::updateTranslationLanguage)
             .onCompletion { cause ->
                 if (cause == null) {
-                    val downloaded = translationLanguage.copy(state = TranslationLanguageState.Downloaded)
-                    surahVerseTranslationLanguageRepository.updateTranslationLanguage(downloaded)
+                    surahVerseTranslationLanguageRepository.updateTranslationLanguage(
+                        translationLanguage.copy(state = TranslationLanguageState.Downloaded)
+                    )
                 }
-            }
-            .catch { e ->
-                val notDownloaded = translationLanguage.copy(state = TranslationLanguageState.NotDownloaded)
-                surahVerseTranslationLanguageRepository.updateTranslationLanguage(notDownloaded)
-                emit(notDownloaded)
-                throw e
             }
     }
 }

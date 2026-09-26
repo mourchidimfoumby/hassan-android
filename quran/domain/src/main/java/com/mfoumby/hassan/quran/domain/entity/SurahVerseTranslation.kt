@@ -5,6 +5,8 @@ import com.mfoumby.hassan.common.domain.entity.Language
 data class SurahVerseTranslation(
     val verseNumber: Int,
     val surahNumber: Int,
-    val text: String,
+    val juzNumber: Int,
+    val hizbNumber: Int,
+    val translation: String,
     val language: Language
 )

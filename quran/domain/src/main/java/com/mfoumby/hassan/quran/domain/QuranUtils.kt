@@ -6,7 +6,7 @@ typealias HizbNumber = Int
 typealias VerseNumber = Int
 
 object QuranUtils {
-    fun calculateHizb(juz: Int) = (juz - 1) / 2 + 1
+    fun calculateHizb(juz: Int): Int = (juz - 1) / 2 + 1
 
-    fun calculateJuz(hizb: Int) = (hizb - 1) * 2 + 1
+    fun calculateJuz(hizb: Int): Int = (hizb - 1) * 2 + 1
 }

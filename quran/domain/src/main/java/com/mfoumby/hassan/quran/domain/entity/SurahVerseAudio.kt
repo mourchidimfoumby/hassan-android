@@ -5,12 +5,12 @@ data class SurahVerseAudio(
     val verseNumber: Int,
     val audioUri: String
 ) {
-    val id = surah.number * 1000 + verseNumber
+    val id: Int = surah.number * 1000 + verseNumber
 
     companion object {
-        fun getSurahNumberFromId(id: Int) = id / 1000
+        fun getSurahNumberFromId(id: Int): Int = id / 1000
 
-        fun getVerseNumberFromId(id: Int) = id % 1000
+        fun getVerseNumberFromId(id: Int): Int = id % 1000
     }
 
     fun matchTo(surahVerse: SurahVerse): Boolean =

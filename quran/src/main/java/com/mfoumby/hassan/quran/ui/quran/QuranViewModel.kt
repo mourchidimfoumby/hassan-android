@@ -1,7 +1,9 @@
 package com.mfoumby.hassan.quran.ui.quran
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mfoumby.hassan.quran.R
 import com.mfoumby.hassan.quran.domain.entity.Hizb
 import com.mfoumby.hassan.quran.domain.entity.Juz
 import com.mfoumby.hassan.quran.domain.entity.Surah
@@ -67,7 +69,9 @@ class QuranViewModel(
         val isLoading: Boolean = true
     )
 
-    enum class QuranContentType {
-        SURAH, JUZ, HIZB
+    enum class QuranContentType(@param:StringRes val stringRes: Int) {
+        SURAH(R.string.surah),
+        JUZ(R.string.juz),
+        HIZB(R.string.hizb)
     }
 }

@@ -3,11 +3,11 @@ package com.mfoumby.hassan.quran.ui.quran
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,12 +17,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.mfoumby.hassan.common.domain.extension.asIndex
-import com.mfoumby.hassan.common.extension.mediumSpacing
 import com.mfoumby.hassan.common.extension.smallSpacing
 import com.mfoumby.hassan.common.ui.PhonePreviews
 import com.mfoumby.hassan.common.ui.Previews
@@ -99,6 +100,8 @@ private fun QuranScreen(
     onHizbBookmarkClick: (HizbNumber, SurahNumber, VerseNumber?) -> Unit,
     onSearchClick: () -> Unit
 ) {
+    var showFilterContentTypeMenu by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TitleTopBar(
@@ -109,6 +112,35 @@ private fun QuranScreen(
                             painter = painterResource(com.mfoumby.hassan.common.R.drawable.ic_outline_search),
                             contentDescription = stringResource(com.mfoumby.hassan.common.R.string.search)
                         )
+                    }
+
+                    IconButton(onClick = { showFilterContentTypeMenu = true }) {
+                        Icon(
+                            painter = painterResource(com.mfoumby.hassan.common.R.drawable.ic_outline_filter_list),
+                            contentDescription = "Filter content type"
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showFilterContentTypeMenu,
+                        onDismissRequest = { showFilterContentTypeMenu = false }
+                    ) {
+                        QuranViewModel.QuranContentType.entries.forEach { type ->
+                            DropdownMenuItem(
+                                text = { Text(stringResource(type.stringRes)) },
+                                onClick = {
+                                    onContentTypeChange(type)
+                                    showFilterContentTypeMenu = false
+                                },
+                                leadingIcon = if (type == quranContentType) {
+                                    {
+                                        Icon(
+                                            painter = painterResource(com.mfoumby.hassan.common.R.drawable.ic_outline_check),
+                                            contentDescription = null
+                                        )
+                                    }
+                                } else null
+                            )
+                        }
                     }
                 }
             )
@@ -122,7 +154,6 @@ private fun QuranScreen(
             allHizb = allHizb,
             surahVersePreferences = surahVersePreferences,
             quranContentType = quranContentType,
-            onContentTypeChange = onContentTypeChange,
             onSurahClick = onSurahClick,
             onJuzClick = onJuzClick,
             onHizbClick = onHizbClick,
@@ -141,7 +172,6 @@ private fun QuranContent(
     allHizb: List<Hizb>,
     surahVersePreferences: SurahVersePreferences,
     quranContentType: QuranViewModel.QuranContentType,
-    onContentTypeChange: (QuranViewModel.QuranContentType) -> Unit,
     onSurahClick: (SurahNumber) -> Unit,
     onJuzClick: (JuzNumber, SurahNumber) -> Unit,
     onHizbClick: (HizbNumber, SurahNumber) -> Unit,
@@ -149,11 +179,6 @@ private fun QuranContent(
     onJuzBookmarkClick: (JuzNumber, SurahNumber, VerseNumber?) -> Unit,
     onHizbBookmarkClick: (HizbNumber, SurahNumber, VerseNumber?) -> Unit
 ) {
-    val surahVerseBookmark = when (quranContentType) {
-        QuranViewModel.QuranContentType.SURAH -> surahVersePreferences.surahBookmark
-        QuranViewModel.QuranContentType.JUZ -> surahVersePreferences.juzBookmark
-        QuranViewModel.QuranContentType.HIZB -> surahVersePreferences.hizbBookmark
-    }
     val itemCount = when (quranContentType) {
         QuranViewModel.QuranContentType.SURAH -> surahs.size
         QuranViewModel.QuranContentType.JUZ -> allJuz.size
@@ -164,30 +189,7 @@ private fun QuranContent(
         modifier = modifier,
         itemCount = itemCount
     ) {
-        item {
-            Row(
-                modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.mediumSpacing()
-            ) {
-                QuranViewModel.QuranContentType.entries.forEach { type ->
-                    FilterChip(
-                        selected = type == quranContentType,
-                        onClick = { onContentTypeChange(type) },
-                        label = {
-                            val text = when (type) {
-                                QuranViewModel.QuranContentType.SURAH -> stringResource(R.string.surah)
-                                QuranViewModel.QuranContentType.JUZ -> stringResource(R.string.juz)
-                                QuranViewModel.QuranContentType.HIZB -> stringResource(R.string.hizb)
-                            }
-                            Text(text = text)
-                        }
-                    )
-                }
-            }
-        }
-
-        surahVerseBookmark?.let {
+        surahVersePreferences.surahVerseBookmark?.let {
             item {
                 BookmarkSection(
                     modifier = Modifier

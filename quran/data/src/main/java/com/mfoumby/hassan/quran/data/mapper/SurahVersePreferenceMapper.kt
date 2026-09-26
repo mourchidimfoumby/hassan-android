@@ -17,9 +17,7 @@ fun LocalSurahVersePreferences.toSurahVersePreferences() = SurahVersePreferences
     displayTajweed = displayTajweed,
     reciter = gson.fromJson(reciter, LocalReciter::class.java)?.toReciter(),
     audioAutomaticScrolling = audioAutomaticScrolling,
-    surahBookmark = gson.fromJson(surahBookmark, LocalSurahVerse::class.java)?.toSurahVerse(),
-    juzBookmark = gson.fromJson(juzBookmark, LocalSurahVerse::class.java)?.toSurahVerse(),
-    hizbBookmark = gson.fromJson(hizbBookmark, LocalSurahVerse::class.java)?.toSurahVerse()
+    surahVerseBookmark = gson.fromJson(surahVerseBookmark, LocalSurahVerse::class.java)?.toSurahVerse()
 )
 
 fun SurahVersePreferences.toLocalSurahVersePreferences() = LocalSurahVersePreferences(
@@ -30,7 +28,5 @@ fun SurahVersePreferences.toLocalSurahVersePreferences() = LocalSurahVersePrefer
     displayTajweed = displayTajweed,
     reciter = reciter?.let { gson.toJson(it.toLocal()) },
     audioAutomaticScrolling = audioAutomaticScrolling,
-    surahBookmark = surahBookmark?.let { gson.toJson(it.toLocal()) },
-    juzBookmark = juzBookmark?.let { gson.toJson(it.toLocal()) },
-    hizbBookmark = hizbBookmark?.let { gson.toJson(it.toLocal()) }
+    surahVerseBookmark = surahVerseBookmark?.let { gson.toJson(it.toLocal()) }
 )

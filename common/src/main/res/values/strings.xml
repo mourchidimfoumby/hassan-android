@@ -15,7 +15,7 @@
     <string name="delete">Supprimer</string>
     <string name="list">Liste</string>
     <string name="page">Page</string>
-    <string name="delete_language_dialog_text">Voulez-vous supprimer cette langue?</string>
+    <string name="delete_language_dialog_text">Voulez-vous supprimer cette langue ?</string>
     <string name="search">Rechercher</string>
     <string name="no_result">Aucun résultat</string>
     <string name="clear">Effacer</string>
